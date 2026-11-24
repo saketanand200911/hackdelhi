@@ -1,5 +1,71 @@
 [
   {
+    "id": "diag_d01155ec",
+    "timestamp": "2026-11-24T23:44:18.390962",
+    "crop": "Tomato",
+    "condition": "Tomato Late Blight (Phytophthora infestans)",
+    "severity": "Critical",
+    "is_healthy": false,
+    "outbreak_risk": "EXTREME CRITICAL (can wipe out tomato field in 48-72 hours)",
+    "visual_summary": "Identified Tomato foliage with rapidly spreading large dark water-soaked patches; white fuzzy mold on leaf undersides during moist cool mornings and water-soaked irregular pale green to dark purplish-black greasy lesions.",
+    "processing_seconds": 0.53
+  },
+  {
+    "id": "diag_016d91ce",
+    "timestamp": "2026-11-24T23:44:17.859439",
+    "crop": "Coffee",
+    "condition": "Coffee Leaf Rust (Hemileia vastatrix)",
+    "severity": "Critical",
+    "is_healthy": false,
+    "outbreak_risk": "EXTREME CRITICAL (world's most destructive coffee pathogen, easily wind-blown)",
+    "visual_summary": "Identified Coffee foliage with circular yellow spots on upper surface; matching powdery orange-yellow spore pustules on the lower surface causing massive defoliation and bright yellow-orange powdery pustules on underside; chlorotic spots on top.",
+    "processing_seconds": 0.72
+  },
+  {
+    "id": "diag_1af68414",
+    "timestamp": "2026-11-24T23:44:17.135433",
+    "crop": "Soybean",
+    "condition": "Soybean Brown Spot / Septoria Spot (Septoria glycines)",
+    "severity": "Moderate to High",
+    "is_healthy": false,
+    "outbreak_risk": "High during warm wet monsoon periods with frequent rain splash",
+    "visual_summary": "Identified Soybean foliage with small (2-5mm) angular irregular brown to bronze lesions on lower canopy; leaves turn yellow and drop early and small angular dark brown to red spots surrounded by chlorotic yellow halos.",
+    "processing_seconds": 0.68
+  },
+  {
+    "id": "diag_c20e0c70",
+    "timestamp": "2026-11-24T23:44:16.453918",
+    "crop": "Strawberry",
+    "condition": "Strawberry Common Leaf Spot (Mycosphaerella fragariae)",
+    "severity": "Moderate to High",
+    "is_healthy": false,
+    "outbreak_risk": "High (spores splash from infected crown and soil during rain or overhead watering)",
+    "visual_summary": "Identified Strawberry foliage with classic 'bird's eye' spots (3-6mm) with pale whitish necrotic centers bordered by deep reddish-purple margins and small circular spots with white to ash-gray centers and dark purple-red halos.",
+    "processing_seconds": 0.8
+  },
+  {
+    "id": "diag_88441cc7",
+    "timestamp": "2026-11-24T23:40:31.822124",
+    "crop": "Pepper (Bell / Chilli)",
+    "condition": "Bacterial Spot (Xanthomonas euvesicatoria)",
+    "severity": "High",
+    "is_healthy": false,
+    "outbreak_risk": "High in warm (24-30°C) rainy periods with wind",
+    "visual_summary": "Identified Pepper (Bell / Chilli) foliage with lesions on lower leaf surface appear blistered; leaves turn yellow and drop prematurely and small circular to irregular dark brown water-soaked lesions with yellow halo.",
+    "processing_seconds": 1.29
+  },
+  {
+    "id": "diag_83ebe242",
+    "timestamp": "2026-11-24T23:39:44.698758",
+    "crop": "Coffee",
+    "condition": "Coffee Leaf Rust (Hemileia vastatrix)",
+    "severity": "Critical",
+    "is_healthy": false,
+    "outbreak_risk": "EXTREME CRITICAL (world's most destructive coffee pathogen, easily wind-blown)",
+    "visual_summary": "Identified Coffee foliage with circular yellow spots on upper surface; matching powdery orange-yellow spore pustules on the lower surface causing massive defoliation and bright yellow-orange powdery pustules on underside; chlorotic spots on top.",
+    "processing_seconds": 0.72
+  },
+  {
     "id": "diag_7351c2af",
     "timestamp": "2026-11-24T23:36:06.700241",
     "crop": "Tomato",

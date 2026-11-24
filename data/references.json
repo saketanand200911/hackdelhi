@@ -336,7 +336,7 @@
     "visual_symptoms": "Small dark brown to black circular lesions with greasy translucent halos. Numerous small (under 3mm) dark greasy specks; lesions may tear giving leaf a ragged shot-hole look",
     "treatment": "Spray Copper Oxychloride 50% WP @ 2.5g/L + Streptocycline @ 100ppm every 7 days",
     "risk_level": "High",
-    "image_url": null,
+    "image_url": "/static/reference_images/Tomato___Bacterial_spot.jpg",
     "is_healthy": false
   },
   {
@@ -346,7 +346,7 @@
     "visual_symptoms": "Dark brown circular spots with concentric target rings (bullseye). Target-board concentric rings surrounded by yellow chlorotic halo, starting on lower mature leaves",
     "treatment": "Spray Mancozeb 75% WP @ 2.5g/L or Chlorothalonil 75% WP @ 2g/L",
     "risk_level": "High",
-    "image_url": null,
+    "image_url": "/static/reference_images/Tomato___Early_blight.jpg",
     "is_healthy": false
   },
   {
@@ -366,7 +366,7 @@
     "visual_symptoms": "Pale yellow chlorotic blotches on upper surface; velvety olive-brown mold beneath. Diffuse pale yellow spots on upper leaf surface corresponding to olive-green to brown velvety sporulation underneath",
     "treatment": "Spray Difenoconazole 25% EC @ 0.5ml/L or Azoxystrobin @ 1ml/L",
     "risk_level": "Moderate",
-    "image_url": null,
+    "image_url": "/static/reference_images/Tomato___Leaf_Mold.jpg",
     "is_healthy": false
   },
   {
@@ -376,7 +376,7 @@
     "visual_symptoms": "Small circular spots with ash-gray centers and dark brown margins. Numerous small (1.5 - 3mm) round spots with pale gray centers containing tiny black speck pycnidia",
     "treatment": "Spray Mancozeb 75% WP @ 2.5g/L or Chlorothalonil 75% WP @ 2g/L every 7-10 days",
     "risk_level": "High",
-    "image_url": null,
+    "image_url": "/static/reference_images/Tomato___Septoria_leaf_spot.jpg",
     "is_healthy": false
   },
   {
@@ -386,7 +386,7 @@
     "visual_symptoms": "Fine yellow stippling, speckling, and bronzing on upper leaf surface. Dense yellow stippled pinpricks; fine silky webbing visible on leaf undersides and leaf axils",
     "treatment": "Apply Spiromesifen 22.9% SC @ 1ml/L or Propargite 57% EC @ 2ml/L",
     "risk_level": "High",
-    "image_url": null,
+    "image_url": "/static/reference_images/Tomato___Spider_mites_Two-spotted_spider_mite.jpg",
     "is_healthy": false
   },
   {
@@ -396,7 +396,7 @@
     "visual_symptoms": "Brown pinpoint spots expanding to circular lesions with light brown centers. Target-like circular lesions with subtle concentric rings and distinct yellow halos",
     "treatment": "Spray Azoxystrobin + Difenoconazole @ 1ml/L or Boscalid @ 0.5g/L.",
     "risk_level": "Moderate",
-    "image_url": null,
+    "image_url": "/static/reference_images/Tomato___Target_Spot.jpg",
     "is_healthy": false
   },
   {
@@ -406,7 +406,7 @@
     "visual_symptoms": "Intense interveinal chlorosis and yellow margins. Upward curling and cupping of leaflets, reduced leaflet size, bushy stunted plant habit",
     "treatment": "Control whitefly vector: Spray Diafenthiuron 50% WP @ 1.2g/L or Acetamiprid 20% SP @ 0.3g/L",
     "risk_level": "Moderate",
-    "image_url": null,
+    "image_url": "/static/reference_images/Tomato___Tomato_Yellow_Leaf_Curl_Virus.jpg",
     "is_healthy": false
   },
   {
@@ -416,7 +416,7 @@
     "visual_symptoms": "Mottled pattern of alternating light and dark green patches. Mosaic mottle of dark and light green islands, blistering of leaf surface, stunted growth",
     "treatment": "No chemical cure exists for viral diseases; manage vector and sanitation.",
     "risk_level": "High",
-    "image_url": null,
+    "image_url": "/static/reference_images/Tomato___Tomato_mosaic_virus.jpg",
     "is_healthy": false
   },
   {
@@ -426,7 +426,7 @@
     "visual_symptoms": "Deep uniform lush green. Firm supple leaflets with no spots, yellow halos, curling, or mildew",
     "treatment": "None required.",
     "risk_level": "Moderate",
-    "image_url": null,
+    "image_url": "/static/reference_images/Tomato___healthy.jpg",
     "is_healthy": true
   },
   {
