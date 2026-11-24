@@ -1,0 +1,145 @@
+[
+  {
+    "id": "diag_8f29b678",
+    "timestamp": "2026-11-24T22:52:46.630122",
+    "crop": "Strawberry",
+    "condition": "Strawberry Leaf Scorch",
+    "severity": "Moderate",
+    "is_healthy": false,
+    "outbreak_risk": "High",
+    "visual_summary": "The leaf has small irregular purplish spots without pale centers, and some brown or black spots on it, which could be a sign of strawberry leaf scorch.",
+    "processing_seconds": 24.05
+  },
+  {
+    "id": "diag_2a79eaf4",
+    "timestamp": "2026-11-24T22:51:21.683116",
+    "crop": "Tomato",
+    "condition": "Tomato Leaf Mold (Passalora fulva)",
+    "severity": "Moderate",
+    "is_healthy": false,
+    "outbreak_risk": "High",
+    "visual_summary": "The leaf has pale green or yellow blotches on the upper surface, with a velvety olive-green to brown fungal growth on the lower surface.",
+    "processing_seconds": 23.85
+  },
+  {
+    "id": "diag_ffddc0bb",
+    "timestamp": "2026-11-24T22:49:53.489378",
+    "crop": "Tomato",
+    "condition": "Tomato Late Blight (Phytophthora infestans)",
+    "severity": "Critical",
+    "is_healthy": false,
+    "outbreak_risk": "High",
+    "visual_summary": "The leaf has brown spots and is covered in white powdery mildew, with curled and damaged leaflets.",
+    "processing_seconds": 17.26
+  },
+  {
+    "id": "diag_aa8c1ff4",
+    "timestamp": "2026-11-24T22:48:22.804481",
+    "crop": "Tomato",
+    "condition": "Tomato Late Blight (Phytophthora infestans)",
+    "severity": "Critical",
+    "is_healthy": false,
+    "outbreak_risk": "High",
+    "visual_summary": "The leaf has yellow and brown spots, and white powdery mildew, indicating a high risk of late blight.",
+    "processing_seconds": 18.18
+  },
+  {
+    "id": "diag_be5deed7",
+    "timestamp": "2026-11-24T22:46:46.377793",
+    "crop": "Tomato",
+    "condition": "Tomato Leaf Mold (Passalora fulva)",
+    "severity": "Moderate",
+    "is_healthy": false,
+    "outbreak_risk": "High",
+    "visual_summary": "The leaf has pale green or yellow blotches on the upper surface, and the lower surface develops velvety olive-green to brown fungal growth.",
+    "processing_seconds": 20.42
+  },
+  {
+    "id": "diag_fbd367c6",
+    "timestamp": "2026-11-24T22:45:45.409893",
+    "crop": "Tomato",
+    "condition": "Tomato Leaf Mold (Passalora fulva)",
+    "severity": "Moderate",
+    "is_healthy": false,
+    "outbreak_risk": "High",
+    "visual_summary": "The leaf has pale green or yellow blotches on the upper surface, and the lower surface develops a velvety olive-green to brown fungal growth.",
+    "processing_seconds": 18.96
+  },
+  {
+    "id": "diag_4853f1c7",
+    "timestamp": "2026-11-24T22:44:29.070021",
+    "crop": "Corn",
+    "condition": "Healthy Corn Foliage",
+    "severity": "Healthy",
+    "is_healthy": true,
+    "outbreak_risk": "Low",
+    "visual_summary": "The leaf is healthy and green, with a few yellow spots and some brown or black spots. There is also a small white powdery mildew on the leaf.",
+    "processing_seconds": 15.28
+  },
+  {
+    "id": "diag_da06007d",
+    "timestamp": "2026-11-24T22:44:05.908683",
+    "crop": "Tomato",
+    "condition": "Tomato Leaf Mold (Passalora fulva)",
+    "severity": "Moderate",
+    "is_healthy": false,
+    "outbreak_risk": "High",
+    "visual_summary": "The leaf has a healthy green color with yellow spots and a brown or black spot, indicating fungal infection. The leaf also has a powdery or white substance on it, consistent with powdery mildew.",
+    "processing_seconds": 19.7
+  },
+  {
+    "id": "diag_78c8acc9",
+    "timestamp": "2026-11-24T22:36:07.122254",
+    "crop": "Tomato",
+    "condition": "Septoria Leaf Spot",
+    "severity": "Moderate",
+    "is_healthy": false,
+    "outbreak_risk": "High",
+    "visual_summary": "The leaf shows numerous small circular spots with pale grayish-white centers and dark brown margins, indicating Septoria Leaf Spot.",
+    "processing_seconds": 14.92
+  },
+  {
+    "id": "diag_2835dac5",
+    "timestamp": "2026-11-24T22:31:55.850299",
+    "crop": "Tomato",
+    "condition": "Septoria Leaf Spot",
+    "severity": "Moderate",
+    "is_healthy": false,
+    "outbreak_risk": "High",
+    "visual_summary": "The leaf shows numerous small circular spots with pale grayish-white centers and dark brown margins, indicating Septoria Leaf Spot.",
+    "processing_seconds": 16.89
+  },
+  {
+    "id": "diag_b14ad901",
+    "timestamp": "2026-11-24T22:30:32.409294",
+    "crop": "Tomato",
+    "condition": "Septoria Leaf Spot",
+    "severity": "Moderate",
+    "is_healthy": false,
+    "outbreak_risk": "High",
+    "visual_summary": "The leaf shows numerous small circular spots with pale grayish-white centers and dark brown margins, indicating Septoria Leaf Spot.",
+    "processing_seconds": 17.84
+  },
+  {
+    "id": "diag_78b9ed82",
+    "timestamp": "2026-11-24T22:28:27.929671",
+    "crop": "Tomato",
+    "condition": "Septoria Leaf Spot",
+    "severity": "Moderate",
+    "is_healthy": false,
+    "outbreak_risk": "High",
+    "visual_summary": "The leaf shows numerous small circular spots with pale grayish-white centers and dark brown margins, indicating Septoria Leaf Spot.",
+    "processing_seconds": 23.25
+  },
+  {
+    "id": "diag_e21601aa",
+    "timestamp": "2026-11-24T22:16:30.297210",
+    "crop": "Tomato",
+    "condition": "Early Blight",
+    "severity": "Moderate",
+    "is_healthy": false,
+    "outbreak_risk": "Moderate",
+    "visual_summary": "Lower leaves display brown spots with concentric rings (bullseye pattern) and surrounding areas turn pale yellow.",
+    "processing_seconds": 16.27
+  }
+]

@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LeafGuard AI • Hyper-Local Crop Disease Early Warning</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <!-- Top Navigation Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand">
+        <div class="brand-logo">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
+            <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand-title">LeafGuard <span class="tag-highlight">AI</span></h1>
+          <p class="brand-subtitle">Hyper-Local Pest & Disease Early Warning for Smallholder Farmers (&lt;2 ha)</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <div class="system-status" id="system-status">
+          <span class="status-dot"></span>
+          <span class="status-text">Ollama AI: Local (Moondream + LLaMA-3)</span>
+        </div>
+        <button class="lang-toggle-btn" id="lang-btn" onclick="toggleLanguage()">
+          <span class="lang-icon">🌐</span> <span id="lang-label">हिंदी में देखें</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="tabs-nav">
+      <button class="tab-btn active" data-tab="scanner" onclick="switchTab('scanner')">
+        <span class="tab-icon">📷</span>
+        <span class="tab-label" data-en="Leaf Scanner & Diagnosis" data-hi="पत्ती स्कैनर व जांच">Leaf Scanner & Diagnosis</span>
+      </button>
+      <button class="tab-btn" data-tab="outbreak" onclick="switchTab('outbreak')">
+        <span class="tab-icon">🗺️</span>
+        <span class="tab-label" data-en="Hyper-Local Outbreak Radar" data-hi="क्षेत्रीय प्रकोप चेतावनी (रडार)">Hyper-Local Outbreak Radar</span>
+        <span class="badge-alert">3 Nearby</span>
+      </button>
+      <button class="tab-btn" data-tab="training" onclick="switchTab('training')">
+        <span class="tab-icon">🧠</span>
+        <span class="tab-label" data-en="Teach AI / Reference Samples" data-hi="एआई को सिखाएं (रेफरेंस)">Teach AI / Reference Samples</span>
+        <span class="badge-pill" id="ref-count-badge">4</span>
+      </button>
+      <button class="tab-btn" data-tab="history" onclick="switchTab('history')">
+        <span class="tab-icon">📜</span>
+        <span class="tab-label" data-en="Diagnosis History" data-hi="पुराना रिकॉर्ड">Diagnosis History</span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- Main Container -->
+  <main class="main-content">
+    
+    <!-- TAB 1: SCANNER & DIAGNOSIS -->
+    <section id="tab-scanner" class="tab-pane active">
+      <div class="scanner-layout">
+        <!-- Left: Camera Viewfinder & Controls -->
+        <div class="card viewfinder-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title" data-en="Live Leaf & Crop Camera" data-hi="लाइव कैमरा से पत्ती दिखाएं">Live Leaf & Crop Camera</h2>
+              <p class="card-desc" data-en="Point camera at affected leaves, discoloration, spots, or dried margins." data-hi="प्रभावित पत्ती, पीलापन या धब्बों पर कैमरा रखें।">Point camera at affected leaves, discoloration, spots, or dried margins.</p>
+            </div>
+            <div class="camera-mode-badge" id="camera-state">Ready</div>
+          </div>
+
+          <div class="viewport-box">
+            <video id="webcam" autoplay playsinline muted></video>
+            <canvas id="photo-canvas" style="display:none;"></canvas>
+            <div id="captured-preview" class="captured-preview" style="display:none;">
+              <img id="preview-img" src="" alt="Captured Leaf">
+            </div>
+
+            <!-- Viewfinder Overlay Reticle -->
+            <div class="target-reticle" id="reticle">
+              <div class="reticle-corner top-left"></div>
+              <div class="reticle-corner top-right"></div>
+              <div class="reticle-corner bottom-left"></div>
+              <div class="reticle-corner bottom-right"></div>
+              <div class="reticle-text" data-en="Hold leaf inside frame" data-hi="पत्ती को फ्रेम के अंदर रखें">Hold leaf inside frame</div>
+            </div>
+
+            <div id="scan-laser" class="scan-laser" style="display:none;"></div>
+          </div>
+
+          <!-- Controls Toolbar -->
+          <div class="viewfinder-controls">
+            <div class="primary-actions">
+              <button class="btn btn-secondary" id="start-cam-btn" onclick="startCamera()">
+                <span class="btn-icon">📹</span>
+                <span data-en="Open Camera" data-hi="कैमरा शुरू करें">Open Camera</span>
+              </button>
+              <button class="btn btn-secondary" id="flip-cam-btn" onclick="flipCamera()" style="display:none;">
+                <span class="btn-icon">🔄</span>
+                <span data-en="Flip" data-hi="कैमरा बदलें">Flip</span>
+              </button>
+              <button class="btn btn-primary" id="capture-btn" onclick="captureAndDiagnose()" disabled>
+                <span class="btn-icon">📸</span>
+                <span data-en="Capture & Diagnose" data-hi="फोटो लें और जांचें">Capture & Diagnose</span>
+              </button>
+            </div>
+
+            <div class="divider-text"><span>OR UPLOAD</span></div>
+
+            <div class="upload-dropzone" onclick="document.getElementById('file-input').click()">
+              <input type="file" id="file-input" accept="image/*" style="display:none;" onchange="handleFileUpload(event)">
+              <div class="upload-inner">
+                <span class="upload-icon">📁</span>
+                <span class="upload-text" data-en="Upload Photo of Leaf / Crop / Fruit" data-hi="पत्ती या फसल की फोटो अपलोड करें">Upload Photo of Leaf / Crop / Fruit</span>
+                <span class="upload-hint">PNG, JPG, WebP supported</span>
+              </div>
+            </div>
+
+            <!-- Quick Crop Selector Pills -->
+            <div class="crop-selector-container">
+              <label class="crop-selector-label" data-en="Select Crop (or Auto-Detect):" data-hi="फसल चुनें (या ऑटो-डिटेक्ट):">Select Crop (or Auto-Detect):</label>
+              <div class="crop-pills" id="crop-pills">
+                <button type="button" class="crop-pill active" data-crop="" onclick="selectCropPill(this, '')">🌱 Auto-Detect</button>
+                <button type="button" class="crop-pill" data-crop="Strawberry" onclick="selectCropPill(this, 'Strawberry')">🍓 Strawberry</button>
+                <button type="button" class="crop-pill" data-crop="Tomato" onclick="selectCropPill(this, 'Tomato')">🍅 Tomato</button>
+                <button type="button" class="crop-pill" data-crop="Potato" onclick="selectCropPill(this, 'Potato')">🥔 Potato</button>
+                <button type="button" class="crop-pill" data-crop="Corn" onclick="selectCropPill(this, 'Corn')">🌽 Corn</button>
+                <button type="button" class="crop-pill" data-crop="Apple" onclick="selectCropPill(this, 'Apple')">🍎 Apple</button>
+                <button type="button" class="crop-pill" data-crop="Grape" onclick="selectCropPill(this, 'Grape')">🍇 Grape</button>
+                <button type="button" class="crop-pill" data-crop="Pepper" onclick="selectCropPill(this, 'Pepper')">🌶️ Chilli/Pepper</button>
+                <button type="button" class="crop-pill" data-crop="Peach" onclick="selectCropPill(this, 'Peach')">🍑 Peach</button>
+                <button type="button" class="crop-pill" data-crop="Orange" onclick="selectCropPill(this, 'Orange')">🍊 Citrus</button>
+                <button type="button" class="crop-pill" data-crop="Soybean" onclick="selectCropPill(this, 'Soybean')">🫘 Soybean</button>
+              </div>
+            </div>
+
+            <!-- Optional Context Fields -->
+            <div class="meta-row">
+              <div class="input-group">
+                <label for="crop-hint" data-en="Crop Hint (Optional)" data-hi="फसल का नाम (वैकल्पिक)">Crop Hint (Optional)</label>
+                <input type="text" id="crop-hint" placeholder="e.g. Tomato, Chilli, Wheat, Potato, Rice">
+              </div>
+              <div class="input-group">
+                <label for="farmer-notes" data-en="Observation / Symptoms" data-hi="लक्षण या समस्या">Observation / Symptoms</label>
+                <input type="text" id="farmer-notes" placeholder="e.g. Yellowing on bottom leaves, brown dots">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Real-Time Diagnostic & Action Plan Card -->
+        <div class="card result-card" id="diagnosis-panel">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title" data-en="AI Plant Pathology Report" data-hi="रोग निदान व उपचार रिपोर्ट">AI Plant Pathology Report</h2>
+              <p class="card-desc" data-en="Powered by Local Vision AI + Agronomy LLM" data-hi="लोकल विज़न एआई और कृषि विशेषज्ञ मॉडल द्वारा संचालित">Powered by Local Vision AI + Agronomy LLM</p>
+            </div>
+            <button class="btn-sound" id="speak-btn" onclick="speakDiagnosis()" title="Listen aloud / सुनें" style="display:none;">
+              🔊 <span data-en="Listen" data-hi="सुनें">Listen</span>
+            </button>
+          </div>
+
+          <!-- Empty State -->
+          <div id="result-empty" class="empty-state">
+            <div class="empty-icon">🌱</div>
+            <h3 data-en="No leaf scanned yet" data-hi="अभी कोई पत्ती स्कैन नहीं की गई">No leaf scanned yet</h3>
+            <p data-en="Turn on the camera or upload a picture of any diseased or healthy plant leaf to receive an instant analysis, color/spot diagnosis, and treatment plan." data-hi="कैमरा ऑन करें या पत्ती की फोटो अपलोड करें। सिस्टम तुरंत पत्ती के रंग, धब्बों और सूखेपन की जांच कर के उपचार बताएगा।">
+              Turn on the camera or upload a picture of any diseased or healthy plant leaf to receive an instant analysis, color/spot diagnosis, and treatment plan.
+            </p>
+          </div>
+
+          <!-- Loading State -->
+          <div id="result-loading" class="loading-state" style="display:none;">
+            <div class="loading-spinner"></div>
+            <h3 class="loading-title" id="loading-step-title">Analyzing Leaf Features...</h3>
+            <p class="loading-desc" id="loading-step-desc">Inspecting leaf color, pale yellow areas, brown spots, and dried margins with offline AI...</p>
+            <div class="loading-progress-bar"><div class="progress-fill"></div></div>
+          </div>
+
+          <!-- Active Diagnosis Content -->
+          <div id="result-content" class="diagnosis-content" style="display:none;">
+            
+            <!-- Disease & Severity Banner -->
+            <div class="diagnosis-banner" id="diag-banner">
+              <div class="diag-banner-main">
+                <span class="severity-pill" id="diag-severity">Moderate</span>
+                <span class="risk-pill" id="diag-outbreak-risk">High Risk Plot</span>
+                <h3 class="diag-condition" id="diag-condition">Early Blight (Alternaria solani)</h3>
+                <div class="diag-crop" id="diag-crop">Crop: Tomato</div>
+              </div>
+              <div class="diag-confidence-box">
+                <div class="confidence-val" id="diag-confidence">94%</div>
+                <div class="confidence-lbl" data-en="Confidence" data-hi="सटीकता">Confidence</div>
+              </div>
+            </div>
+
+            <!-- Hindi Quick Summary (Audio friendly) -->
+            <div class="hindi-summary-box" id="hindi-box">
+              <span class="hi-icon">🇮🇳 किसान सहायता (Hindi):</span>
+              <p id="hindi-summary-text">पत्ती में अर्ली ब्लाइट रोग के लक्षण दिखे हैं। तुरंत नीम के तेल का छिड़काव करें।</p>
+            </div>
+
+            <!-- Visual Pixel & Observation Breakdown -->
+            <div class="diag-section">
+              <h4 class="section-title">
+                <span class="sec-icon">🔬</span>
+                <span data-en="Physical Visual Inspection" data-hi="दृश्य लक्षण व रंग जांच">Physical Visual Inspection</span>
+              </h4>
+              <p class="visual-summary" id="diag-visual-summary">Leaves display pale yellow discoloration with dark concentric spots and curling dried edges.</p>
+              
+              <!-- Metric bars -->
+              <div class="pixel-metrics-grid">
+                <div class="metric-card">
+                  <div class="metric-label" data-en="Healthy Green" data-hi="हरा पत्ता">Healthy Green</div>
+                  <div class="metric-bar-bg"><div class="metric-bar-fill green-bar" id="bar-green" style="width: 50%;"></div></div>
+                  <span class="metric-val" id="val-green">50%</span>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-label" data-en="Pale / Chlorosis" data-hi="पीलापन">Pale / Chlorosis</div>
+                  <div class="metric-bar-bg"><div class="metric-bar-fill yellow-bar" id="bar-yellow" style="width: 28%;"></div></div>
+                  <span class="metric-val" id="val-yellow">28%</span>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-label" data-en="Brown / Dried Margins" data-hi="सूखा व धब्बे">Brown / Dried Margins</div>
+                  <div class="metric-bar-bg"><div class="metric-bar-fill brown-bar" id="bar-brown" style="width: 22%;"></div></div>
+                  <span class="metric-val" id="val-brown">22%</span>
+                </div>
+              </div>
+
+              <!-- Specific symptoms list -->
+              <ul class="symptoms-list" id="diag-symptoms">
+                <li>Brown circular spots with concentric rings</li>
+                <li>Pale chlorotic halo around lesions</li>
+                <li>Crisp, dried leaf margins</li>
+              </ul>
+            </div>
+
+            <!-- Actionable Treatment Protocols -->
+            <div class="diag-section">
+              <h4 class="section-title">
+                <span class="sec-icon">🍃</span>
+                <span data-en="Localized Treatment Plan (Smallholders &lt; 2ha)" data-hi="उपचार व समाधान योजना (छोटे किसान)">Localized Treatment Plan (Smallholders &lt; 2ha)</span>
+              </h4>
+              
+              <div class="treatment-grid">
+                <!-- Organic / Low-Cost Remedies -->
+                <div class="treatment-col organic-col">
+                  <div class="treatment-header">
+                    <span class="t-icon">🌿</span>
+                    <strong data-en="Organic & Low-Cost Remedies" data-hi="जैविक व घरेलू उपाय">Organic & Low-Cost Remedies</strong>
+                  </div>
+                  <ul id="diag-organic-list">
+                    <li>Spray Neem Oil emulsion (5ml/L) in evening.</li>
+                    <li>Prune and safely burn infected lower foliage.</li>
+                  </ul>
+                </div>
+
+                <!-- Targeted Chemical Spray -->
+                <div class="treatment-col chemical-col">
+                  <div class="treatment-header">
+                    <span class="t-icon">🧪</span>
+                    <strong data-en="Targeted Fungicide / Pesticide" data-hi="दवा का छिड़काव">Targeted Fungicide / Pesticide</strong>
+                  </div>
+                  <ul id="diag-chemical-list">
+                    <li>Apply Copper Oxychloride 50 WP @ 2.5g/L water.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Hyper-Local Neighborhood Outbreak Warning -->
+            <div class="diag-section alert-box-container">
+              <div class="outbreak-warning-box">
+                <div class="warning-header">
+                  <span class="warn-badge">🚨 Hyper-Local Outbreak Warning (&lt; 2 km)</span>
+                </div>
+                <p class="warning-text" id="diag-neighbor-alert">
+                  Warning: Spores travel via morning wind drift. Notify neighboring farmers in 1.5km radius to inspect lower foliage.
+                </p>
+                <button class="btn btn-danger-sm" onclick="broadcastCurrentScan()">
+                  📢 <span data-en="Broadcast Alert to Nearby Farmers" data-hi="आस-पास के किसानों को अलर्ट भेजें">Broadcast Alert to Nearby Farmers</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: HYPER-LOCAL OUTBREAK RADAR -->
+    <section id="tab-outbreak" class="tab-pane">
+      <div class="outbreak-layout">
+        <!-- Outbreak Map Card -->
+        <div class="card outbreak-map-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title" data-en="Hyper-Local Outbreak Radar" data-hi="स्थानीय प्रकोप रडार नक्शा">Hyper-Local Outbreak Radar</h2>
+              <p class="card-desc" data-en="Live cluster tracking for smallholder plots under 2 hectares within a 2.5 km radius" data-hi="2.5 किमी के दायरे में 2 हेक्टेयर से छोटे खेतों में सक्रिय बीमारियों की ट्रैकिंग">Live cluster tracking for smallholder plots under 2 hectares within a 2.5 km radius</p>
+            </div>
+            <button class="btn btn-secondary-sm" onclick="loadOutbreaks()">🔄 Refresh</button>
+          </div>
+
+          <div class="radar-container">
+            <div class="radar-screen">
+              <div class="radar-circle circle-1"><span class="ring-label">500m</span></div>
+              <div class="radar-circle circle-2"><span class="ring-label">1.2km</span></div>
+              <div class="radar-circle circle-3"><span class="ring-label">2.5km</span></div>
+              <div class="radar-crosshair-x"></div>
+              <div class="radar-crosshair-y"></div>
+              <div class="radar-sweep"></div>
+              
+              <!-- Center Farm Marker -->
+              <div class="radar-pin center-pin" title="Your Farm (&lt;2 ha)">
+                <span class="pin-icon">🏡</span>
+                <span class="pin-label">Your Plot</span>
+              </div>
+
+              <!-- Dynamic Outbreak Pins -->
+              <div id="radar-pins"></div>
+            </div>
+
+            <div class="radar-legend">
+              <span class="legend-item"><span class="legend-dot red"></span> Critical / Airborne</span>
+              <span class="legend-item"><span class="legend-dot orange"></span> High Spread</span>
+              <span class="legend-item"><span class="legend-dot yellow"></span> Moderate</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Outbreak Alerts List & Broadcast Tool -->
+        <div class="card alerts-list-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title" data-en="Neighborhood Outbreak Feed" data-hi="पड़ोसी खेतों की ताजा चेतावनियां">Neighborhood Outbreak Feed</h2>
+              <p class="card-desc" data-en="Verified crop disease detections in adjoining fields" data-hi="नजदीकी खेतों में पाए गए रोग">Verified crop disease detections in adjoining fields</p>
+            </div>
+          </div>
+
+          <div class="alerts-feed" id="alerts-feed">
+            <!-- Dynamic alerts loaded from JS -->
+          </div>
+
+          <!-- Quick Post Outbreak Form -->
+          <div class="broadcast-box">
+            <h4 data-en="Post an Outbreak Alert for Neighbors" data-hi="आस-पास के किसानों के लिए चेतावनी जोड़ें">Post an Outbreak Alert for Neighbors</h4>
+            <div class="form-row">
+              <input type="text" id="alert-crop" placeholder="Crop (e.g. Tomato)" class="form-input">
+              <input type="text" id="alert-disease" placeholder="Disease (e.g. Late Blight)" class="form-input">
+            </div>
+            <div class="form-row">
+              <input type="text" id="alert-distance" placeholder="Distance (e.g. 500m North)" class="form-input">
+              <select id="alert-risk" class="form-input">
+                <option value="High">High Risk</option>
+                <option value="Critical">Critical (Wind-Borne)</option>
+                <option value="Moderate">Moderate</option>
+              </select>
+            </div>
+            <textarea id="alert-advisory" placeholder="Advisory / Precaution for neighbors..." class="form-textarea" rows="2"></textarea>
+            <button class="btn btn-primary" onclick="submitCustomAlert()">
+              <span data-en="Broadcast Alert" data-hi="चेतावनी प्रसारित करें">Broadcast Alert</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: TEACH AI / REFERENCE SAMPLES -->
+    <section id="tab-training" class="tab-pane">
+      <div class="training-layout">
+        <!-- Add New Reference Form -->
+        <div class="card add-ref-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title" data-en="Teach AI with New Leaf References" data-hi="नए पत्तों के रेफरेंस से AI को सिखाएं">Teach AI with New Leaf References</h2>
+              <p class="card-desc" data-en="Upload custom images and disease symptoms. The local AI will use these for few-shot learning and instant matching." data-hi="फोटो और बीमारी के लक्षण जोड़ें। लोकल AI मॉडल इन्हें रेफरेंस के तौर पर याद रखेगा।">Upload custom images and disease symptoms. The local AI will use these for few-shot learning and instant matching.</p>
+            </div>
+          </div>
+
+          <form id="ref-form" onsubmit="handleReferenceSubmit(event)" class="ref-form">
+            <div class="form-row">
+              <div class="input-group">
+                <label data-en="Crop / Plant Name *" data-hi="फसल / पौधे का नाम *">Crop / Plant Name *</label>
+                <input type="text" id="ref-crop" required placeholder="e.g. Tomato, Potato, Apple, Cotton">
+              </div>
+              <div class="input-group">
+                <label data-en="Disease or Deficiency *" data-hi="बीमारी या पोषक तत्व कमी *">Disease or Deficiency *</label>
+                <input type="text" id="ref-disease" required placeholder="e.g. Early Blight, Powdery Mildew, Iron Deficiency">
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label data-en="Visual Clues & Symptoms (Color, Dots, Dried Edges) *" data-hi="दिखने वाले लक्षण (रंग, धब्बे, सूखापन) *">Visual Clues & Symptoms (Color, Dots, Dried Edges) *</label>
+              <textarea id="ref-symptoms" required rows="3" placeholder="Describe the color of the leaf, whether it's pale, yellowed, dried out, has concentric spots, powdery white residue, or curled margins..."></textarea>
+            </div>
+
+            <div class="form-row">
+              <div class="input-group">
+                <label data-en="Recommended Treatment / Solution *" data-hi="सुझाया गया उपचार *">Recommended Treatment / Solution *</label>
+                <input type="text" id="ref-treatment" required placeholder="e.g. Neem oil spray 5ml/L, Copper Oxychloride, prune bottom leaves">
+              </div>
+              <div class="input-group">
+                <label data-en="Outbreak Risk Level" data-hi="जोखिम स्तर">Outbreak Risk Level</label>
+                <select id="ref-risk">
+                  <option value="Moderate">Moderate</option>
+                  <option value="High">High</option>
+                  <option value="Critical">Critical (Spreads rapidly)</option>
+                  <option value="Low">Low / Non-infectious</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label data-en="Reference Image (Optional)" data-hi="रेफरेंस फोटो (वैकल्पिक)">Reference Image (Optional)</label>
+              <div class="ref-file-picker">
+                <input type="file" id="ref-image-file" accept="image/*" onchange="handleRefImageSelect(event)">
+                <div id="ref-img-preview" class="ref-img-preview" style="display:none;">
+                  <img id="ref-preview-elem" src="" alt="Preview">
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="save-ref-btn">
+              <span class="btn-icon">💾</span>
+              <span data-en="Save Reference to AI Knowledge Base" data-hi="AI नॉलेज बेस में सेव करें">Save Reference to AI Knowledge Base</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Trained References Knowledge Base List -->
+        <div class="card ref-list-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title" data-en="Active AI Reference Library" data-hi="सक्रिय रेफरेंस लाइब्रेरी">Active AI Reference Library</h2>
+              <p class="card-desc" data-en="These reference patterns are actively conditioned into the offline Llama-3 model for leaf detection." data-hi="यह रेफरेंस सीधे Llama-3 मॉडल को सही पहचान के लिए दिए जाते हैं।">These reference patterns are actively conditioned into the offline Llama-3 model for leaf detection.</p>
+            </div>
+            <button class="btn btn-secondary-sm" onclick="loadReferences()">🔄 Refresh</button>
+          </div>
+
+          <div class="ref-items-grid" id="ref-items-container">
+            <!-- Dynamic references loaded from API -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: DIAGNOSIS HISTORY -->
+    <section id="tab-history" class="tab-pane">
+      <div class="card history-card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title" data-en="Leaf Diagnosis History" data-hi="पिछली जांचों का रिकॉर्ड">Leaf Diagnosis History</h2>
+            <p class="card-desc" data-en="Log of all recent scans, severity ratings, and treatment plans" data-hi="हाल ही में की गई जांचों और सुझावों की सूची">Log of all recent scans, severity ratings, and treatment plans</p>
+          </div>
+          <button class="btn btn-secondary-sm" onclick="loadHistory()">🔄 Refresh</button>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th data-en="Time" data-hi="समय">Time</th>
+                <th data-en="Crop" data-hi="फसल">Crop</th>
+                <th data-en="Detected Condition" data-hi="रोग / समस्या">Detected Condition</th>
+                <th data-en="Severity" data-hi="गंभीरता">Severity</th>
+                <th data-en="Outbreak Risk" data-hi="प्रकोप जोखिम">Outbreak Risk</th>
+                <th data-en="Visual Finding" data-hi="दिखने वाले लक्षण">Visual Finding</th>
+                <th data-en="Speed" data-hi="समय">Speed</th>
+              </tr>
+            </thead>
+            <tbody id="history-table-body">
+              <tr><td colspan="7" class="table-empty">No scan records found yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="toast"></div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

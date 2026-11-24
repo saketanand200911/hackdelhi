@@ -1,0 +1,241 @@
+{
+  "classes_count": 38,
+  "source": "PlantVillage Dataset (Penn State University & EPFL)",
+  "color_semantics": {
+    "vibrant_green": "Healthy leaf tissue with normal chlorophyll synthesis (450-520nm absorption).",
+    "pale_yellow_chlorotic": "Loss of chlorophyll due to nitrogen/iron deficiency, viral chlorosis (e.g., Tomato Yellow Leaf Curl), or fungal halo toxification.",
+    "brown_black_concentric": "Necrotic cell death forming concentric bullseye rings characteristic of Alternaria solani (Early Blight) and Target Spot.",
+    "dark_olive_water_soaked": "Rapid cellular breakdown from Phytophthora infestans (Late Blight), often accompanied by white fluffy sporangiophores in high humidity.",
+    "bright_yellow_orange_pustules": "Fungal spore accumulation of Puccinia rust species breaking through leaf epidermis.",
+    "white_powdery_ash": "Surface epiphytic mycelium and conidia of powdery mildew (Erysiphales).",
+    "scorched_brown_margins": "Vascular blockage, bacterial blight (Xanthomonas), or marginal scorch from drought or heat stress.",
+    "yellow_green_mottle_curling": "Viral systemic disruption causing leaf lamina deformation and stunting (Begomovirus / TMV)."
+  },
+  "classes": {
+    "Apple___Apple_scab": {
+      "crop": "Apple",
+      "disease": "Apple Scab (Venturia inaequalis)",
+      "color_clues": "Olive-green to velvety brown or black spots on leaves, becoming puckered and distorted.",
+      "severity": "Moderate to High",
+      "organic_treatment": "Apply liquid copper or sulfur sprays before bloom. Rake and burn fallen leaves in autumn.",
+      "chemical_treatment": "Mancozeb 75 WP or Captan 50 WP during primary infection periods.",
+      "outbreak_risk": "High (rain and high humidity trigger spore release)"
+    },
+    "Apple___Black_rot": {
+      "crop": "Apple",
+      "disease": "Black Rot (Botryosphaeria obtusa)",
+      "color_clues": "Small purple spots enlarging into 'frogeye' leaf spots with light brown centers and dark purple borders.",
+      "severity": "Severe",
+      "organic_treatment": "Prune out dead wood and mummified fruit where fungus overwinters.",
+      "chemical_treatment": "Captan or Thiophanate-methyl applications from petal fall.",
+      "outbreak_risk": "Moderate"
+    },
+    "Apple___Cedar_apple_rust": {
+      "crop": "Apple",
+      "disease": "Cedar Apple Rust (Gymnosporangium juniperi-virginianae)",
+      "color_clues": "Bright yellow-orange or red spots on upper leaf surface, followed by tiny black dots (pycnia).",
+      "severity": "Moderate",
+      "organic_treatment": "Remove nearby eastern red cedar trees if possible; spray sulfur early spring.",
+      "chemical_treatment": "Myclobutanil or Propiconazole at 7-10 day intervals starting at pink bud.",
+      "outbreak_risk": "High (wind carries spores up to 1-2 km from alternate host)"
+    },
+    "Apple___healthy": {
+      "crop": "Apple",
+      "disease": "Healthy Leaf",
+      "color_clues": "Rich green coloration, smooth margins, unblemished surface.",
+      "severity": "Healthy",
+      "organic_treatment": "Maintain balanced compost, proper mulch, and regular pruning for aeration.",
+      "chemical_treatment": "None needed.",
+      "outbreak_risk": "Low"
+    },
+    "Cherry___Powdery_mildew": {
+      "crop": "Cherry",
+      "disease": "Powdery Mildew (Podosphaera clandestina)",
+      "color_clues": "Circular patches of white powdery fungal growth on leaves, leading to upward curling.",
+      "severity": "Moderate",
+      "organic_treatment": "Spray wettable sulfur, potassium bicarbonate, or 5ml/L neem oil.",
+      "chemical_treatment": "Myclobutanil or Tebuconazole fungicide.",
+      "outbreak_risk": "Moderate (warm dry days followed by cool humid nights)"
+    },
+    "Corn___Cercospora_leaf_spot Gray_leaf_spot": {
+      "crop": "Corn (Maize)",
+      "disease": "Gray Leaf Spot (Cercospora zeae-maydis)",
+      "color_clues": "Rectangular, brown to gray necrotic lesions strictly delimited by leaf veins.",
+      "severity": "High",
+      "organic_treatment": "Crop rotation with non-host crops and deep tillage of crop debris.",
+      "chemical_treatment": "Azoxystrobin or Pyraclostrobin strobilurin fungicides.",
+      "outbreak_risk": "High (spreads rapidly during warm, overcast, humid days)"
+    },
+    "Corn___Common_rust": {
+      "crop": "Corn (Maize)",
+      "disease": "Common Rust (Puccinia sorghi)",
+      "color_clues": "Oval to elongated cinnamon-brown pustules on both upper and lower leaf surfaces.",
+      "severity": "Moderate to High",
+      "organic_treatment": "Plant rust-resistant hybrids; avoid excess nitrogen fertilizer.",
+      "chemical_treatment": "Mancozeb or Propiconazole if pustules appear before tassel emergence.",
+      "outbreak_risk": "Critical (wind-transported across entire agricultural clusters)"
+    },
+    "Corn___Northern_Leaf_Blight": {
+      "crop": "Corn (Maize)",
+      "disease": "Northern Corn Leaf Blight (Exserohilum turcicum)",
+      "color_clues": "Large, cigar-shaped grayish-green to tan lesions (2.5 to 15 cm long).",
+      "severity": "Severe",
+      "organic_treatment": "Resistant cultivars, crop rotation, soil incorporation of old stover.",
+      "chemical_treatment": "Azoxystrobin + Propiconazole combination fungicide.",
+      "outbreak_risk": "High"
+    },
+    "Corn___healthy": {
+      "crop": "Corn (Maize)",
+      "disease": "Healthy Maize",
+      "color_clues": "Deep emerald green parallel venation, sturdy leaf blade, no discoloration.",
+      "severity": "Healthy",
+      "organic_treatment": "Standard organic manure and balanced NPK nutrition.",
+      "chemical_treatment": "None needed.",
+      "outbreak_risk": "Low"
+    },
+    "Grape___Black_rot": {
+      "crop": "Grape",
+      "disease": "Black Rot (Guignardia bidwellii)",
+      "color_clues": "Small circular reddish-brown spots with dark borders on leaves with tiny black pycnidia.",
+      "severity": "Severe",
+      "organic_treatment": "Thorough dormant pruning; remove mummified berries from vine canopy.",
+      "chemical_treatment": "Mancozeb or Myclobutanil early season applications.",
+      "outbreak_risk": "High"
+    },
+    "Grape___Esca_(Black_Measles)": {
+      "crop": "Grape",
+      "disease": "Esca / Black Measles (Complex fungal pathogen)",
+      "color_clues": "Interveinal chlorosis and necrosis creating a distinctive 'tiger-stripe' pattern.",
+      "severity": "Severe",
+      "organic_treatment": "Protect pruning wounds with wound sealants; sanitize pruning shears.",
+      "chemical_treatment": "No curative chemical; remove infected wood cleanly below canker.",
+      "outbreak_risk": "Moderate"
+    },
+    "Orange___Haunglongbing_(Citrus_greening)": {
+      "crop": "Citrus (Orange)",
+      "disease": "Citrus Greening / Huanglongbing (Candidatus Liberibacter asiaticus)",
+      "color_clues": "Asymmetric blotchy yellow mottle on leaves, yellow shoots, hard bitter fruit.",
+      "severity": "Critical",
+      "organic_treatment": "Control Asian citrus psyllid with neem and horticultural oils; eradicate infected trees.",
+      "chemical_treatment": "Target psyllid vector with systemic Imidacloprid or Thiamethoxam.",
+      "outbreak_risk": "Critical (quarantine pest that destroys entire orchards)"
+    },
+    "Potato___Early_blight": {
+      "crop": "Potato",
+      "disease": "Early Blight (Alternaria solani)",
+      "color_clues": "Dark brown circular spots with concentric target-board rings on older foliage with yellow chlorotic halo.",
+      "severity": "Moderate to High",
+      "organic_treatment": "Copper hydroxide spray; ensure adequate potassium nutrition; avoid overhead watering.",
+      "chemical_treatment": "Chlorothalonil 75 WP or Mancozeb 75 WP @ 2.5g/L.",
+      "outbreak_risk": "High in warm fluctuating wet/dry conditions"
+    },
+    "Potato___Late_blight": {
+      "crop": "Potato",
+      "disease": "Late Blight (Phytophthora infestans)",
+      "color_clues": "Large, irregular water-soaked dark lesions on leaf tips, white fungal down underneath.",
+      "severity": "Critical",
+      "organic_treatment": "Copper sulfate + lime (Bordeaux mixture); immediately rogue out initial infected plants.",
+      "chemical_treatment": "Metalaxyl + Mancozeb (Ridomil MZ) @ 2.5g/L; Cimoxanil + Mancozeb.",
+      "outbreak_risk": "Epidemic (can destroy a 2ha potato field within 72 hours)"
+    },
+    "Potato___healthy": {
+      "crop": "Potato",
+      "disease": "Healthy Potato Leaf",
+      "color_clues": "Compound dark green foliage, no necrotic spots or leaf roll.",
+      "severity": "Healthy",
+      "organic_treatment": "Earth up hills, maintain moisture balance, use certified seed tubers.",
+      "chemical_treatment": "None needed.",
+      "outbreak_risk": "Low"
+    },
+    "Tomato___Bacterial_spot": {
+      "crop": "Tomato",
+      "disease": "Bacterial Spot (Xanthomonas perforans)",
+      "color_clues": "Small (less than 3mm) dark brown, water-soaked circular spots with yellow halos.",
+      "severity": "Moderate to High",
+      "organic_treatment": "Copper bactericide mixed with Bacillus subtilis bio-control; avoid working in wet fields.",
+      "chemical_treatment": "Copper Oxychloride + Streptocycline (100 ppm) bactericide spray.",
+      "outbreak_risk": "High (splashing rain and overhead irrigation spread bacteria)"
+    },
+    "Tomato___Early_blight": {
+      "crop": "Tomato",
+      "disease": "Early Blight (Alternaria linariae / solani)",
+      "color_clues": "Concentric ring 'bullseye' brown spots on lowest leaves, surrounded by yellow tissue, progressive leaf drop.",
+      "severity": "Moderate to High",
+      "organic_treatment": "Mulch soil surface, spray neem extract (10,000 ppm), stake plants, remove lower 30cm leaves.",
+      "chemical_treatment": "Mancozeb 75% WP @ 2.5g/L or Azoxystrobin + Difenoconazole.",
+      "outbreak_risk": "High (spores survive in soil debris for over a year)"
+    },
+    "Tomato___Late_blight": {
+      "crop": "Tomato",
+      "disease": "Late Blight (Phytophthora infestans)",
+      "color_clues": "Greasy, dark greenish-brown lesions expanding rapidly, white fungal growth on leaf reverse.",
+      "severity": "Critical",
+      "organic_treatment": "Prune infected branches immediately in dry weather; spray preventive copper soap.",
+      "chemical_treatment": "Dimethomorph 50% WP or Metalaxyl-M @ 2g/L water.",
+      "outbreak_risk": "Critical (airborne spores travel 5-10 km on cool humid winds)"
+    },
+    "Tomato___Leaf_Mold": {
+      "crop": "Tomato",
+      "disease": "Leaf Mold (Passalora fulva)",
+      "color_clues": "Pale green or yellow spots on upper leaf surface with olive-green to brown velvety mold underneath.",
+      "severity": "Moderate",
+      "organic_treatment": "Improve greenhouse/polyhouse ventilation, keep relative humidity below 85%.",
+      "chemical_treatment": "Chlorothalonil or Copper Hydroxide.",
+      "outbreak_risk": "High in high-humidity polyhouses"
+    },
+    "Tomato___Septoria_leaf_spot": {
+      "crop": "Tomato",
+      "disease": "Septoria Leaf Spot (Septoria lycopersici)",
+      "color_clues": "Numerous small circular spots with gray or tan centers and dark brown margins; tiny black speck pycnidia inside.",
+      "severity": "High",
+      "organic_treatment": "Remove diseased bottom leaves, deep mulch, 3-year crop rotation.",
+      "chemical_treatment": "Chlorothalonil or Mancozeb applied every 7-10 days.",
+      "outbreak_risk": "High"
+    },
+    "Tomato___Spider_mites Two-spotted_spider_mite": {
+      "crop": "Tomato",
+      "disease": "Two-Spotted Spider Mites (Tetranychus urticae)",
+      "color_clues": "Fine yellow stippling/speckling on leaf surface, fine silken webbing on leaf undersides, bronzed dried leaves.",
+      "severity": "High",
+      "organic_treatment": "Release predatory mites (Phytoseiulus persimilis), insecticidal soap spray, neem oil.",
+      "chemical_treatment": "Abamectin 1.9% EC or Spiromesifen 22.9% SC miticide.",
+      "outbreak_risk": "High in hot, dry, dusty conditions"
+    },
+    "Tomato___Target_Spot": {
+      "crop": "Tomato",
+      "disease": "Target Spot (Corynespora cassiicola)",
+      "color_clues": "Small pinpoint brown lesions expanding into circular lesions with light brown centers and dark concentric rings.",
+      "severity": "Moderate",
+      "organic_treatment": "Space plants for air circulation; avoid wetting leaves during watering.",
+      "chemical_treatment": "Famoxadone + Cymoxanil or Boscalid fungicide.",
+      "outbreak_risk": "Moderate"
+    },
+    "Tomato___Tomato_Yellow_Leaf_Curl_Virus": {
+      "crop": "Tomato",
+      "disease": "Tomato Yellow Leaf Curl Virus (TYLCV)",
+      "color_clues": "Severe upward cupping and curling of leaf margins, yellow chlorotic leaf edges, reduced leaf size, bushy stunted plant.",
+      "severity": "Critical",
+      "organic_treatment": "Yellow sticky traps (15 per acre), fine mesh netting (50-mesh), neem spray to suppress whitefly vectors.",
+      "chemical_treatment": "Control whitefly vector Bemisia tabaci with Acetamiprid 20% SP or Spirotetramat.",
+      "outbreak_risk": "Critical (whiteflies transmit virus within 15-30 minutes of feeding)"
+    },
+    "Tomato___Tomato_mosaic_virus": {
+      "crop": "Tomato",
+      "disease": "Tomato Mosaic Virus (ToMV)",
+      "color_clues": "Alternating light and dark green mosaic patterns on foliage, distortion, 'shoestring' leaf effect.",
+      "severity": "Severe",
+      "organic_treatment": "Wash hands with milk or soap before handling plants; discard infected plants, do not smoke near crops.",
+      "chemical_treatment": "No chemical cure exists; plant ToMV resistant varieties.",
+      "outbreak_risk": "High (mechanically transmitted on tools and hands)"
+    },
+    "Tomato___healthy": {
+      "crop": "Tomato",
+      "disease": "Healthy Tomato Leaf",
+      "color_clues": "Even dark green foliage, vigorous growth, crisp serrated margins, no chlorosis or spots.",
+      "severity": "Healthy",
+      "organic_treatment": "Balanced vermicompost, regular trellising, consistent drip irrigation.",
+      "chemical_treatment": "None needed.",
+      "outbreak_risk": "Low"
+    }
+  }
+}
