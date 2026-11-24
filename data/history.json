@@ -1,5 +1,93 @@
 [
   {
+    "id": "diag_9c4ea053",
+    "timestamp": "2026-11-24T23:13:41.393159",
+    "crop": "Corn (Maize)",
+    "condition": "Common Rust (Puccinia sorghi)",
+    "severity": "Moderate to High",
+    "is_healthy": false,
+    "outbreak_risk": "Critical (airborne rust spores travel tens of kilometers on seasonal wind currents)",
+    "visual_summary": "Identified Corn (Maize) foliage with raised oval blisters on both leaf surfaces that rupture and release rust powder and golden-brown to cinnamon-brown powdery pustules.",
+    "processing_seconds": 0.59
+  },
+  {
+    "id": "diag_144491cb",
+    "timestamp": "2026-11-24T23:13:33.644549",
+    "crop": "Tomato",
+    "condition": "Tomato Early Blight (Alternaria solani / linariae)",
+    "severity": "Moderate to High",
+    "is_healthy": false,
+    "outbreak_risk": "High (spores splash from soil during rain and irrigation)",
+    "visual_summary": "Identified Tomato foliage with concentric 'bullseye' rings on lowest older foliage; leaves turn chlorotic yellow and drop and dark brown circular spots with concentric target-board rings surrounded by pale yellow halo.",
+    "processing_seconds": 0.55
+  },
+  {
+    "id": "diag_b9065d94",
+    "timestamp": "2026-11-24T23:13:25.745230",
+    "crop": "Strawberry",
+    "condition": "Strawberry Leaf Scorch / Common Leaf Spot (Diplocarpon earlianum / Mycosphaerella fragariae)",
+    "severity": "Moderate to High",
+    "is_healthy": false,
+    "outbreak_risk": "High (spores splash from infected crown and soil during rain or overhead watering)",
+    "visual_summary": "Identified Strawberry foliage with distinct 'bird's eye' spots (1-5mm) scattered thickly across serrated leaf lamina; coalescing into scorched burnt edges and numerous small circular purplish, dark red, or brown spots, often with white or tan necrotic centers.",
+    "processing_seconds": 0.59
+  },
+  {
+    "id": "diag_a107c6ed",
+    "timestamp": "2026-11-24T23:13:06.481471",
+    "crop": "Grape",
+    "condition": "Grape Black Rot (Guignardia bidwellii)",
+    "severity": "Severe",
+    "is_healthy": false,
+    "outbreak_risk": "High",
+    "visual_summary": "Identified Grape foliage with circular necrotic spots with tiny black pycnidia specks arranged in rings and small reddish-brown circular spots with dark brown margins.",
+    "processing_seconds": 0.34
+  },
+  {
+    "id": "diag_ad30f74d",
+    "timestamp": "2026-11-24T23:12:15.843926",
+    "crop": "Grape",
+    "condition": "Grape Black Rot (Guignardia bidwellii)",
+    "severity": "Severe",
+    "is_healthy": false,
+    "outbreak_risk": "High",
+    "visual_summary": "Identified Grape foliage with circular necrotic spots with tiny black pycnidia specks arranged in rings and small reddish-brown circular spots with dark brown margins.",
+    "processing_seconds": 0.32
+  },
+  {
+    "id": "diag_2ca30739",
+    "timestamp": "2026-11-24T23:11:39.709545",
+    "crop": "Strawberry",
+    "condition": "Strawberry Leaf Scorch / Common Leaf Spot (Diplocarpon earlianum / Mycosphaerella fragariae)",
+    "severity": "Moderate to High",
+    "is_healthy": false,
+    "outbreak_risk": "High (spores splash from infected crown and soil during rain or overhead watering)",
+    "visual_summary": "Identified Strawberry foliage with distinct 'bird's eye' spots (1-5mm) scattered thickly across serrated leaf lamina; coalescing into scorched burnt edges and numerous small circular purplish, dark red, or brown spots, often with white or tan necrotic centers.",
+    "processing_seconds": 0.33
+  },
+  {
+    "id": "diag_3ed33a8f",
+    "timestamp": "2026-11-24T23:11:19.149613",
+    "crop": "Grape",
+    "condition": "Grape Black Rot (Guignardia bidwellii)",
+    "severity": "Severe",
+    "is_healthy": false,
+    "outbreak_risk": "High",
+    "visual_summary": "Identified Grape foliage with circular necrotic spots with tiny black pycnidia specks arranged in rings and small reddish-brown circular spots with dark brown margins.",
+    "processing_seconds": 2.1
+  },
+  {
+    "id": "diag_a4ec52f0",
+    "timestamp": "2026-11-24T22:56:37.074848",
+    "crop": "Tomato",
+    "condition": "Tomato Late Blight (Phytophthora infestans)",
+    "severity": "Critical",
+    "is_healthy": false,
+    "outbreak_risk": "High",
+    "visual_summary": "The leaf has brown spots and is covered in white powdery mildew, with curled and damaged leaf edges.",
+    "processing_seconds": 13.51
+  },
+  {
     "id": "diag_8f29b678",
     "timestamp": "2026-11-24T22:52:46.630122",
     "crop": "Strawberry",
