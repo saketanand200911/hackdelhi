@@ -1,5 +1,137 @@
 [
   {
+    "id": "diag_803d2a17",
+    "timestamp": "2026-11-25T01:33:29.311670",
+    "crop": "Peach",
+    "condition": "Peach Bacterial Spot (Xanthomonas arboricola pv. pruni)",
+    "severity": "High",
+    "is_healthy": false,
+    "outbreak_risk": "High (wind-driven rain spreads bacteria rapidly)",
+    "visual_summary": "Identified Peach foliage with center of lesions dries, cracks, and falls out, creating a distinct 'shot-hole' appearance and small angular dark purple to black water-soaked lesions.",
+    "processing_seconds": 0.03
+  },
+  {
+    "id": "diag_f8f2a7eb",
+    "timestamp": "2026-11-25T01:33:21.133325",
+    "crop": "Tomato",
+    "condition": "Tomato Late Blight (Phytophthora infestans)",
+    "severity": "Critical",
+    "is_healthy": false,
+    "outbreak_risk": "EXTREME CRITICAL (can wipe out tomato field in 48-72 hours)",
+    "visual_summary": "Identified Tomato foliage with rapidly spreading large dark water-soaked patches; white fuzzy mold on leaf undersides during moist cool mornings and water-soaked irregular pale green to dark purplish-black greasy lesions.",
+    "processing_seconds": 0.02
+  },
+  {
+    "id": "diag_dee196a6",
+    "timestamp": "2026-11-25T01:33:21.117576",
+    "crop": "Coffee",
+    "condition": "Coffee Leaf Rust (Hemileia vastatrix)",
+    "severity": "Critical",
+    "is_healthy": false,
+    "outbreak_risk": "EXTREME CRITICAL (world's most destructive coffee pathogen, easily wind-blown)",
+    "visual_summary": "Identified Coffee foliage with circular yellow spots on upper surface; matching powdery orange-yellow spore pustules on the lower surface causing massive defoliation and bright yellow-orange powdery pustules on underside; chlorotic spots on top.",
+    "processing_seconds": 0.01
+  },
+  {
+    "id": "diag_a9f1ad13",
+    "timestamp": "2026-11-25T01:33:21.104519",
+    "crop": "Soybean",
+    "condition": "Soybean Brown Spot / Septoria Spot (Septoria glycines)",
+    "severity": "Moderate to High",
+    "is_healthy": false,
+    "outbreak_risk": "High during warm wet monsoon periods with frequent rain splash",
+    "visual_summary": "Identified Soybean foliage with small (2-5mm) angular irregular brown to bronze lesions on lower canopy; leaves turn yellow and drop early and small angular dark brown to red spots surrounded by chlorotic yellow halos.",
+    "processing_seconds": 0.01
+  },
+  {
+    "id": "diag_0284c359",
+    "timestamp": "2026-11-25T01:33:21.094842",
+    "crop": "Strawberry",
+    "condition": "Strawberry Common Leaf Spot (Mycosphaerella fragariae)",
+    "severity": "Moderate to High",
+    "is_healthy": false,
+    "outbreak_risk": "High (spores splash from infected crown and soil during rain or overhead watering)",
+    "visual_summary": "Identified Strawberry foliage with classic 'bird's eye' spots (3-6mm) with pale whitish necrotic centers bordered by deep reddish-purple margins and small circular spots with white to ash-gray centers and dark purple-red halos.",
+    "processing_seconds": 0.01
+  },
+  {
+    "id": "diag_1bd01b31",
+    "timestamp": "2026-11-25T01:33:21.081789",
+    "crop": "Tomato",
+    "condition": "Tomato Late Blight (Phytophthora infestans)",
+    "severity": "Critical",
+    "is_healthy": false,
+    "outbreak_risk": "EXTREME CRITICAL (can wipe out tomato field in 48-72 hours)",
+    "visual_summary": "Identified Tomato foliage with rapidly spreading large dark water-soaked patches; white fuzzy mold on leaf undersides during moist cool mornings and water-soaked irregular pale green to dark purplish-black greasy lesions.",
+    "processing_seconds": 1.05
+  },
+  {
+    "id": "diag_f761d68b",
+    "timestamp": "2026-11-25T01:33:20.032005",
+    "crop": "Coffee",
+    "condition": "Coffee Leaf Rust (Hemileia vastatrix)",
+    "severity": "Critical",
+    "is_healthy": false,
+    "outbreak_risk": "EXTREME CRITICAL (world's most destructive coffee pathogen, easily wind-blown)",
+    "visual_summary": "Identified Coffee foliage with circular yellow spots on upper surface; matching powdery orange-yellow spore pustules on the lower surface causing massive defoliation and bright yellow-orange powdery pustules on underside; chlorotic spots on top.",
+    "processing_seconds": 1.26
+  },
+  {
+    "id": "diag_815a2a9b",
+    "timestamp": "2026-11-25T01:33:18.773125",
+    "crop": "Soybean",
+    "condition": "Soybean Brown Spot / Septoria Spot (Septoria glycines)",
+    "severity": "Moderate to High",
+    "is_healthy": false,
+    "outbreak_risk": "High during warm wet monsoon periods with frequent rain splash",
+    "visual_summary": "Identified Soybean foliage with small (2-5mm) angular irregular brown to bronze lesions on lower canopy; leaves turn yellow and drop early and small angular dark brown to red spots surrounded by chlorotic yellow halos.",
+    "processing_seconds": 1.22
+  },
+  {
+    "id": "diag_2d243aef",
+    "timestamp": "2026-11-25T01:33:17.551752",
+    "crop": "Strawberry",
+    "condition": "Strawberry Common Leaf Spot (Mycosphaerella fragariae)",
+    "severity": "Moderate to High",
+    "is_healthy": false,
+    "outbreak_risk": "High (spores splash from infected crown and soil during rain or overhead watering)",
+    "visual_summary": "Identified Strawberry foliage with classic 'bird's eye' spots (3-6mm) with pale whitish necrotic centers bordered by deep reddish-purple margins and small circular spots with white to ash-gray centers and dark purple-red halos.",
+    "processing_seconds": 1.32
+  },
+  {
+    "id": "diag_7ed786ab",
+    "timestamp": "2026-11-25T01:29:14.052975",
+    "crop": "Tomato",
+    "condition": "Tomato Early Blight (Alternaria solani)",
+    "severity": "Moderate to High",
+    "is_healthy": false,
+    "outbreak_risk": "Moderate to High",
+    "visual_summary": "Identified Tomato foliage with target-board concentric rings surrounded by yellow chlorotic halo, starting on lower mature leaves and dark brown circular spots with concentric target rings (bullseye).",
+    "processing_seconds": 1.58
+  },
+  {
+    "id": "diag_d159bf44",
+    "timestamp": "2026-11-25T01:28:55.498004",
+    "crop": "Tomato",
+    "condition": "Tomato Late Blight (Phytophthora infestans)",
+    "severity": "Critical",
+    "is_healthy": false,
+    "outbreak_risk": "EXTREME CRITICAL (can wipe out tomato field in 48-72 hours)",
+    "visual_summary": "Identified Tomato foliage with rapidly spreading large dark water-soaked patches; white fuzzy mold on leaf undersides during moist cool mornings and water-soaked irregular pale green to dark purplish-black greasy lesions.",
+    "processing_seconds": 4.28
+  },
+  {
+    "id": "diag_35531540",
+    "timestamp": "2026-11-25T01:28:53.876797",
+    "crop": "Tomato",
+    "condition": "Tomato Late Blight (Phytophthora infestans)",
+    "severity": "Critical",
+    "is_healthy": false,
+    "outbreak_risk": "EXTREME CRITICAL (can wipe out tomato field in 48-72 hours)",
+    "visual_summary": "Identified Tomato foliage with rapidly spreading large dark water-soaked patches; white fuzzy mold on leaf undersides during moist cool mornings and water-soaked irregular pale green to dark purplish-black greasy lesions.",
+    "processing_seconds": 1.34
+  },
+  {
     "id": "diag_d01155ec",
     "timestamp": "2026-11-24T23:44:18.390962",
     "crop": "Tomato",
@@ -416,49 +548,5 @@
     "outbreak_risk": "High",
     "visual_summary": "The leaf shows numerous small circular spots with pale grayish-white centers and dark brown margins, indicating Septoria Leaf Spot.",
     "processing_seconds": 14.92
-  },
-  {
-    "id": "diag_2835dac5",
-    "timestamp": "2026-11-24T22:31:55.850299",
-    "crop": "Tomato",
-    "condition": "Septoria Leaf Spot",
-    "severity": "Moderate",
-    "is_healthy": false,
-    "outbreak_risk": "High",
-    "visual_summary": "The leaf shows numerous small circular spots with pale grayish-white centers and dark brown margins, indicating Septoria Leaf Spot.",
-    "processing_seconds": 16.89
-  },
-  {
-    "id": "diag_b14ad901",
-    "timestamp": "2026-11-24T22:30:32.409294",
-    "crop": "Tomato",
-    "condition": "Septoria Leaf Spot",
-    "severity": "Moderate",
-    "is_healthy": false,
-    "outbreak_risk": "High",
-    "visual_summary": "The leaf shows numerous small circular spots with pale grayish-white centers and dark brown margins, indicating Septoria Leaf Spot.",
-    "processing_seconds": 17.84
-  },
-  {
-    "id": "diag_78b9ed82",
-    "timestamp": "2026-11-24T22:28:27.929671",
-    "crop": "Tomato",
-    "condition": "Septoria Leaf Spot",
-    "severity": "Moderate",
-    "is_healthy": false,
-    "outbreak_risk": "High",
-    "visual_summary": "The leaf shows numerous small circular spots with pale grayish-white centers and dark brown margins, indicating Septoria Leaf Spot.",
-    "processing_seconds": 23.25
-  },
-  {
-    "id": "diag_e21601aa",
-    "timestamp": "2026-11-24T22:16:30.297210",
-    "crop": "Tomato",
-    "condition": "Early Blight",
-    "severity": "Moderate",
-    "is_healthy": false,
-    "outbreak_risk": "Moderate",
-    "visual_summary": "Lower leaves display brown spots with concentric rings (bullseye pattern) and surrounding areas turn pale yellow.",
-    "processing_seconds": 16.27
   }
 ]

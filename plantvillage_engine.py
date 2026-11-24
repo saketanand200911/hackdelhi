@@ -1410,7 +1410,8 @@ def diagnose_with_master_engine(
 
         # 0. NEURAL EMBEDDING MODEL PRIORITY (archive.zip + PlantVillage Trained)
         if neural_class and class_id == neural_class:
-            score += 120 + int(neural_sim * 0.5)
+            if not clean_crop_hint or clean_crop_hint.lower() in crop or any(w in crop for w in clean_crop_hint.lower().split()):
+                score += 120 + int(neural_sim * 0.5)
 
         # A. EXPLICIT CROP FILTER (Highest Priority)
         if clean_crop_hint:
