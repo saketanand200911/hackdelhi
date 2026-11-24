@@ -405,7 +405,10 @@ def diagnose_leaf(req: DiagnoseRequest):
                 sims = torch.mm(feat, leaf_model_data["centroids"].t())[0]
                 top_idx = torch.argmax(sims).item()
                 neural_pred_class = leaf_model_data["classes"][top_idx]
-                neural_confidence = round(float(sims[top_idx].item()) * 100, 1)
+                probs = torch.softmax(sims * 25.0, dim=0)
+                sim_pct = float(sims[top_idx].item()) * 100.0
+                prob_pct = float(probs[top_idx].item()) * 100.0
+                neural_confidence = round(min(99.0, max(55.0, 0.55 * sim_pct + 0.45 * prob_pct)), 1)
         except Exception as e:
             print("Neural feature inference error:", e)
     elif visual_clf_data is not None:
@@ -414,10 +417,14 @@ def diagnose_leaf(req: DiagnoseRequest):
             logits = np.dot(v_feat, visual_clf_data["weights"]) + visual_clf_data["bias"]
             top_idx = int(np.argmax(logits))
             neural_pred_class = visual_clf_data["classes"][top_idx]
-            # Convert margin to confidence percentage (75-97%)
-            exp_l = np.exp((logits - np.max(logits)) * 4.0)
+            sorted_logits = np.sort(logits)
+            margin = float(sorted_logits[-1] - sorted_logits[-2]) if len(sorted_logits) > 1 else 0.0
+            exp_l = np.exp((logits - np.max(logits)) * 10.0)
             probs = exp_l / np.sum(exp_l)
-            neural_confidence = round(float(min(98.0, max(78.0, probs[top_idx] * 100.0 + 35.0))), 1)
+            prob_pct = float(probs[top_idx]) * 100.0
+            raw_strength = float(np.clip(logits[top_idx], 0.0, 1.0)) * 100.0
+            margin_bonus = min(18.0, margin * 35.0)
+            neural_confidence = round(min(98.5, max(52.0, 0.65 * prob_pct + 0.25 * raw_strength + margin_bonus)), 1)
         except Exception as e:
             print("Visual classifier inference error:", e)
 
@@ -459,7 +466,14 @@ def diagnose_leaf(req: DiagnoseRequest):
     top_candidates = match_result["top_candidates"]
 
     # 5. Construct Structured Diagnosis from Ground Truth Dataset
-    confidence_val = f"{max(92, int(neural_confidence))}%" if neural_confidence > 50 else ("96%" if req.crop_hint else "92%")
+    if neural_confidence > 0:
+        final_conf = neural_confidence + (3.0 if req.crop_hint else 0.0)
+        final_conf = min(99, max(52, int(round(final_conf))))
+    else:
+        scores = match_result.get("scores", [])
+        margin = (scores[0][0] - scores[1][0]) if len(scores) > 1 else 20
+        final_conf = min(94, max(62, 65 + int(margin * 0.5)))
+    confidence_val = f"{final_conf}%"
     summary_text = (
         f"Identified {best['crop']} foliage with {best['lesion_pattern'].lower()} "
         f"and {best['color_signature'].lower()}."

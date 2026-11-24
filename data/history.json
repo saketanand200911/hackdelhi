@@ -1,5 +1,115 @@
 [
   {
+    "id": "diag_12e2d542",
+    "timestamp": "2026-11-25T01:38:35.032354",
+    "crop": "Strawberry",
+    "condition": "Strawberry Common Leaf Spot (Mycosphaerella fragariae)",
+    "severity": "Moderate to High",
+    "is_healthy": false,
+    "outbreak_risk": "High (spores splash from infected crown and soil during rain or overhead watering)",
+    "visual_summary": "Identified Strawberry foliage with classic 'bird's eye' spots (3-6mm) with pale whitish necrotic centers bordered by deep reddish-purple margins and small circular spots with white to ash-gray centers and dark purple-red halos.",
+    "processing_seconds": 0.01
+  },
+  {
+    "id": "diag_334cb0c5",
+    "timestamp": "2026-11-25T01:38:35.024576",
+    "crop": "Tomato",
+    "condition": "Tomato Late Blight (Phytophthora infestans)",
+    "severity": "Critical",
+    "is_healthy": false,
+    "outbreak_risk": "EXTREME CRITICAL (can wipe out tomato field in 48-72 hours)",
+    "visual_summary": "Identified Tomato foliage with rapidly spreading large dark water-soaked patches; white fuzzy mold on leaf undersides during moist cool mornings and water-soaked irregular pale green to dark purplish-black greasy lesions.",
+    "processing_seconds": 0.01
+  },
+  {
+    "id": "diag_20c2bc16",
+    "timestamp": "2026-11-25T01:38:35.009958",
+    "crop": "Coffee",
+    "condition": "Coffee Leaf Rust (Hemileia vastatrix)",
+    "severity": "Critical",
+    "is_healthy": false,
+    "outbreak_risk": "EXTREME CRITICAL (world's most destructive coffee pathogen, easily wind-blown)",
+    "visual_summary": "Identified Coffee foliage with circular yellow spots on upper surface; matching powdery orange-yellow spore pustules on the lower surface causing massive defoliation and bright yellow-orange powdery pustules on underside; chlorotic spots on top.",
+    "processing_seconds": 0.01
+  },
+  {
+    "id": "diag_9c39831d",
+    "timestamp": "2026-11-25T01:38:34.997758",
+    "crop": "Soybean",
+    "condition": "Soybean Brown Spot / Septoria Spot (Septoria glycines)",
+    "severity": "Moderate to High",
+    "is_healthy": false,
+    "outbreak_risk": "High during warm wet monsoon periods with frequent rain splash",
+    "visual_summary": "Identified Soybean foliage with small (2-5mm) angular irregular brown to bronze lesions on lower canopy; leaves turn yellow and drop early and small angular dark brown to red spots surrounded by chlorotic yellow halos.",
+    "processing_seconds": 0.01
+  },
+  {
+    "id": "diag_954c5f4c",
+    "timestamp": "2026-11-25T01:38:34.987856",
+    "crop": "Strawberry",
+    "condition": "Strawberry Common Leaf Spot (Mycosphaerella fragariae)",
+    "severity": "Moderate to High",
+    "is_healthy": false,
+    "outbreak_risk": "High (spores splash from infected crown and soil during rain or overhead watering)",
+    "visual_summary": "Identified Strawberry foliage with classic 'bird's eye' spots (3-6mm) with pale whitish necrotic centers bordered by deep reddish-purple margins and small circular spots with white to ash-gray centers and dark purple-red halos.",
+    "processing_seconds": 0.01
+  },
+  {
+    "id": "diag_b8b88190",
+    "timestamp": "2026-11-25T01:38:34.973334",
+    "crop": "Strawberry",
+    "condition": "Strawberry Common Leaf Spot (Mycosphaerella fragariae)",
+    "severity": "Moderate to High",
+    "is_healthy": false,
+    "outbreak_risk": "High (spores splash from infected crown and soil during rain or overhead watering)",
+    "visual_summary": "Identified Strawberry foliage with classic 'bird's eye' spots (3-6mm) with pale whitish necrotic centers bordered by deep reddish-purple margins and small circular spots with white to ash-gray centers and dark purple-red halos.",
+    "processing_seconds": 1.15
+  },
+  {
+    "id": "diag_dd304add",
+    "timestamp": "2026-11-25T01:38:33.822713",
+    "crop": "Tomato",
+    "condition": "Tomato Late Blight (Phytophthora infestans)",
+    "severity": "Critical",
+    "is_healthy": false,
+    "outbreak_risk": "EXTREME CRITICAL (can wipe out tomato field in 48-72 hours)",
+    "visual_summary": "Identified Tomato foliage with rapidly spreading large dark water-soaked patches; white fuzzy mold on leaf undersides during moist cool mornings and water-soaked irregular pale green to dark purplish-black greasy lesions.",
+    "processing_seconds": 1.03
+  },
+  {
+    "id": "diag_00b12fcd",
+    "timestamp": "2026-11-25T01:38:32.791509",
+    "crop": "Coffee",
+    "condition": "Coffee Leaf Rust (Hemileia vastatrix)",
+    "severity": "Critical",
+    "is_healthy": false,
+    "outbreak_risk": "EXTREME CRITICAL (world's most destructive coffee pathogen, easily wind-blown)",
+    "visual_summary": "Identified Coffee foliage with circular yellow spots on upper surface; matching powdery orange-yellow spore pustules on the lower surface causing massive defoliation and bright yellow-orange powdery pustules on underside; chlorotic spots on top.",
+    "processing_seconds": 1.24
+  },
+  {
+    "id": "diag_d3199c80",
+    "timestamp": "2026-11-25T01:38:31.546945",
+    "crop": "Soybean",
+    "condition": "Soybean Brown Spot / Septoria Spot (Septoria glycines)",
+    "severity": "Moderate to High",
+    "is_healthy": false,
+    "outbreak_risk": "High during warm wet monsoon periods with frequent rain splash",
+    "visual_summary": "Identified Soybean foliage with small (2-5mm) angular irregular brown to bronze lesions on lower canopy; leaves turn yellow and drop early and small angular dark brown to red spots surrounded by chlorotic yellow halos.",
+    "processing_seconds": 1.21
+  },
+  {
+    "id": "diag_87708ddb",
+    "timestamp": "2026-11-25T01:38:30.337033",
+    "crop": "Strawberry",
+    "condition": "Strawberry Common Leaf Spot (Mycosphaerella fragariae)",
+    "severity": "Moderate to High",
+    "is_healthy": false,
+    "outbreak_risk": "High (spores splash from infected crown and soil during rain or overhead watering)",
+    "visual_summary": "Identified Strawberry foliage with classic 'bird's eye' spots (3-6mm) with pale whitish necrotic centers bordered by deep reddish-purple margins and small circular spots with white to ash-gray centers and dark purple-red halos.",
+    "processing_seconds": 2.55
+  },
+  {
     "id": "diag_803d2a17",
     "timestamp": "2026-11-25T01:33:29.311670",
     "crop": "Peach",
@@ -438,115 +548,5 @@
     "outbreak_risk": "High",
     "visual_summary": "Identified Grape foliage with circular necrotic spots with tiny black pycnidia specks arranged in rings and small reddish-brown circular spots with dark brown margins.",
     "processing_seconds": 2.1
-  },
-  {
-    "id": "diag_a4ec52f0",
-    "timestamp": "2026-11-24T22:56:37.074848",
-    "crop": "Tomato",
-    "condition": "Tomato Late Blight (Phytophthora infestans)",
-    "severity": "Critical",
-    "is_healthy": false,
-    "outbreak_risk": "High",
-    "visual_summary": "The leaf has brown spots and is covered in white powdery mildew, with curled and damaged leaf edges.",
-    "processing_seconds": 13.51
-  },
-  {
-    "id": "diag_8f29b678",
-    "timestamp": "2026-11-24T22:52:46.630122",
-    "crop": "Strawberry",
-    "condition": "Strawberry Leaf Scorch",
-    "severity": "Moderate",
-    "is_healthy": false,
-    "outbreak_risk": "High",
-    "visual_summary": "The leaf has small irregular purplish spots without pale centers, and some brown or black spots on it, which could be a sign of strawberry leaf scorch.",
-    "processing_seconds": 24.05
-  },
-  {
-    "id": "diag_2a79eaf4",
-    "timestamp": "2026-11-24T22:51:21.683116",
-    "crop": "Tomato",
-    "condition": "Tomato Leaf Mold (Passalora fulva)",
-    "severity": "Moderate",
-    "is_healthy": false,
-    "outbreak_risk": "High",
-    "visual_summary": "The leaf has pale green or yellow blotches on the upper surface, with a velvety olive-green to brown fungal growth on the lower surface.",
-    "processing_seconds": 23.85
-  },
-  {
-    "id": "diag_ffddc0bb",
-    "timestamp": "2026-11-24T22:49:53.489378",
-    "crop": "Tomato",
-    "condition": "Tomato Late Blight (Phytophthora infestans)",
-    "severity": "Critical",
-    "is_healthy": false,
-    "outbreak_risk": "High",
-    "visual_summary": "The leaf has brown spots and is covered in white powdery mildew, with curled and damaged leaflets.",
-    "processing_seconds": 17.26
-  },
-  {
-    "id": "diag_aa8c1ff4",
-    "timestamp": "2026-11-24T22:48:22.804481",
-    "crop": "Tomato",
-    "condition": "Tomato Late Blight (Phytophthora infestans)",
-    "severity": "Critical",
-    "is_healthy": false,
-    "outbreak_risk": "High",
-    "visual_summary": "The leaf has yellow and brown spots, and white powdery mildew, indicating a high risk of late blight.",
-    "processing_seconds": 18.18
-  },
-  {
-    "id": "diag_be5deed7",
-    "timestamp": "2026-11-24T22:46:46.377793",
-    "crop": "Tomato",
-    "condition": "Tomato Leaf Mold (Passalora fulva)",
-    "severity": "Moderate",
-    "is_healthy": false,
-    "outbreak_risk": "High",
-    "visual_summary": "The leaf has pale green or yellow blotches on the upper surface, and the lower surface develops velvety olive-green to brown fungal growth.",
-    "processing_seconds": 20.42
-  },
-  {
-    "id": "diag_fbd367c6",
-    "timestamp": "2026-11-24T22:45:45.409893",
-    "crop": "Tomato",
-    "condition": "Tomato Leaf Mold (Passalora fulva)",
-    "severity": "Moderate",
-    "is_healthy": false,
-    "outbreak_risk": "High",
-    "visual_summary": "The leaf has pale green or yellow blotches on the upper surface, and the lower surface develops a velvety olive-green to brown fungal growth.",
-    "processing_seconds": 18.96
-  },
-  {
-    "id": "diag_4853f1c7",
-    "timestamp": "2026-11-24T22:44:29.070021",
-    "crop": "Corn",
-    "condition": "Healthy Corn Foliage",
-    "severity": "Healthy",
-    "is_healthy": true,
-    "outbreak_risk": "Low",
-    "visual_summary": "The leaf is healthy and green, with a few yellow spots and some brown or black spots. There is also a small white powdery mildew on the leaf.",
-    "processing_seconds": 15.28
-  },
-  {
-    "id": "diag_da06007d",
-    "timestamp": "2026-11-24T22:44:05.908683",
-    "crop": "Tomato",
-    "condition": "Tomato Leaf Mold (Passalora fulva)",
-    "severity": "Moderate",
-    "is_healthy": false,
-    "outbreak_risk": "High",
-    "visual_summary": "The leaf has a healthy green color with yellow spots and a brown or black spot, indicating fungal infection. The leaf also has a powdery or white substance on it, consistent with powdery mildew.",
-    "processing_seconds": 19.7
-  },
-  {
-    "id": "diag_78c8acc9",
-    "timestamp": "2026-11-24T22:36:07.122254",
-    "crop": "Tomato",
-    "condition": "Septoria Leaf Spot",
-    "severity": "Moderate",
-    "is_healthy": false,
-    "outbreak_risk": "High",
-    "visual_summary": "The leaf shows numerous small circular spots with pale grayish-white centers and dark brown margins, indicating Septoria Leaf Spot.",
-    "processing_seconds": 14.92
   }
 ]
