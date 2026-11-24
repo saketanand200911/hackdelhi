@@ -1,0 +1,6 @@
+archive.zip
+*.ipynb
+*.pt
+__pycache__
+.git
+train_from_archive.py

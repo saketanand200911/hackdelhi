@@ -1,5 +1,10 @@
 # 🌿 LeafGuard AI • Hyper-Local Pest & Disease Early Warning System
 
+[![Vercel Deployment](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://voicekeep-six.vercel.app)
+[![Live App](https://img.shields.io/badge/Live%20Demo-voicekeep--six.vercel.app-10b981?style=for-the-badge&logo=google-chrome&logoColor=white)](https://voicekeep-six.vercel.app)
+[![GitHub Repo](https://img.shields.io/badge/GitHub-hackdelhi-181717?style=for-the-badge&logo=github)](https://github.com/saketanand200911/hackdelhi)
+
+> **Live Production URL:** [https://voicekeep-six.vercel.app](https://voicekeep-six.vercel.app)  
 > **An image-recognition, botanical pathology, and predictive outbreak radar web app empowering smallholder farmers (plots < 2 hectares) with instant localized treatment plans and neighborhood outbreak alerts.**
 
 ---

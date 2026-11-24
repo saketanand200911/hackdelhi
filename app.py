@@ -15,9 +15,17 @@ from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from PIL import Image
-import torch
-import torchvision.models as models
-import torchvision.transforms as transforms
+
+try:
+    import torch
+    import torchvision.models as models
+    import torchvision.transforms as transforms
+    HAS_TORCH = True
+except ImportError:
+    HAS_TORCH = False
+    torch = None
+
+import numpy as np
 from plantvillage_engine import diagnose_with_master_engine, PLANTVILLAGE_MASTER_DB
 
 app = FastAPI(title="VoiceKeep Ag - Leaf Disease Detection & Hyper-Local Outbreak Warning")
@@ -38,7 +46,10 @@ REF_IMG_DIR = os.path.join(DATA_DIR, "reference_images")
 UPLOADS_DIR = os.path.join(DATA_DIR, "uploads")
 
 for d in [DATA_DIR, REF_IMG_DIR, UPLOADS_DIR]:
-    os.makedirs(d, exist_ok=True)
+    try:
+        os.makedirs(d, exist_ok=True)
+    except OSError:
+        pass
 
 OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "http://127.0.0.1:11434")
 VISION_MODEL = os.environ.get("VISION_MODEL", "moondream")
@@ -46,37 +57,50 @@ LLM_MODEL = os.environ.get("LLM_MODEL", "leafguard-ai")
 
 # Load Trained PlantVillage MobileNet Feature Classifier
 TRAINED_MODEL_PATH = os.path.join(DATA_DIR, "trained_plantvillage_model.pt")
-torch_device = torch.device("cpu")
+JSON_MODEL_PATH = os.path.join(DATA_DIR, "trained_plantvillage_model.json")
+torch_device = torch.device("cpu") if HAS_TORCH else None
 leaf_model_data = None
 leaf_feature_extractor = None
 
-mobilenet_preprocess = transforms.Compose([
-    transforms.Resize((224, 224)),
-    transforms.ToTensor(),
-    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-])
+if HAS_TORCH:
+    mobilenet_preprocess = transforms.Compose([
+        transforms.Resize((224, 224)),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+    ])
+    try:
+        if os.path.exists(TRAINED_MODEL_PATH):
+            leaf_model_data = torch.load(TRAINED_MODEL_PATH, map_location=torch_device)
+            _mobilenet = models.mobilenet_v3_small(weights='DEFAULT').eval()
+            leaf_feature_extractor = torch.nn.Sequential(
+                _mobilenet.features,
+                _mobilenet.avgpool,
+                torch.nn.Flatten()
+            ).to(torch_device)
+            print(f"Loaded trained PlantVillage neural model with {len(leaf_model_data.get('classes', []))} classes.")
+    except Exception as e:
+        print("Notice loading trained leaf model (pt):", e)
+else:
+    # Serverless / Vercel mode: load pre-extracted lightweight JSON model
+    try:
+        if os.path.exists(JSON_MODEL_PATH):
+            with open(JSON_MODEL_PATH, "r", encoding="utf-8") as f:
+                leaf_model_data = json.load(f)
+                leaf_model_data["centroids"] = np.array(leaf_model_data["centroids"], dtype=np.float32)
+            print(f"Loaded trained PlantVillage JSON model with {len(leaf_model_data.get('classes', []))} classes (Serverless mode).")
+    except Exception as e:
+        print("Notice loading trained leaf model (json):", e)
 
+# Ensure files exist safely
 try:
-    if os.path.exists(TRAINED_MODEL_PATH):
-        leaf_model_data = torch.load(TRAINED_MODEL_PATH, map_location=torch_device)
-        _mobilenet = models.mobilenet_v3_small(weights='DEFAULT').eval()
-        leaf_feature_extractor = torch.nn.Sequential(
-            _mobilenet.features,
-            _mobilenet.avgpool,
-            torch.nn.Flatten()
-        ).to(torch_device)
-        print(f"Loaded trained PlantVillage neural model with {len(leaf_model_data.get('classes', []))} classes.")
-except Exception as e:
-    print("Notice loading trained leaf model:", e)
-
-# Ensure files exist
-if not os.path.exists(REF_FILE):
-    with open(REF_FILE, "w", encoding="utf-8") as f:
-        json.dump([], f)
-
-if not os.path.exists(HISTORY_FILE):
-    with open(HISTORY_FILE, "w", encoding="utf-8") as f:
-        json.dump([], f)
+    if not os.path.exists(REF_FILE):
+        with open(REF_FILE, "w", encoding="utf-8") as f:
+            json.dump([], f)
+    if not os.path.exists(HISTORY_FILE):
+        with open(HISTORY_FILE, "w", encoding="utf-8") as f:
+            json.dump([], f)
+except OSError:
+    pass
 
 PLANTVILLAGE_FILE = os.path.join(DATA_DIR, "plantvillage_knowledge.json")
 
@@ -95,23 +119,36 @@ def load_references() -> List[Dict[str, Any]]:
         return []
 
 def save_references(refs: List[Dict[str, Any]]):
-    with open(REF_FILE, "w", encoding="utf-8") as f:
-        json.dump(refs, f, indent=2, ensure_ascii=False)
+    try:
+        with open(REF_FILE, "w", encoding="utf-8") as f:
+            json.dump(refs, f, indent=2, ensure_ascii=False)
+    except OSError:
+        pass
 
 def load_history() -> List[Dict[str, Any]]:
-    try:
-        with open(HISTORY_FILE, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except Exception:
-        return []
+    for path in [HISTORY_FILE, "/tmp/history.json"]:
+        if os.path.exists(path):
+            try:
+                with open(path, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except Exception:
+                pass
+    return []
 
 def save_history(entry: Dict[str, Any]):
     history = load_history()
     history.insert(0, entry)
     if len(history) > 50:
         history = history[:50]
-    with open(HISTORY_FILE, "w", encoding="utf-8") as f:
-        json.dump(history, f, indent=2, ensure_ascii=False)
+    try:
+        with open(HISTORY_FILE, "w", encoding="utf-8") as f:
+            json.dump(history, f, indent=2, ensure_ascii=False)
+    except OSError:
+        try:
+            with open("/tmp/history.json", "w", encoding="utf-8") as f:
+                json.dump(history, f, indent=2, ensure_ascii=False)
+        except Exception:
+            pass
 
 # Local mock neighborhood outbreaks data (hyper-local <2 hectares)
 LOCAL_ALERTS = [
@@ -462,9 +499,13 @@ def diagnose_leaf(req: DiagnoseRequest):
 
     return diagnosis_json
 
-# Mount static files and reference images
-app.mount("/static/reference_images", StaticFiles(directory=REF_IMG_DIR), name="ref_images")
-app.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "static")), name="static")
+# Mount static files and reference images if present
+if os.path.exists(REF_IMG_DIR):
+    app.mount("/static/reference_images", StaticFiles(directory=REF_IMG_DIR), name="ref_images")
+
+static_path = os.path.join(BASE_DIR, "static")
+if os.path.exists(static_path):
+    app.mount("/static", StaticFiles(directory=static_path), name="static")
 
 if __name__ == "__main__":
     import uvicorn
