@@ -2,18 +2,22 @@
 PlantVillage Master Agronomy Pathology Engine
 Contains complete ground-truth disease definitions, leaf morphology,
 lesion patterns, organic and chemical treatments, and local outbreak protocols
-for all 38 classes in the PlantVillage Dataset (raw directory).
+for all PlantVillage classes PLUS extended global & Indian agricultural crops:
+Apple, Blueberry, Cherry, Corn (Maize), Grape, Orange/Citrus, Peach, Pepper/Chilli,
+Potato, Raspberry, Soybean, Squash/Cucurbits, Strawberry, Tomato, Coffee, Rice (Paddy),
+Wheat, Cotton, Banana, Mango, Sugarcane, Tea, Groundnut (Peanut), Mustard, and Onion.
 """
 
 from typing import Dict, Any, List, Optional
+import re
 
 PLANTVILLAGE_MASTER_DB: Dict[str, Dict[str, Any]] = {
-    # APPLE (4 classes)
+    # ==================== APPLE ====================
     "Apple___Apple_scab": {
         "crop": "Apple",
         "disease": "Apple Scab (Venturia inaequalis)",
         "pathogen_type": "Fungal",
-        "leaf_morphology": "Simple ovate leaves with serrated margins",
+        "leaf_morphology": "Simple ovate leaves with finely serrated margins",
         "color_signature": "Olive-green to dark velvety brown/black lesions",
         "lesion_pattern": "Dull circular velvety spots that pucker and curl the leaf lamina",
         "is_healthy": False,
@@ -39,683 +43,794 @@ PLANTVILLAGE_MASTER_DB: Dict[str, Dict[str, Any]] = {
         "color_signature": "Purple specks enlarging to tan/light brown centers with dark purple rings",
         "lesion_pattern": "'Frogeye' spots with circular light centers and double concentric margins",
         "is_healthy": False,
-        "severity": "Severe",
+        "severity": "Moderate",
         "organic_treatment": [
-            "Prune and burn dead wood, fire blight cankers, and mummified hanging fruit",
-            "Maintain optimal tree vigor and avoid mechanical trunk wounds"
+            "Prune out dead shoots, mummified fruits, and cankers during dormant winter pruning",
+            "Apply Bordeaux mixture (4:4:50) at bud break"
         ],
         "chemical_treatment": [
-            "Apply Thiophanate-methyl 70% WP or Captan 50% WP from petal fall through cover sprays"
+            "Apply Thiophanate-methyl 70% WP @ 1.0g/L or Captan 50% WP @ 2.0g/L",
+            "Spray Trifloxystrobin + Tebuconazole @ 0.5g/L at petal fall"
         ],
         "outbreak_risk": "Moderate",
-        "neighbor_alert": "Black rot canker spores detected. Inspect nearby apple and stone fruit trees for dead twig cankers.",
-        "hindi_summary": "सेब में ब्लैक रॉट (मेंढक-आंख जैसे धब्बे) दिखा है। सूखी टहनियां काट कर अलग करें और कवकनाशी का छिड़काव करें।"
+        "neighbor_alert": "Black rot canker inoculum detected. Prune infected wood and dispose away from borders.",
+        "hindi_summary": "सेब की पत्ती में ब्लैक रॉट (मेंढक की आंख जैसे धब्बे) हैं। सूखी टहनियां काटें और कैप्टान का छिड़काव करें।"
     },
     "Apple___Cedar_apple_rust": {
         "crop": "Apple",
         "disease": "Cedar Apple Rust (Gymnosporangium juniperi-virginianae)",
-        "pathogen_type": "Fungal (Gymnosporangium)",
+        "pathogen_type": "Fungal (Heteroecious)",
         "leaf_morphology": "Simple ovate leaves with serrated margins",
-        "color_signature": "Bright yellow-orange to reddish-orange spots on upper leaf surface",
-        "lesion_pattern": "Vibrant orange circular spots with small black pycnial specks in center",
+        "color_signature": "Brilliant bright orange-yellow circular spots",
+        "lesion_pattern": "Bright yellow-orange spots on upper surface; small tubular aecia cups beneath",
         "is_healthy": False,
-        "severity": "Moderate to High",
+        "severity": "Moderate",
         "organic_treatment": [
-            "Eradicate eastern red cedar and wild juniper trees within 1km of the orchard",
-            "Spray sulfur or copper-based fungicide at pink bud stage"
+            "Remove Eastern red cedar / juniper trees within 1-2 km radius",
+            "Apply sulfur or copper octanoate spray early in spring as cedar galls open"
         ],
         "chemical_treatment": [
-            "Apply Myclobutanil 20% EW @ 0.5ml/L or Propiconazole 25% EC at 7-10 day intervals"
+            "Spray Myclobutanil 10% WP @ 0.4g/L or Mancozeb 75% WP @ 2.0g/L at pink bud to petal fall"
         ],
-        "outbreak_risk": "High (wind carries basidiospores up to 2-3 km from alternate cedar hosts)",
-        "neighbor_alert": "Cedar rust spores active in the area. Farmers with apple plots within 2km should inspect upper leaf foliage for bright orange spots.",
-        "hindi_summary": "सेब की पत्ती पर चमकीले नारंगी जंग के धब्बे हैं। माइक्लोबुटानिल का छिड़काव करें और पास के देवदार/जूलिपर झाड़ियों को हटाएं।"
+        "outbreak_risk": "Moderate (depends on proximity to juniper alternate hosts)",
+        "neighbor_alert": "Cedar rust galls are gelatinizing on nearby junipers. Apply protective spray immediately.",
+        "hindi_summary": "सेब की पत्ती पर नारंगी-पीले जंग के धब्बे हैं। जुनिपर के पेड़ों को दूर रखें और माइक्लोबुटानिल का छिड़काव करें।"
     },
     "Apple___healthy": {
         "crop": "Apple",
         "disease": "Healthy Apple Foliage",
         "pathogen_type": "None",
-        "leaf_morphology": "Simple ovate serrated leaf",
-        "color_signature": "Uniform deep green leaf blade, no discoloration",
-        "lesion_pattern": "Smooth unblemished surface with prominent green venation",
+        "leaf_morphology": "Simple ovate leaves with fine serrations",
+        "color_signature": "Uniform deep green glossy surface",
+        "lesion_pattern": "Unblemished green lamina, clear venation, no lesions or cupping",
         "is_healthy": True,
         "severity": "Healthy",
-        "organic_treatment": [
-            "Apply balanced organic compost and maintain soil moisture with wood chip mulch",
-            "Perform regular summer aeration pruning"
-        ],
+        "organic_treatment": ["Maintain routine organic neem oil spray and balanced orchard compost."],
         "chemical_treatment": ["None required."],
         "outbreak_risk": "Low",
-        "neighbor_alert": "Plot is completely healthy. Continue routine preventive organic maintenance.",
-        "hindi_summary": "सेब की पत्ती पूरी तरह स्वस्थ और हरी है। किसी रासायनिक छिड़काव की जरूरत नहीं है।"
+        "neighbor_alert": "Foliage in clean healthy condition.",
+        "hindi_summary": "सेब की पत्तियां पूरी तरह स्वस्थ और हरी हैं। कोई कीटनाशक की आवश्यकता नहीं है।"
     },
 
-    # BLUEBERRY (1 class)
+    # ==================== BLUEBERRY ====================
     "Blueberry___healthy": {
         "crop": "Blueberry",
-        "disease": "Healthy Blueberry",
+        "disease": "Healthy Blueberry Foliage",
         "pathogen_type": "None",
-        "leaf_morphology": "Small ovate-elliptic leaves with entire smooth margins",
-        "color_signature": "Glossy vibrant emerald green",
-        "lesion_pattern": "Clean glossy cuticle with no chlorosis or leaf spots",
+        "leaf_morphology": "Small elliptical smooth-margined glossy leaves",
+        "color_signature": "Deep glossy green lamina",
+        "lesion_pattern": "Healthy smooth leaf surface without rust, spots, or chlorosis",
         "is_healthy": True,
         "severity": "Healthy",
-        "organic_treatment": [
-            "Maintain acidic soil pH (4.5 - 5.2) with peat moss and pine needle mulch",
-            "Apply organic fish emulsion or balanced ammonium sulfate fertilizer"
-        ],
+        "organic_treatment": ["Maintain acidic soil pH (4.5 - 5.2) with pine bark mulch and elemental sulfur."],
         "chemical_treatment": ["None required."],
         "outbreak_risk": "Low",
-        "neighbor_alert": "No disease present in this plot.",
-        "hindi_summary": "ब्लूबेरी की पत्तियां पूरी तरह स्वस्थ हैं।"
+        "neighbor_alert": "Blueberry bushes are vigorous and healthy.",
+        "hindi_summary": "ब्लूबेरी की पत्तियां स्वस्थ हैं। मिट्टी का पीएच अम्लीय बनाए रखें।"
     },
 
-    # CHERRY (2 classes)
-    "Cherry_(including_sour)___Powdery_mildew": {
+    # ==================== CHERRY ====================
+    "Cherry___Powdery_mildew": {
         "crop": "Cherry",
-        "disease": "Cherry Powdery Mildew (Podosphaera clandestina)",
+        "disease": "Powdery Mildew (Podosphaera clandestina)",
         "pathogen_type": "Fungal",
-        "leaf_morphology": "Elliptic-ovate leaves with double serrations",
-        "color_signature": "White talcum-like powdery mycelial patches on green foliage",
-        "lesion_pattern": "Circular white powdery spots spreading over lamina, causing upward leaf cupping",
+        "leaf_morphology": "Ovate to obovate serrated leaves",
+        "color_signature": "White circular powdery felt patches on leaf surface",
+        "lesion_pattern": "Patches of white talcum-like mycelial growth causing upward leaf curling and distortion",
         "is_healthy": False,
         "severity": "Moderate",
         "organic_treatment": [
-            "Spray 0.5% neem oil emulsion or potassium bicarbonate (5g/L)",
-            "Prune water sprouts and dense foliage to improve solar penetration and ventilation"
+            "Spray potassium bicarbonate (3g/L) or neem oil emulsion (5ml/L)",
+            "Improve sun penetration and air circulation through proper pruning"
         ],
         "chemical_treatment": [
-            "Apply Tebuconazole 25.9% EC or Myclobutanil 20% EW at first sign of white mycelium"
+            "Apply Myclobutanil 10% WP @ 0.5g/L or Hexaconazole 5% EC @ 1ml/L"
         ],
-        "outbreak_risk": "High (wind-borne conidia multiply in warm dry conditions with humid nights)",
-        "neighbor_alert": "Powdery mildew detected in cherry plot. Adjacent fruit growers should monitor terminal shoots for white powder coating.",
-        "hindi_summary": "चेरी की पत्ती पर सफेद चूर्ण (पाउडरी मिल्ड्यू) जमा है। नीम का तेल या टेबुकोनाज़ोल का छिड़काव करें।"
+        "outbreak_risk": "High in shaded, warm, humid conditions",
+        "neighbor_alert": "Powdery mildew conidia spreading on wind currents. Check tender terminal shoot tips.",
+        "hindi_summary": "चेरी की पत्ती पर सफेद चूर्ण (पाउडरी मिल्ड्यू) जमा है। पोटेशियम बाइकार्बोनेट या हेक्साकोनाजोल का छिड़काव करें।"
     },
-    "Cherry_(including_sour)___healthy": {
+    "Cherry___healthy": {
         "crop": "Cherry",
-        "disease": "Healthy Cherry",
+        "disease": "Healthy Cherry Foliage",
         "pathogen_type": "None",
-        "leaf_morphology": "Elliptic-ovate leaves with clean double-serrated margins",
-        "color_signature": "Deep green with clear venation",
-        "lesion_pattern": "Smooth surface free of white mildew or shot-holes",
+        "leaf_morphology": "Ovate leaves with serrated margins and glands on petiole",
+        "color_signature": "Vibrant emerald green",
+        "lesion_pattern": "Intact leaf blades free of shot-holes, powdery mold, or necrotic spots",
         "is_healthy": True,
         "severity": "Healthy",
-        "organic_treatment": ["Maintain balanced irrigation and winter dormant spray."],
+        "organic_treatment": ["Regular orchard care and organic compost tea."],
         "chemical_treatment": ["None required."],
         "outbreak_risk": "Low",
-        "neighbor_alert": "No disease detected.",
-        "hindi_summary": "चेरी का पौधा स्वस्थ है।"
+        "neighbor_alert": "Cherry foliage is clear and robust.",
+        "hindi_summary": "चेरी की पत्तियां स्वस्थ हैं।"
     },
 
-    # CORN / MAIZE (4 classes)
-    "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot": {
+    # ==================== CORN (MAIZE) ====================
+    "Corn___Cercospora_leaf_spot_Gray_leaf_spot": {
         "crop": "Corn (Maize)",
         "disease": "Gray Leaf Spot (Cercospora zeae-maydis)",
         "pathogen_type": "Fungal",
-        "leaf_morphology": "Long parallel-veined strap-like maize leaves",
-        "color_signature": "Tan to grayish-brown rectangular lesions",
-        "lesion_pattern": "Strictly rectangular spots parallel to and delimited by leaf veins",
+        "leaf_morphology": "Long linear strap-like monocot blades with parallel veins",
+        "color_signature": "Tan to grayish rectangular lesions delimited strictly by leaf veins",
+        "lesion_pattern": "Strictly rectangular block lesions running parallel to leaf veins; turn gray with spores",
         "is_healthy": False,
         "severity": "High",
         "organic_treatment": [
-            "Crop rotation with legumes (soybean, groundnut) for at least 1-2 seasons",
-            "Incorporate crop residues deeply into soil after harvest"
+            "Rotate crops for at least 2 years away from maize",
+            "Chop and till corn residue deep into soil to accelerate microbial breakdown"
         ],
         "chemical_treatment": [
-            "Apply Azoxystrobin 18.2% + Difenoconazole 11.4% SC @ 1ml/L at silking/tasseling"
+            "Apply Azoxystrobin + Difenoconazole @ 1ml/L at tasseling (VT/R1 stage)",
+            "Spray Pyraclostrobin 20% WG @ 1g/L on lower canopy if lesions appear early"
         ],
-        "outbreak_risk": "High (warm, humid, overcast conditions accelerate leaf blight)",
-        "neighbor_alert": "Gray leaf spot confirmed in corn plot. Neighboring maize farmers within 1km should inspect lower canopy for rectangular tan lesions.",
-        "hindi_summary": "मक्के की पत्ती पर नसों के बीच आयताकार भूरे धब्बे (ग्रे लीफ स्पॉट) हैं। कवकनाशी का छिड़काव करें।"
+        "outbreak_risk": "High (wind and rain splash carry spores across neighboring fields)",
+        "neighbor_alert": "Gray Leaf Spot spreading on corn. If lesions reach the ear leaf before blister stage, spray immediately.",
+        "hindi_summary": "मक्के की पत्ती में नसों के बीच लंबे चौकोर भूरे धब्बे (ग्रे लीफ स्पॉट) हैं। एजॉक्सीस्ट्रोबिन का छिड़काव करें।"
     },
-    "Corn_(maize)___Common_rust_": {
+    "Corn___Common_rust": {
         "crop": "Corn (Maize)",
         "disease": "Common Rust (Puccinia sorghi)",
-        "pathogen_type": "Fungal (Rust)",
-        "leaf_morphology": "Long parallel-veined strap-like maize leaves",
-        "color_signature": "Golden-brown to cinnamon-brown powdery pustules",
-        "lesion_pattern": "Raised oval blisters on both leaf surfaces that rupture and release rust powder",
+        "pathogen_type": "Fungal",
+        "leaf_morphology": "Long linear monocot blades with parallel veins",
+        "color_signature": "Golden brown to cinnamon-brown powdery pustules",
+        "lesion_pattern": "Small circular to elongate cinnamon-brown uredinial pustules scattered on both leaf surfaces",
         "is_healthy": False,
         "severity": "Moderate to High",
         "organic_treatment": [
-            "Plant certified rust-resistant maize hybrids",
-            "Avoid excessive late-season nitrogen applications"
+            "Plant resistant hybrid cultivars",
+            "Early morning planting to avoid peak airborne urediniospore waves"
         ],
         "chemical_treatment": [
-            "Apply Mancozeb 75% WP @ 2.5g/L or Propiconazole 25% EC @ 1ml/L before tassel emergence"
+            "Spray Mancozeb 75% WP @ 2.5g/L or Tebuconazole 25.9% EC @ 1ml/L at first sign of pustules"
         ],
-        "outbreak_risk": "Critical (airborne rust spores travel tens of kilometers on seasonal wind currents)",
-        "neighbor_alert": "Common rust spores actively dispersing on wind. All smallholder maize fields (<2ha) in 3km radius should check flag leaves.",
-        "hindi_summary": "मक्के की पत्तियों पर भूरी-नारंगी जंग (रस्ट) की फफोलेदार फुंसियां हैं। मैनकोज़ेब या प्रोपिकोनाज़ोल का छिड़काव करें।"
+        "outbreak_risk": "High (airborne spores travel hundreds of kilometers on southern winds)",
+        "neighbor_alert": "Corn rust pustules actively rupturing. Neighboring farms should inspect leaves above ear level.",
+        "hindi_summary": "मक्के की पत्तियों पर भूरे-नारंगी जंग के फफोले हैं। मैनकोजेब या टेबुकोनाजोल का छिड़काव करें।"
     },
-    "Corn_(maize)___Northern_Leaf_Blight": {
+    "Corn___Northern_Leaf_Blight": {
         "crop": "Corn (Maize)",
         "disease": "Northern Corn Leaf Blight (Exserohilum turcicum)",
         "pathogen_type": "Fungal",
-        "leaf_morphology": "Long parallel-veined strap-like maize leaves",
-        "color_signature": "Grayish-green to tan elongated cigar-shaped lesions",
-        "lesion_pattern": "Large (2.5 to 15 cm long) elliptical lesions with smooth tapering ends",
+        "leaf_morphology": "Long linear monocot blades with parallel veins",
+        "color_signature": "Long grayish-green to tan cigar-shaped elliptical lesions",
+        "lesion_pattern": "Large (2.5 - 15 cm) cigar-shaped or elliptical lesions with rounded ends",
         "is_healthy": False,
-        "severity": "Severe",
+        "severity": "High to Critical",
         "organic_treatment": [
-            "Deep tillage of old corn stover to bury overwintering fungal spores",
-            "Select resistant cultivars with Ht genes"
+            "Plow under corn stalks immediately after harvest",
+            "Plant NCLB resistant hybrid seeds with Ht gene"
         ],
         "chemical_treatment": [
-            "Apply Pyraclostrobin 20% WG or Azoxystrobin + Propiconazole strobilurin mix"
+            "Spray Propiconazole 25% EC @ 1ml/L or Azoxystrobin 23% SC @ 1ml/L"
         ],
-        "outbreak_risk": "High",
-        "neighbor_alert": "Northern leaf blight lesions spreading. Inspect fields for large cigar-shaped tan lesions.",
-        "hindi_summary": "मक्के की पत्ती पर बड़े सिगार के आकार के भूरे घाव हैं। तुरंत कवकनाशी स्प्रे करें।"
+        "outbreak_risk": "High in cool (18-27°C), wet, dewy conditions",
+        "neighbor_alert": "Northern Leaf Blight detected. Spreading along prevailing wind corridor.",
+        "hindi_summary": "मक्के की पत्ती पर सिगार के आकार के बड़े भूरे-धूसर घाव हैं। प्रोपिकोनाजोल का छिड़काव करें।"
     },
-    "Corn_(maize)___healthy": {
+    "Corn___healthy": {
         "crop": "Corn (Maize)",
         "disease": "Healthy Corn Foliage",
         "pathogen_type": "None",
-        "leaf_morphology": "Long strap-like leaves with parallel veins",
-        "color_signature": "Rich deep emerald green",
-        "lesion_pattern": "Continuous unbroken chlorophyll along leaf blade with sturdy midrib",
+        "leaf_morphology": "Long arching linear blades with parallel veins and intact midrib",
+        "color_signature": "Deep vibrant green",
+        "lesion_pattern": "Smooth green surface without pustules, stripes, or necrotic blight",
         "is_healthy": True,
         "severity": "Healthy",
-        "organic_treatment": ["Maintain balanced NPK fertilization and adequate ear-filling irrigation."],
+        "organic_treatment": ["Maintain balanced nitrogen sidedressing and weed-free spacing."],
         "chemical_treatment": ["None required."],
         "outbreak_risk": "Low",
-        "neighbor_alert": "Corn crop is healthy and vigorous.",
-        "hindi_summary": "मक्के की फसल पूरी तरह हरी और स्वस्थ है।"
+        "neighbor_alert": "Corn crop is vigorous and healthy.",
+        "hindi_summary": "मक्के का पौधा पूरी तरह स्वस्थ और हरा है।"
     },
 
-    # GRAPE (4 classes)
+    # ==================== GRAPE ====================
     "Grape___Black_rot": {
         "crop": "Grape",
         "disease": "Grape Black Rot (Guignardia bidwellii)",
         "pathogen_type": "Fungal",
-        "leaf_morphology": "Palmately 3-5 lobed leaves with coarse teeth",
+        "leaf_morphology": "Palmately 3-5 lobed leaves with cordate base and toothed margins",
         "color_signature": "Small reddish-brown circular spots with dark brown margins",
-        "lesion_pattern": "Circular necrotic spots with tiny black pycnidia specks arranged in rings",
+        "lesion_pattern": "Circular necrotic spots with tiny black pycnidia specks arranged in rings inside lesion",
         "is_healthy": False,
         "severity": "Severe",
         "organic_treatment": [
-            "Meticulous dormant cane pruning; eliminate mummified berry clusters from canopy",
-            "Open vine canopy with shoot positioning to accelerate morning dew evaporation"
+            "Prune canopy aggressively for sunlight and fast canopy drying",
+            "Remove all dried mummified grape clusters from vines and ground"
         ],
         "chemical_treatment": [
-            "Apply Mancozeb 75% WP @ 2.5g/L or Myclobutanil 20% EW @ 0.5ml/L before bloom"
+            "Spray Mancozeb 75% WP @ 2g/L or Kresoxim-methyl 44.3% SC @ 0.7ml/L before bloom"
         ],
-        "outbreak_risk": "High",
-        "neighbor_alert": "Black rot fungal spores active. Neighboring vineyards should apply protective spray before rain.",
-        "hindi_summary": "अंगूर की पत्ती पर लाल-भूरे गोल धब्बे (ब्लैक रॉट) हैं। संक्रमित हिस्से हटाएं और मैंकोजेब स्प्रे करें।"
+        "outbreak_risk": "High (spores splash from overwintered mummies during warm spring rain)",
+        "neighbor_alert": "Black rot inoculum active in vineyard. Spray protective fungicides before rain event.",
+        "hindi_summary": "अंगूर की पत्ती पर काले छल्ले वाले लाल-भूरे धब्बे हैं। मैनकोजेब का छिड़काव करें और सूखे अंगूर हटाएं।"
     },
-    "Grape___Esca_(Black_Measles)": {
+    "Grape___Esca_Black_Measles": {
         "crop": "Grape",
-        "disease": "Esca / Black Measles (Phaeomoniella chlamydospora)",
-        "pathogen_type": "Complex Fungal Pathogen",
-        "leaf_morphology": "Palmately lobed grape leaves",
-        "color_signature": "Interveinal yellow/brown necrosis producing a vivid 'tiger-stripe' pattern",
-        "lesion_pattern": "Sharp bands of yellow chlorosis and brown necrosis alternating with green veins",
+        "disease": "Esca / Black Measles (Complex: Phaeomoniella / Phaeoacremonium)",
+        "pathogen_type": "Fungal Wood Decay Complex",
+        "leaf_morphology": "Palmately lobed leaves",
+        "color_signature": "Interveinal yellow and red discoloration with green veins ('Tiger-stripe')",
+        "lesion_pattern": "Dramatic 'tiger-stripe' necrosis between major veins while primary veins stay green",
         "is_healthy": False,
-        "severity": "Severe",
+        "severity": "High",
         "organic_treatment": [
-            "Sanitize pruning shears with 70% alcohol between vines",
-            "Protect large pruning wounds immediately with wound sealant paste"
+            "Paint all large pruning cuts immediately with biological paste (Trichoderma)",
+            "Mark symptomatic vines and prune last to prevent shears from carrying fungus"
         ],
-        "chemical_treatment": ["No curative chemical exists; prune out affected cordons cleanly."],
-        "outbreak_risk": "Moderate",
-        "neighbor_alert": "Esca decline symptoms reported in grape vine. Sanitize all pruning tools to prevent vineyard spread.",
-        "hindi_summary": "अंगूर में एस्का (बाघ की धारियों जैसे पीले-भूरे पत्ते) रोग है। छंटाई के औजार सैनिटाइज करें।"
+        "chemical_treatment": [
+            "No chemical cure exists for internal trunk decay; apply wound sealants after pruning"
+        ],
+        "outbreak_risk": "Moderate (slow trunk spread through pruning tool contamination)",
+        "neighbor_alert": "Esca trunk disease identified. Sterilize shears with 70% alcohol between vines.",
+        "hindi_summary": "अंगूर में एस्का (बाघ की धारियों जैसे पत्ते) रोग है। छंटाई के औजारों को सैनिटाइज करें और घावों पर पेस्ट लगाएं।"
     },
-    "Grape___Leaf_blight_(Isariopsis_Leaf_Spot)": {
+    "Grape___Leaf_blight_Isariopsis_Leaf_Spot": {
         "crop": "Grape",
-        "disease": "Grape Leaf Blight (Isariopsis cladosporioides)",
+        "disease": "Grape Leaf Blight (Pseudocercospora vitis / Isariopsis)",
         "pathogen_type": "Fungal",
-        "leaf_morphology": "Palmately lobed grape foliage",
-        "color_signature": "Irregular dark brown to black necrotic blotches on older leaves",
-        "lesion_pattern": "Angular brown spots with faint yellow halos coalescing into large scorched areas",
+        "leaf_morphology": "Palmately lobed grape leaves",
+        "color_signature": "Irregular dark brown to black angular lesions with yellow halo",
+        "lesion_pattern": "Lesions are sharply delimited by leaf veinlets, giving an angular shape; leaf drops early",
         "is_healthy": False,
         "severity": "Moderate",
-        "organic_treatment": ["Prune lower canopy leaves to reduce ground moisture and increase airflow."],
-        "chemical_treatment": ["Spray Copper Oxychloride 50% WP @ 2.5g/L or Difenoconazole 25% EC."],
+        "organic_treatment": [
+            "Spray copper oxychloride (3g/L) after harvest to protect foliage",
+            "Rake and bury infected fallen leaves"
+        ],
+        "chemical_treatment": [
+            "Apply Carbendazim 50% WP @ 1g/L or Azoxystrobin @ 1ml/L"
+        ],
         "outbreak_risk": "Moderate",
-        "neighbor_alert": "Leaf blight active on older grape leaves. Ensure canopy airflow.",
-        "hindi_summary": "अंगूर के पत्तों पर भूरा झुलसा रोग है। कॉपर ऑक्सीक्लोराइड का छिड़काव करें।"
+        "neighbor_alert": "Leaf blight causing premature defoliation in grape vines.",
+        "hindi_summary": "अंगूर की पत्ती पर अनियमित गहरे भूरे धब्बे हैं। कॉपर ऑक्सीक्लोराइड या कार्बेन्डाजिम का छिड़काव करें।"
     },
     "Grape___healthy": {
         "crop": "Grape",
-        "disease": "Healthy Grape Vine",
+        "disease": "Healthy Grape Foliage",
         "pathogen_type": "None",
-        "leaf_morphology": "Palmately lobed healthy grape foliage",
-        "color_signature": "Bright supple green",
-        "lesion_pattern": "Clean lamina, intact serrated lobes, no necrotic lesions",
+        "leaf_morphology": "Broad palmately lobed green leaves",
+        "color_signature": "Lush emerald green",
+        "lesion_pattern": "Uniform green canopy without tiger stripes, black spots, or mold",
         "is_healthy": True,
         "severity": "Healthy",
-        "organic_treatment": ["Maintain balanced trellis pruning and consistent potassium nutrition."],
+        "organic_treatment": ["Maintain canopy shoot thinning and good trellis airflow."],
         "chemical_treatment": ["None required."],
         "outbreak_risk": "Low",
-        "neighbor_alert": "Vineyard plot is healthy.",
-        "hindi_summary": "अंगूर की बेल पूरी तरह स्वस्थ है।"
+        "neighbor_alert": "Vineyard foliage is clean and healthy.",
+        "hindi_summary": "अंगूर की पत्तियां स्वस्थ और हरी हैं।"
     },
 
-    # ORANGE / CITRUS (1 class)
-    "Orange___Haunglongbing_(Citrus_greening)": {
+    # ==================== ORANGE & CITRUS ====================
+    "Orange___Haunglongbing_Citrus_greening": {
         "crop": "Orange / Citrus",
         "disease": "Citrus Greening / Huanglongbing (Candidatus Liberibacter asiaticus)",
-        "pathogen_type": "Bacterial (Phloem-limited, Psyllid vector)",
-        "leaf_morphology": "Elliptic-ovate leaves with winged petioles",
-        "color_signature": "Asymmetric blotchy yellow mottle crossing leaf veins irregularly",
-        "lesion_pattern": "Uneven yellowing on one side of midrib, corky raised veins, thickened leathery blade",
+        "pathogen_type": "Bacterial (Vector: Asian Citrus Psyllid)",
+        "leaf_morphology": "Unifoliolate ovate leaves with winged petioles",
+        "color_signature": "Asymmetrical blotchy yellow mottle across the leaf lamina",
+        "lesion_pattern": "Blotchy mottle (yellow pattern does not mirror across midrib), yellow veins, upright leaves",
         "is_healthy": False,
         "severity": "Critical",
         "organic_treatment": [
-            "Intensive Asian citrus psyllid suppression using neem oil (10,000 ppm) and horticultural oils",
-            "Promptly uproot and destroy severely infected trees to protect surrounding grove"
+            "Release parasitoid wasps (Tamarixia radiata) to biological control psyllid vector",
+            "Spray horticultural petroleum mineral oil (1-2%) to deter psyllids",
+            "Eradicate and burn severely infected symptomatic trees"
         ],
         "chemical_treatment": [
-            "Target psyllid vector with systemic Imidacloprid 17.8% SL or Thiamethoxam 25% WG"
+            "Control psyllid vector with Imidacloprid 17.8% SL @ 0.5ml/L or Thiamethoxam 25% WG @ 0.3g/L",
+            "Foliar micronutrient nutritional sprays (Zinc, Iron, Manganese) to support tree vigor"
         ],
-        "outbreak_risk": "Critical (quarantine threat transmitted by citrus psyllids across orchards)",
-        "neighbor_alert": "CRITICAL CITRUS ALERT: Citrus greening symptoms detected. All citrus orchards within 5km must inspect for yellow shoot mottle and control psyllid vectors immediately.",
-        "hindi_summary": "संतरे/नींबू में सिट्रस ग्रीनिंग (पत्तियों का बेतरतीब पीलापन) है। तुरंत रसचूसक कीड़ों का नियंत्रण करें और गंभीर पौधों को नष्ट करें।"
+        "outbreak_risk": "Critical (quarantine pest; psyllids spread bacteria across entire regions)",
+        "neighbor_alert": "CITRUS GREENING VECTOR ALERT: Asian Citrus Psyllid detected. Neighboring citrus orchards within 5km must spray psyllid insecticide.",
+        "hindi_summary": "नींबू/संतरे में सिट्रस ग्रीनिंग (पत्तियों का बेढंगा पीलापन) है। साइला कीड़े को मारने के लिए इमिडाक्लोप्रिड का छिड़काव करें।"
+    },
+    "Citrus___Citrus_canker": {
+        "crop": "Orange / Citrus",
+        "disease": "Citrus Canker (Xanthomonas citri)",
+        "pathogen_type": "Bacterial",
+        "leaf_morphology": "Elliptical dark green leaves with winged petiole",
+        "color_signature": "Raised corky tan/brown crater pustules with yellow chlorotic halo",
+        "lesion_pattern": "Raised blister-like eruptions on both sides of leaf surrounded by distinctive oily water-soaked yellow halo",
+        "is_healthy": False,
+        "severity": "High",
+        "organic_treatment": [
+            "Spray copper hydroxide (2.5g/L) during flush emergence",
+            "Prune infected twigs during dry season"
+        ],
+        "chemical_treatment": [
+            "Copper Oxychloride 50% WP @ 3g/L + Streptocycline (antibacterial) @ 100ppm"
+        ],
+        "outbreak_risk": "High (wind-driven rain spreads bacteria rapidly)",
+        "neighbor_alert": "Citrus canker bacteria spreading via rain splash. Protect young leaf flush.",
+        "hindi_summary": "नींबू में कैंकर रोग (उभरे हुए खुरदुरे धब्बे और पीला घेरा) है। कॉपर ऑक्सीक्लोराइड और स्ट्रेप्टोसाइक्लिन का छिड़काव करें।"
     },
 
-    # PEACH (2 classes)
+    # ==================== PEACH ====================
     "Peach___Bacterial_spot": {
         "crop": "Peach",
         "disease": "Peach Bacterial Spot (Xanthomonas arboricola pv. pruni)",
         "pathogen_type": "Bacterial",
-        "leaf_morphology": "Long lanceolate (sword-like) leaves with fine serrations",
+        "leaf_morphology": "Lanceolate slender leaves with finely serrated margins",
         "color_signature": "Small angular dark purple to black water-soaked lesions",
         "lesion_pattern": "Center of lesions dries, cracks, and falls out, creating a distinct 'shot-hole' appearance",
         "is_healthy": False,
         "severity": "High",
         "organic_treatment": [
-            "Apply copper bactericide sprays during dormant and late bud break periods",
-            "Plant windbreaks to prevent sandblasting and leaf wounding during storms"
+            "Apply fixed copper sprays at dormant bud swell before leaves emerge",
+            "Avoid excessive nitrogen fertilization which produces soft vulnerable tissue"
         ],
         "chemical_treatment": [
-            "Spray Copper Hydroxide at low rates or Oxytetracycline during growing season"
+            "Spray Oxytetracycline @ 150ppm or Copper hydroxide at low rates during growing season"
         ],
         "outbreak_risk": "High (wind-driven rain spreads bacteria rapidly)",
-        "neighbor_alert": "Bacterial shot-hole active. Avoid overhead irrigation and spray preventive copper bactericide.",
-        "hindi_summary": "आड़ू की पत्ती में छेददार बैक्टीरियल स्पॉट (शॉट-होल) रोग है। कॉपर दवा का छिड़काव करें।"
+        "neighbor_alert": "Bacterial shot-hole active in peach orchard. Avoid overhead sprinkler irrigation.",
+        "hindi_summary": "आड़ू की पत्ती पर छेद (शॉट-होल) और बैंगनी धब्बे हैं। कॉपर हाइड्रोक्साइड का छिड़काव करें।"
     },
     "Peach___healthy": {
         "crop": "Peach",
-        "disease": "Healthy Peach Leaf",
+        "disease": "Healthy Peach Foliage",
         "pathogen_type": "None",
-        "leaf_morphology": "Long lanceolate glossy leaves",
-        "color_signature": "Vibrant emerald green, clean margin",
-        "lesion_pattern": "Intact blade without holes or necrotic lesions",
+        "leaf_morphology": "Long lanceolate leaves with fine serrations",
+        "color_signature": "Smooth glossy vibrant green",
+        "lesion_pattern": "Flawless green lamina without shot-holes, leaf curl, or bacterial specks",
         "is_healthy": True,
         "severity": "Healthy",
-        "organic_treatment": ["Annual winter dormant spray and balanced compost."],
+        "organic_treatment": ["Routine orchard sanitation and organic mulch."],
         "chemical_treatment": ["None required."],
         "outbreak_risk": "Low",
-        "neighbor_alert": "Peach trees are healthy.",
-        "hindi_summary": "आड़ू का पेड़ पूरी तरह स्वस्थ है।"
+        "neighbor_alert": "Peach trees are clean and thriving.",
+        "hindi_summary": "आड़ू की पत्तियां पूरी तरह स्वस्थ हैं।"
     },
 
-    # PEPPER / CHILLI (2 classes)
-    "Pepper,_bell___Bacterial_spot": {
+    # ==================== PEPPER & CHILLI ====================
+    "Pepper__bell___Bacterial_spot": {
         "crop": "Pepper (Bell / Chilli)",
-        "disease": "Bacterial Leaf Spot (Xanthomonas campestris pv. vesicatoria)",
+        "disease": "Bacterial Spot (Xanthomonas euvesicatoria)",
         "pathogen_type": "Bacterial",
-        "leaf_morphology": "Simple ovate leaves with smooth (entire) margins and pointed tips",
-        "color_signature": "Small water-soaked dark brown circular spots with bright yellow chlorotic halos",
-        "lesion_pattern": "Dark brown necrotic lesions with prominent yellow haloes, causing premature leaf drop",
+        "leaf_morphology": "Simple ovate leaves with smooth edges and acute apex",
+        "color_signature": "Small circular to irregular dark brown water-soaked lesions with yellow halo",
+        "lesion_pattern": "Lesions on lower leaf surface appear blistered; leaves turn yellow and drop prematurely",
         "is_healthy": False,
         "severity": "High",
         "organic_treatment": [
-            "Use certified disease-free hot water treated seeds (50°C for 25 mins)",
-            "Spray copper hydroxide + bio-fungicide (Bacillus subtilis); avoid overhead irrigation"
+            "Treat seeds with hot water (50°C for 25 minutes) before sowing",
+            "Apply copper sulfate pentahydrate or Bacillus subtilis formulations"
         ],
         "chemical_treatment": [
-            "Apply Copper Oxychloride 50% WP @ 3.0g/L + Streptocycline (100 ppm) bactericide"
+            "Spray Copper Oxychloride 50% WP @ 2.5g/L + Streptomycin sulfate @ 100ppm every 7-10 days"
         ],
-        "outbreak_risk": "High (spreads rapidly in warm, rainy, humid conditions)",
-        "neighbor_alert": "Bacterial leaf spot detected in chilli/pepper plot. Neighboring farmers should spray protective copper bactericide and avoid working in wet fields.",
-        "hindi_summary": "मिर्च/शिमला मिर्च की पत्ती पर पीले घेरे वाले काले-भूरे धब्बे (बैक्टीरियल स्पॉट) हैं। कॉपर ऑक्सीक्लोराइड और स्ट्रेप्टोसाइक्लिन का छिड़काव करें।"
+        "outbreak_risk": "High in warm (24-30°C) rainy periods with wind",
+        "neighbor_alert": "Bacterial spot outbreak on pepper/chilli plots. Avoid handling plants when wet.",
+        "hindi_summary": "मिर्च की पत्ती पर काले-भूरे जलयुक्त धब्बे हैं। कॉपर और स्ट्रेप्टोसाइक्लिन का छिड़काव करें।"
     },
-    "Pepper,_bell___healthy": {
+    "Pepper__bell___healthy": {
         "crop": "Pepper (Bell / Chilli)",
         "disease": "Healthy Pepper Foliage",
         "pathogen_type": "None",
-        "leaf_morphology": "Simple smooth ovate leaves",
-        "color_signature": "Glossy uniform dark green",
-        "lesion_pattern": "Firm smooth lamina with pointed apex, free of spots, curl, or aphids",
+        "leaf_morphology": "Simple ovate to elliptical leaves with smooth margins",
+        "color_signature": "Uniform glossy dark green",
+        "lesion_pattern": "Smooth, flat, unblemished leaves with no chlorosis, leaf curl, or spots",
         "is_healthy": True,
         "severity": "Healthy",
-        "organic_treatment": ["Maintain organic mulch, consistent drip watering, and balanced calcium."],
+        "organic_treatment": ["Maintain balanced fertigation and regular weeding."],
         "chemical_treatment": ["None required."],
         "outbreak_risk": "Low",
-        "neighbor_alert": "Pepper crop is healthy and clean.",
-        "hindi_summary": "मिर्च का पौधा स्वस्थ है।"
+        "neighbor_alert": "Chilli/Pepper plants are vigorous and disease-free.",
+        "hindi_summary": "मिर्च के पौधे स्वस्थ और हरे-भरे हैं।"
+    },
+    "Pepper__bell___Anthracnose": {
+        "crop": "Pepper (Bell / Chilli)",
+        "disease": "Chilli Anthracnose / Dieback (Colletotrichum capsici)",
+        "pathogen_type": "Fungal",
+        "leaf_morphology": "Simple ovate leaves",
+        "color_signature": "Circular sunken spots with concentric rings of black acervuli specks",
+        "lesion_pattern": "Necrotic patches on leaves; twigs die back from top downwards",
+        "is_healthy": False,
+        "severity": "High",
+        "organic_treatment": [
+            "Seed treatment with Trichoderma viride @ 10g/kg",
+            "Remove and destroy affected twigs and fruits"
+        ],
+        "chemical_treatment": [
+            "Spray Azoxystrobin 23% SC @ 1ml/L or Difenoconazole 25% EC @ 1ml/L"
+        ],
+        "outbreak_risk": "High during humid monsoons",
+        "neighbor_alert": "Anthracnose dieback active on chilli. Spray protective triazole fungicide.",
+        "hindi_summary": "मिर्च में एन्थ्रेक्नोज (डाई-बैक) रोग है। एजॉक्सीस्ट्रोबिन या डाइफेनोकोनाजोल का छिड़काव करें।"
     },
 
-    # POTATO (3 classes)
+    # ==================== POTATO ====================
     "Potato___Early_blight": {
         "crop": "Potato",
         "disease": "Potato Early Blight (Alternaria solani)",
         "pathogen_type": "Fungal",
-        "leaf_morphology": "Compound pinnate leaves with large ovate leaflets",
-        "color_signature": "Dark brown to black circular lesions with yellow chlorotic margin",
-        "lesion_pattern": "Classic concentric 'bullseye' target rings on older lower leaves",
+        "leaf_morphology": "Pinnately compound leaves with oval leaflets",
+        "color_signature": "Dark brown circular spots with concentric target rings (bullseye)",
+        "lesion_pattern": "Concentric rings surrounded by narrow chlorotic yellow halos, starting on oldest bottom leaves",
         "is_healthy": False,
         "severity": "Moderate to High",
         "organic_treatment": [
-            "Spray Neem oil (10,000 ppm) with soap emulsion; prune lower leaves near soil",
-            "Ensure adequate potassium and avoid plant drought stress"
+            "Mulch heavily with clean straw to prevent soil-borne spores splashing onto lower leaves",
+            "Maintain 3-year crop rotation with non-solanaceous crops"
         ],
         "chemical_treatment": [
-            "Apply Chlorothalonil 75% WP @ 2.0g/L or Mancozeb 75% WP @ 2.5g/L every 7-10 days"
+            "Spray Chlorothalonil 75% WP @ 2g/L or Mancozeb 75% WP @ 2.5g/L",
+            "Apply Azoxystrobin + Difenoconazole @ 1ml/L at early onset"
         ],
-        "outbreak_risk": "High (spores multiply in alternating wet and dry warm weather)",
-        "neighbor_alert": "Early blight target spots detected in potato crop. Nearby potato and tomato growers should inspect lower foliage and apply protective fungicide.",
-        "hindi_summary": "आलू के निचले पत्तों पर गोल छल्लेदार भूरे धब्बे (अगेती झुलसा) हैं। नीम का तेल या मैंकोजेब स्प्रे करें।"
+        "outbreak_risk": "Moderate to High in alternating wet and dry weather",
+        "neighbor_alert": "Early blight target spots multiplying on lower canopy. Apply preventive fungicide spray.",
+        "hindi_summary": "आलू के निचले पत्तों पर छल्लेदार (बुलआई) भूरे धब्बे हैं। मैनकोजेब या क्लोरोथैलोनिल का छिड़काव करें।"
     },
     "Potato___Late_blight": {
         "crop": "Potato",
         "disease": "Potato Late Blight (Phytophthora infestans)",
-        "pathogen_type": "Oomycete (Fungal-like water mold)",
-        "leaf_morphology": "Compound pinnate potato foliage",
-        "color_signature": "Large, irregular water-soaked dark greenish-brown to black lesions",
-        "lesion_pattern": "Rapidly expanding water-soaked greasy patches; white fluffy mold on leaf undersides in wet mornings",
+        "pathogen_type": "Oomycete",
+        "leaf_morphology": "Pinnately compound potato foliage",
+        "color_signature": "Water-soaked dark green-black greasy lesions with pale chlorotic border",
+        "lesion_pattern": "Rapidly enlarging dark water-soaked patches; white cottony fungal growth on underside in high humidity",
         "is_healthy": False,
         "severity": "Critical",
         "organic_treatment": [
-            "Apply Bordeaux mixture 1% preventatively; rogue out and bury initial infected plants immediately",
-            "Ensure ridge drainage so water never pools in potato rows"
+            "Rogue out and bury infected vines immediately inside sealed bags",
+            "Hill up tubers deeply with soil to prevent rain-washed sporangia from infecting tubers",
+            "Spray copper hydroxide proactively before cold misty rains"
         ],
         "chemical_treatment": [
-            "Apply Metalaxyl-M + Mancozeb (Ridomil Gold MZ) @ 2.5g/L or Dimethomorph 50% WP @ 1.5g/L immediately"
+            "Spray Cymoxanil 8% + Mancozeb 64% WP @ 2.5g/L or Metalaxyl-M + Mancozeb (Ridomil Gold) @ 2.5g/L",
+            "Apply Dimethomorph 50% WP @ 1g/L for curative systemic control"
         ],
-        "outbreak_risk": "Epidemic (can devastate smallholder potato fields within 48-72 hours in cool humid weather)",
-        "neighbor_alert": "URGENT LATE BLIGHT EPIDEMIC WARNING: Highly infectious Phytophthora spores active. All potato and tomato plots in 3km must spray systemic fungicide immediately.",
-        "hindi_summary": "आलू में पछेती झुलसा (लेट ब्लाइट) का गंभीर प्रकोप है। पत्तियों पर गीले काले धब्बे और सफेद फफूंद है। तुरंत रिडोमिल या कॉपर का छिड़काव करें।"
+        "outbreak_risk": "EXTREME CRITICAL (can destroy entire potato field within 48-72 hours under cool wet weather)",
+        "neighbor_alert": "EMERGENCY LATE BLIGHT EPIDEMIC: Phytophthora sporangia airborne across 10km radius. All potato/tomato farmers must spray systemic fungicide immediately.",
+        "hindi_summary": "आलू में पछेती झुलसा (लेट ब्लाइट) का भीषण प्रकोप है! 48 घंटे में पूरी फसल नष्ट हो सकती है। तुरंत रिडोमिल गोल्ड या साइमोक्सानिल का छिड़काव करें।"
     },
     "Potato___healthy": {
         "crop": "Potato",
         "disease": "Healthy Potato Foliage",
         "pathogen_type": "None",
-        "leaf_morphology": "Compound pinnate foliage with clean ovate leaflets",
+        "leaf_morphology": "Pinnate compound leaves with ovate leaflets",
         "color_signature": "Lush vibrant green",
-        "lesion_pattern": "Clean healthy leaflets with vigorous upright growth, no lesions or curling",
+        "lesion_pattern": "Clean green leaflets free of concentric spots, water-soaking, or white mildew",
         "is_healthy": True,
         "severity": "Healthy",
-        "organic_treatment": ["Maintain proper earthing up, drip irrigation, and compost."],
+        "organic_treatment": ["Maintain healthy hilling and balanced potassium nutrition."],
         "chemical_treatment": ["None required."],
         "outbreak_risk": "Low",
-        "neighbor_alert": "Potato field is healthy and disease-free.",
-        "hindi_summary": "आलू की फसल पूरी तरह स्वस्थ है।"
+        "neighbor_alert": "Potato foliage is healthy and vigorous.",
+        "hindi_summary": "आलू के पौधे पूरी तरह स्वस्थ हैं।"
     },
 
-    # RASPBERRY (1 class)
+    # ==================== RASPBERRY ====================
     "Raspberry___healthy": {
         "crop": "Raspberry",
-        "disease": "Healthy Raspberry",
+        "disease": "Healthy Raspberry Foliage",
         "pathogen_type": "None",
-        "leaf_morphology": "Pinnately compound 3-5 serrated leaflets with silver-white undersides",
-        "color_signature": "Vibrant dark green above, silvery pale green below",
-        "lesion_pattern": "Crisp serrated margins, no necrotic spots or cane blight",
+        "leaf_morphology": "Pinnately compound 3-5 leaflets with serrated margins and whitish underside",
+        "color_signature": "Rich green upper surface with silver-white hairy underside",
+        "lesion_pattern": "Intact healthy leaflets with sharp serrations and no rust or cane spots",
         "is_healthy": True,
         "severity": "Healthy",
-        "organic_treatment": ["Prune out old floricanes after fruiting and maintain trellis airflow."],
+        "organic_treatment": ["Prune spent 2nd-year floricanes right at ground level after fruiting."],
         "chemical_treatment": ["None required."],
         "outbreak_risk": "Low",
-        "neighbor_alert": "Raspberry canes are healthy.",
-        "hindi_summary": "रास्पबेरी की पत्तियां स्वस्थ हैं।"
+        "neighbor_alert": "Raspberry canes are clean and productive.",
+        "hindi_summary": "रास्पबेरी के पौधे स्वस्थ हैं।"
     },
 
-    # SOYBEAN (1 class)
-    "Soybean___healthy": {
+    # ==================== SOYBEAN ====================
+    "Soybean___Brown_spot": {
         "crop": "Soybean",
-        "disease": "Healthy Soybean (Minor Leaf Spot / Fungal Pustules if blemished)",
-        "pathogen_type": "None (or Minor Fungal if spots present)",
-        "leaf_morphology": "Trifoliate compound leaf (3 oval-broad leaflets with fine hairs)",
-        "color_signature": "Lush deep green, soft pubescent texture",
-        "lesion_pattern": "Clean trifoliate leaflets, prominent veins, no mosaic mottle",
-        "is_healthy": True,
-        "severity": "Healthy",
-        "organic_treatment": [
-            "Inoculate seed with Bradyrhizobium japonicum at planting for natural nitrogen fixation",
-            "Spray neem oil emulsion (5ml/L) if small minor fungal rust spots appear"
-        ],
-        "chemical_treatment": [
-            "Apply Pyraclostrobin or Tebuconazole if Asian Soybean Rust or Brown Spot exceeds 5% threshold"
-        ],
-        "outbreak_risk": "Low",
-        "neighbor_alert": "Soybean plot is generally healthy. Routine surveillance advised.",
-        "hindi_summary": "सोयाबीन की फसल सामान्य और स्वस्थ है। पत्तों पर कोई गंभीर बीमारी नहीं है।"
-    },
-
-    # SQUASH / CUCURBITS (1 class)
-    "Squash___Powdery_mildew": {
-        "crop": "Squash / Cucurbits",
-        "disease": "Squash Powdery Mildew (Podosphaera xanthii)",
+        "disease": "Soybean Brown Spot / Septoria Spot (Septoria glycines)",
         "pathogen_type": "Fungal",
-        "leaf_morphology": "Large palmately lobed, rough bristly round leaves",
-        "color_signature": "Brilliant white talcum powder-like patches across upper leaf blade",
-        "lesion_pattern": "Circular white powdery fungal spots expanding over whole surface; underlying leaf turns yellow then brown and dies",
-        "is_healthy": False,
-        "severity": "High",
-        "organic_treatment": [
-            "Spray 10% raw cow milk solution or potassium bicarbonate (5g/L) every 7 days",
-            "Spray neem extract (10,000 ppm) with mild soap emulsion on upper and lower surfaces"
-        ],
-        "chemical_treatment": [
-            "Apply Difenoconazole 25% EC @ 0.5ml/L or Azoxystrobin 23% SC @ 1ml/L"
-        ],
-        "outbreak_risk": "High (powdery mildew spreads rapidly in warm dry air with humid canopies)",
-        "neighbor_alert": "Powdery mildew outbreak active in cucurbit/squash plots. Inspect pumpkin, cucumber, and squash leaves for white flour-like powder.",
-        "hindi_summary": "कद्दू/लौकी/खीरा के पत्तों पर सफेद पाउडर (पाउडरी मिल्ड्यू) जमा है। नीम का तेल या दूध के घोल का छिड़काव करें।"
-    },
-
-    # STRAWBERRY (2 classes)
-    "Strawberry___Leaf_scorch": {
-        "crop": "Strawberry",
-        "disease": "Strawberry Leaf Scorch / Common Leaf Spot (Diplocarpon earlianum / Mycosphaerella fragariae)",
-        "pathogen_type": "Fungal",
-        "leaf_morphology": "Trifoliate (3 leaflets) with distinct, coarse saw-tooth (serrated) dentate margins and radiating veins",
-        "color_signature": "Numerous small circular purplish, dark red, or brown spots, often with white or tan necrotic centers",
-        "lesion_pattern": "Distinct 'bird's eye' spots (1-5mm) scattered thickly across serrated leaf lamina; coalescing into scorched burnt edges",
+        "leaf_morphology": "Trifoliate compound leaves with ovate to lanceolate leaflets",
+        "color_signature": "Small angular dark brown to red spots surrounded by chlorotic yellow halos",
+        "lesion_pattern": "Small (2-5mm) angular irregular brown to bronze lesions on lower canopy; leaves turn yellow and drop early",
         "is_healthy": False,
         "severity": "Moderate to High",
         "organic_treatment": [
-            "Prune off and safely destroy old scorched, heavily spotted leaves after harvest",
-            "Apply pine needle or clean straw mulch to keep leaves off wet soil",
-            "Spray Copper Hydroxide or bio-fungicide (Bacillus amyloliquefaciens)"
+            "Rotate crops with non-legume crops (corn, sorghum) for 1-2 seasons",
+            "Plow crop residue deep after harvest to decompose fungal pycnidia",
+            "Plant high-nodulation certified disease-free seeds"
         ],
         "chemical_treatment": [
-            "Apply Captan 50% WP @ 2.5g/L or Thiophanate-methyl 70% WP @ 1.5g/L at early leaf emergence and pre-bloom",
-            "Apply Azoxystrobin 23% SC if spot density exceeds 10 per leaf"
+            "Spray Pyraclostrobin 20% WG @ 1g/L or Azoxystrobin + Difenoconazole @ 1ml/L at R3 (pod initiation) stage",
+            "Apply Carbendazim 12% + Mancozeb 63% WP (Saaf) @ 2g/L"
+        ],
+        "outbreak_risk": "High during warm wet monsoon periods with frequent rain splash",
+        "neighbor_alert": "Soybean Brown Spot (Septoria) active on lower canopy. If spots spread upward to R3 pod level, spray protective fungicide.",
+        "hindi_summary": "सोयाबीन की पत्ती पर सेप्टोरिया ब्राउन स्पॉट (पीले घेरे वाले छोटे कोणीय भूरे-लाल धब्बे) हैं। कार्बेन्डाजिम + मैनकोजेब (साफ) का छिड़काव करें।"
+    },
+    "Soybean___Rust": {
+        "crop": "Soybean",
+        "disease": "Asian Soybean Rust (Phakopsora pachyrhizi)",
+        "pathogen_type": "Fungal",
+        "leaf_morphology": "Trifoliate compound leaves with ovate leaflets",
+        "color_signature": "Tan to reddish-brown tiny raised pustules on leaf underside",
+        "lesion_pattern": "Volcano-like raised uredinial pustules packed with powdery spores causing rapid premature defoliation",
+        "is_healthy": False,
+        "severity": "Critical",
+        "organic_treatment": [
+            "Early planting of early-maturing cultivars to avoid peak spore winds",
+            "Spray neem seed kernel extract (NSKE 5%) as preventive deterrent"
+        ],
+        "chemical_treatment": [
+            "Apply Tebuconazole 25.9% EC @ 1ml/L or Hexaconazole 5% EC @ 1.5ml/L at first detection of rust pustules"
+        ],
+        "outbreak_risk": "High to Critical (windborne spores rapidly defoliate entire soybean belts)",
+        "neighbor_alert": "SOYBEAN RUST WARNING: Airborne urediniospores detected. Adjacent fields must monitor undersides of lower leaves.",
+        "hindi_summary": "सोयाबीन में रस्ट (जंग) रोग के भूरे फफोले हैं। टेबुकोनाजोल का तुरंत छिड़काव करें।"
+    },
+    "Soybean___healthy": {
+        "crop": "Soybean",
+        "disease": "Healthy Soybean Foliage",
+        "pathogen_type": "None",
+        "leaf_morphology": "Trifoliate ovate leaves with prominent netted veins",
+        "color_signature": "Lush vibrant green",
+        "lesion_pattern": "Unblemished green leaf surface with active nitrogen-fixing vigor",
+        "is_healthy": True,
+        "severity": "Healthy",
+        "organic_treatment": ["Rhizobium seed inoculation and balanced phosphorus application."],
+        "chemical_treatment": ["None required."],
+        "outbreak_risk": "Low",
+        "neighbor_alert": "Soybean crop is healthy and green.",
+        "hindi_summary": "सोयाबीन की फसल पूरी तरह स्वस्थ और हरी-भरी है।"
+    },
+
+    # ==================== SQUASH & CUCURBITS ====================
+    "Squash___Powdery_mildew": {
+        "crop": "Squash / Cucurbits",
+        "disease": "Cucurbit Powdery Mildew (Podosphaera xanthii)",
+        "pathogen_type": "Fungal",
+        "leaf_morphology": "Broad palmately lobed leaves with rough prickly hairs",
+        "color_signature": "White talcum powder-like patches covering both leaf surfaces",
+        "lesion_pattern": "Round white powdery colonies coalescing to blanket the entire leaf blade; leaves yellow and dry crisp",
+        "is_healthy": False,
+        "severity": "High",
+        "organic_treatment": [
+            "Spray milk-water solution (40% cow milk, 60% water) in direct sunlight",
+            "Spray potassium bicarbonate (3-5g/L) with horticultural oil"
+        ],
+        "chemical_treatment": [
+            "Apply Myclobutanil 10% WP @ 0.5g/L or Penconazole 10% EC @ 0.5ml/L"
+        ],
+        "outbreak_risk": "High in dry warm weather with high relative humidity at night",
+        "neighbor_alert": "Powdery mildew spreading rapidly across squash/pumpkin vines.",
+        "hindi_summary": "कद्दू/लौकी की पत्ती पर सफेद पाउडर (पाउडरी मिल्ड्यू) जमा है। पोटेशियम बाइकार्बोनेट या माइक्लोबुटानिल का छिड़काव करें।"
+    },
+
+    # ==================== STRAWBERRY ====================
+    "Strawberry___Leaf_scorch": {
+        "crop": "Strawberry",
+        "disease": "Strawberry Leaf Scorch (Diplocarpon earlianum)",
+        "pathogen_type": "Fungal",
+        "leaf_morphology": "Trifoliate leaves with sharp serrated margins",
+        "color_signature": "Dark purple to reddish-brown blotches without light center",
+        "lesion_pattern": "Irregular purplish-black blotches that coalesce; leaf edges curl up and appear scorched/burnt",
+        "is_healthy": False,
+        "severity": "Moderate to High",
+        "organic_treatment": [
+            "Remove and destroy severely scorched leaves after harvest",
+            "Avoid overhead irrigation; use drip tape beneath plastic mulch"
+        ],
+        "chemical_treatment": [
+            "Spray Captan 50% WP @ 2.5g/L or Thiophanate-methyl 70% WP @ 1g/L"
+        ],
+        "outbreak_risk": "High in prolonged wet conditions",
+        "neighbor_alert": "Leaf scorch fungus active in strawberry beds. Water at soil level only.",
+        "hindi_summary": "स्ट्रॉबेरी की पत्तियों के किनारे झुलसे और बैंगनी-काले हो रहे हैं। कैप्टन या थायोफैनेट-मिथाइल का छिड़काव करें।"
+    },
+    "Strawberry___Leaf_spot": {
+        "crop": "Strawberry",
+        "disease": "Strawberry Common Leaf Spot (Mycosphaerella fragariae)",
+        "pathogen_type": "Fungal",
+        "leaf_morphology": "Trifoliate leaves with deeply serrated teeth along edges",
+        "color_signature": "Small circular spots with white to ash-gray centers and dark purple-red halos",
+        "lesion_pattern": "Classic 'bird's eye' spots (3-6mm) with pale whitish necrotic centers bordered by deep reddish-purple margins",
+        "is_healthy": False,
+        "severity": "Moderate to High",
+        "organic_treatment": [
+            "Mow and collect old infected foliage immediately after renovation",
+            "Ensure wide spacing (30cm) between crowns for rapid leaf drying"
+        ],
+        "chemical_treatment": [
+            "Spray Copper Hydroxide @ 2g/L or Azoxystrobin @ 1ml/L at early vegetative stage",
+            "Apply Difenoconazole 25% EC @ 0.5ml/L if leaf spotting exceeds 5% of canopy"
         ],
         "outbreak_risk": "High (spores splash from infected crown and soil during rain or overhead watering)",
-        "neighbor_alert": "Strawberry leaf scorch / spot confirmed on serrated foliage. Neighboring strawberry growers should prune old foliage, avoid overhead watering, and apply protective fungicide.",
-        "hindi_summary": "स्ट्रॉबेरी की दांतेदार पत्ती पर जामुनी-सफेद गोल धब्बे (लीफ स्कॉर्च / लीफ स्पॉट) हैं। पुरानी खराब पत्तियों को काटें और कैप्टान या कॉपर का छिड़काव करें।"
+        "neighbor_alert": "Strawberry Common Leaf Spot ('bird's eye') detected. Neighboring berry growers should avoid overhead sprinkler watering.",
+        "hindi_summary": "स्ट्रॉबेरी की पत्ती पर लाल-बैंगनी घेरे वाले सफेद केंद्र के गोल धब्बे (बर्ड्स आई लीफ स्पॉट) हैं। कॉपर या डाइफेनोकोनाजोल का छिड़काव करें।"
     },
     "Strawberry___healthy": {
         "crop": "Strawberry",
-        "disease": "Healthy Strawberry",
+        "disease": "Healthy Strawberry Foliage",
         "pathogen_type": "None",
-        "leaf_morphology": "Trifoliate leaves with deep sawtooth serrations",
-        "color_signature": "Lush glossy dark green",
-        "lesion_pattern": "Firm clean serrated leaflets, no purplish spots or scorched tips",
+        "leaf_morphology": "Trifoliate compound leaves with distinct serrations",
+        "color_signature": "Glossy vibrant emerald green",
+        "lesion_pattern": "Supple serrated leaflets completely free of purple spots, scorch, or powder",
         "is_healthy": True,
         "severity": "Healthy",
-        "organic_treatment": ["Maintain straw mulch, drip watering, and balanced bio-fertilizer."],
+        "organic_treatment": ["Maintain straw mulch and clean drip irrigation."],
         "chemical_treatment": ["None required."],
         "outbreak_risk": "Low",
-        "neighbor_alert": "Strawberry plot is healthy and vigorous.",
-        "hindi_summary": "स्ट्रॉबेरी के पत्ते स्वस्थ और चमकदार हरे हैं।"
+        "neighbor_alert": "Strawberry crowns and foliage are in peak health.",
+        "hindi_summary": "स्ट्रॉबेरी के पौधे पूरी तरह स्वस्थ और फलने-फूलने के लिए तैयार हैं।"
     },
 
-    # TOMATO (10 classes)
+    # ==================== TOMATO (10 Classes) ====================
     "Tomato___Bacterial_spot": {
         "crop": "Tomato",
-        "disease": "Tomato Bacterial Spot (Xanthomonas spp.)",
+        "disease": "Tomato Bacterial Spot (Xanthomonas perforans)",
         "pathogen_type": "Bacterial",
-        "leaf_morphology": "Compound pinnate tomato leaves with lobed leaflets",
-        "color_signature": "Small (1-3mm) circular water-soaked dark brown spots with a distinct yellow halo",
-        "lesion_pattern": "Spots coalesce, causing ragged tear-like holes and yellowing of the leaflet",
+        "leaf_morphology": "Compound pinnate leaves with lobed/serrated leaflets",
+        "color_signature": "Small dark brown to black circular lesions with greasy translucent halos",
+        "lesion_pattern": "Numerous small (under 3mm) dark greasy specks; lesions may tear giving leaf a ragged shot-hole look",
         "is_healthy": False,
         "severity": "High",
         "organic_treatment": [
-            "Spray Copper Hydroxide + Bacillus subtilis bio-control",
-            "Avoid working in or harvesting tomato plants when foliage is wet"
+            "Apply copper octanoate or fixed copper + mancozeb tank mix",
+            "Sanitize trellising stakes and tools with 10% bleach solution"
         ],
         "chemical_treatment": [
-            "Apply Copper Oxychloride 50% WP (3.0g/L) + Streptocycline (100 ppm) bactericide"
+            "Spray Copper Oxychloride 50% WP @ 2.5g/L + Streptocycline @ 100ppm every 7 days"
         ],
-        "outbreak_risk": "High (wind-driven rain spreads bacteria rapidly)",
-        "neighbor_alert": "Bacterial spot reported in tomato field. Neighboring farmers should spray protective copper bactericide.",
-        "hindi_summary": "टमाटर की पत्ती पर पीले घेरे वाले छोटे काले धब्बे (बैक्टीरियल स्पॉट) हैं। कॉपर और स्ट्रेप्टोसाइक्लिन का छिड़काव करें।"
+        "outbreak_risk": "High in warm wet stormy weather",
+        "neighbor_alert": "Bacterial spot on tomato foliage. Do not cultivate or harvest while foliage is wet.",
+        "hindi_summary": "टमाटर की पत्ती पर छोटे काले चिकने धब्बे (बैक्टीरियल स्पॉट) हैं। कॉपर ऑक्सीक्लोराइड + स्ट्रेप्टोसाइक्लिन का छिड़काव करें।"
     },
     "Tomato___Early_blight": {
         "crop": "Tomato",
-        "disease": "Tomato Early Blight (Alternaria solani / linariae)",
+        "disease": "Tomato Early Blight (Alternaria solani)",
         "pathogen_type": "Fungal",
-        "leaf_morphology": "Compound pinnate tomato leaves with lobed leaflets",
-        "color_signature": "Dark brown circular spots with concentric target-board rings surrounded by pale yellow halo",
-        "lesion_pattern": "Concentric 'bullseye' rings on lowest older foliage; leaves turn chlorotic yellow and drop",
+        "leaf_morphology": "Compound pinnate leaves",
+        "color_signature": "Dark brown circular spots with concentric target rings (bullseye)",
+        "lesion_pattern": "Target-board concentric rings surrounded by yellow chlorotic halo, starting on lower mature leaves",
         "is_healthy": False,
         "severity": "Moderate to High",
         "organic_treatment": [
-            "Prune lower 30cm of foliage from soil; apply clean mulch around stems",
-            "Spray Neem oil extract (10,000 ppm) with mild soap emulsion in the evening"
+            "Prune lowest leaves touching the ground to break splash transmission",
+            "Apply thick organic straw mulch around plant base"
         ],
         "chemical_treatment": [
-            "Apply Mancozeb 75% WP @ 2.5g/L or Azoxystrobin + Difenoconazole @ 1ml/L every 10 days"
+            "Spray Mancozeb 75% WP @ 2.5g/L or Chlorothalonil 75% WP @ 2g/L",
+            "Apply Tebuconazole 25.9% EC @ 1ml/L for curative systemic control"
         ],
-        "outbreak_risk": "High (spores splash from soil during rain and irrigation)",
-        "neighbor_alert": "Early blight target spots detected in lower tomato canopy. Check lower leaves and apply mulch.",
-        "hindi_summary": "टमाटर के निचले पत्तों पर गोल छल्लेदार भूरे धब्बे (अगेती झुलसा) हैं। नीचे के खराब पत्ते काटें और मैंकोजेब स्प्रे करें।"
+        "outbreak_risk": "Moderate to High",
+        "neighbor_alert": "Early blight bullseye lesions progressing up tomato canopy.",
+        "hindi_summary": "टमाटर के निचले पत्तों पर छल्लेदार (बुलआई) धब्बे हैं। नीचे की पत्तियां काटें और मैनकोजेब का छिड़काव करें।"
     },
     "Tomato___Late_blight": {
         "crop": "Tomato",
         "disease": "Tomato Late Blight (Phytophthora infestans)",
         "pathogen_type": "Oomycete",
-        "leaf_morphology": "Compound pinnate tomato foliage",
-        "color_signature": "Large irregular water-soaked dark olive to grayish-black lesions",
-        "lesion_pattern": "Rapidly expanding water-soaked greasy patches; white cottony mold under wet conditions",
+        "leaf_morphology": "Compound pinnate leaves",
+        "color_signature": "Water-soaked irregular pale green to dark purplish-black greasy lesions",
+        "lesion_pattern": "Rapidly spreading large dark water-soaked patches; white fuzzy mold on leaf undersides during moist cool mornings",
         "is_healthy": False,
         "severity": "Critical",
         "organic_treatment": [
-            "Rogue out and bag heavily infected tomato plants immediately",
-            "Apply copper sulfate or Bordeaux mixture 1% preventatively"
+            "Uproot and destroy heavily infected vines in airtight plastic sacks",
+            "Avoid wet leaf canopies; use drip irrigation strictly"
         ],
         "chemical_treatment": [
-            "Apply Dimethomorph 50% WP @ 1.5g/L or Metalaxyl-M (Ridomil MZ) @ 2.5g/L immediately"
+            "Spray Metalaxyl-M + Mancozeb (Ridomil Gold) @ 2.5g/L or Cymoxanil + Mancozeb @ 2.5g/L",
+            "Apply Dimethomorph 50% WP @ 1g/L"
         ],
-        "outbreak_risk": "Critical (airborne sporangia travel 5-10 km on cool humid winds)",
-        "neighbor_alert": "CRITICAL LATE BLIGHT EPIDEMIC WARNING: Highly infectious airborne spores active. All tomato and potato growers in 5km must spray systemic fungicide immediately.",
-        "hindi_summary": "टमाटर में पछेती झुलसा (लेट ब्लाइट) है। पत्ते तेजी से गलकर काले हो रहे हैं। तुरंत रिडोमिल या कॉपर का छिड़काव करें।"
+        "outbreak_risk": "EXTREME CRITICAL (can wipe out tomato field in 48-72 hours)",
+        "neighbor_alert": "CRITICAL LATE BLIGHT EPIDEMIC: Neighboring plots must spray protective systemic fungicide immediately.",
+        "hindi_summary": "टमाटर में पछेती झुलसा (लेट ब्लाइट) का गंभीर खतरा है! तुरंत रिडोमिल गोल्ड या साइमोक्सानिल का छिड़काव करें।"
     },
     "Tomato___Leaf_Mold": {
         "crop": "Tomato",
         "disease": "Tomato Leaf Mold (Passalora fulva)",
         "pathogen_type": "Fungal",
-        "leaf_morphology": "Compound pinnate tomato foliage",
-        "color_signature": "Pale green or yellow blotches on upper leaf surface",
-        "lesion_pattern": "Lower leaf surface develops velvety olive-green to brown fungal growth",
+        "leaf_morphology": "Compound pinnate leaves",
+        "color_signature": "Pale yellow chlorotic blotches on upper surface; velvety olive-brown mold beneath",
+        "lesion_pattern": "Diffuse pale yellow spots on upper leaf surface corresponding to olive-green to brown velvety sporulation underneath",
         "is_healthy": False,
         "severity": "Moderate",
         "organic_treatment": [
-            "Improve greenhouse/polyhouse ventilation to keep relative humidity below 80%",
-            "Increase plant spacing for maximum sunlight penetration"
+            "Increase greenhouse / polytunnel ventilation to drop relative humidity below 85%",
+            "Apply copper soap or potassium bicarbonate"
         ],
-        "chemical_treatment": ["Spray Copper Hydroxide or Chlorothalonil 75% WP @ 2.0g/L."],
-        "outbreak_risk": "High in humid polyhouses",
-        "neighbor_alert": "Leaf mold active in tomato canopy. Increase ventilation.",
-        "hindi_summary": "टमाटर की पत्ती की ऊपरी सतह पर पीलापन और निचली सतह पर जैतूनी फफूंद (लीफ मोल्ड) है। हवा का बहाव बढ़ाएं।"
+        "chemical_treatment": [
+            "Spray Difenoconazole 25% EC @ 0.5ml/L or Azoxystrobin @ 1ml/L"
+        ],
+        "outbreak_risk": "High in humid, poorly ventilated polyhouses",
+        "neighbor_alert": "Leaf mold spores proliferating in humid greenhouses.",
+        "hindi_summary": "टमाटर की पत्ती के ऊपर पीलापन और नीचे मखमली भूरा फफूंद (लीफ मोल्ड) है। हवा का संचार बढ़ाएं और डाइफेनोकोनाजोल छिड़कें।"
     },
     "Tomato___Septoria_leaf_spot": {
         "crop": "Tomato",
-        "disease": "Tomato Septoria Leaf Spot (Septoria lycopersici)",
+        "disease": "Septoria Leaf Spot (Septoria lycopersici)",
         "pathogen_type": "Fungal",
-        "leaf_morphology": "Compound pinnate tomato leaves with lobed leaflets",
-        "color_signature": "Numerous small circular spots (2-4mm) with pale grayish-white centers and dark brown margins",
-        "lesion_pattern": "Distinct pale gray center with tiny black pinpoint speck pycnidia visible inside each spot",
+        "leaf_morphology": "Compound pinnate leaves with serrated margins",
+        "color_signature": "Small circular spots with ash-gray centers and dark brown margins",
+        "lesion_pattern": "Numerous small (1.5 - 3mm) round spots with pale gray centers containing tiny black speck pycnidia",
         "is_healthy": False,
-        "severity": "High",
+        "severity": "Moderate to High",
         "organic_treatment": [
-            "Remove lower infected foliage and destroy; 3-year crop rotation",
-            "Apply heavy organic mulch to prevent rain splashing spores from soil"
-        ],
-        "chemical_treatment": ["Apply Mancozeb 75% WP or Chlorothalonil 75% WP @ 2.0g/L every 7-10 days."],
-        "outbreak_risk": "High",
-        "neighbor_alert": "Septoria leaf spot active in lower tomato canopy. Prune infected leaves.",
-        "hindi_summary": "टमाटर के पत्तों पर भूरे घेरे और सफेद केंद्र वाले छोटे-छोटे धब्बे (सेप्टोरिया) हैं। मैंकोजेब का छिड़काव करें।"
-    },
-    "Tomato___Spider_mites Two-spotted_spider_mite": {
-        "crop": "Tomato",
-        "disease": "Tomato Spider Mites (Tetranychus urticae)",
-        "pathogen_type": "Pest (Arachnid / Mite)",
-        "leaf_morphology": "Compound pinnate tomato leaves",
-        "color_signature": "Fine yellow stippling / speckled chlorotic dots across leaf blade",
-        "lesion_pattern": "Silken webbing on leaf undersides; leaves turn yellow, bronzed, dry, and brittle",
-        "is_healthy": False,
-        "severity": "High",
-        "organic_treatment": [
-            "Spray potassium insecticidal soap or neem oil (10,000 ppm) with high pressure under leaves",
-            "Release predatory mites (Phytoseiulus persimilis) in early infestation"
+            "Strip off infected lower leaves and discard away from tomato field",
+            "Maintain 3-year solanaceous crop rotation"
         ],
         "chemical_treatment": [
-            "Apply Abamectin 1.9% EC @ 1ml/L or Spiromesifen 22.9% SC @ 1ml/L miticide"
+            "Spray Mancozeb 75% WP @ 2.5g/L or Chlorothalonil 75% WP @ 2g/L every 7-10 days"
         ],
-        "outbreak_risk": "High in hot, dry, dusty conditions",
-        "neighbor_alert": "Spider mite populations increasing in tomato plots. Check leaf undersides for fine webbing.",
-        "hindi_summary": "टमाटर में लाल मकड़ी (माइट्स) का हमला है। पत्तों पर बारीक जाले और पीलापन है। अबामेक्टिन या नीम का तेल स्प्रे करें।"
+        "outbreak_risk": "High in wet, rainy conditions",
+        "neighbor_alert": "Septoria leaf spot advancing upward from lower canopy.",
+        "hindi_summary": "टमाटर के पत्तों पर भूरे घेरे वाले छोटे गोल धब्बे (सेप्टोरिया लीफ स्पॉट) हैं। निचली पत्तियां हटाएं और मैनकोजेब छिड़कें।"
+    },
+    "Tomato___Spider_mites_Two-spotted_spider_mite": {
+        "crop": "Tomato",
+        "disease": "Two-Spotted Spider Mites (Tetranychus urticae)",
+        "pathogen_type": "Arachnid Pest",
+        "leaf_morphology": "Compound pinnate leaves",
+        "color_signature": "Fine yellow stippling, speckling, and bronzing on upper leaf surface",
+        "lesion_pattern": "Dense yellow stippled pinpricks; fine silky webbing visible on leaf undersides and leaf axils",
+        "is_healthy": False,
+        "severity": "High",
+        "organic_treatment": [
+            "Release predatory mites (Phytoseiulus persimilis)",
+            "Spray neem oil 1% or insecticidal soap under high pressure beneath leaves"
+        ],
+        "chemical_treatment": [
+            "Apply Spiromesifen 22.9% SC @ 1ml/L or Propargite 57% EC @ 2ml/L"
+        ],
+        "outbreak_risk": "High in hot, dry, dusty weather",
+        "neighbor_alert": "Spider mite webbing and bronzing exploding in dry hot weather.",
+        "hindi_summary": "टमाटर की पत्ती पर बारीक पीलापन और जाला (मकड़ी/माइट्स) है। स्पाइरोमेसिफेन या नीम तेल का छिड़काव करें।"
     },
     "Tomato___Target_Spot": {
         "crop": "Tomato",
         "disease": "Tomato Target Spot (Corynespora cassiicola)",
         "pathogen_type": "Fungal",
-        "leaf_morphology": "Compound pinnate tomato foliage",
-        "color_signature": "Small pinpoint brown lesions expanding into circular spots with light brown centers",
-        "lesion_pattern": "Concentric dark rings with pale brown centers, similar to early blight but on upper canopy",
+        "leaf_morphology": "Compound pinnate leaves",
+        "color_signature": "Brown pinpoint spots expanding to circular lesions with light brown centers",
+        "lesion_pattern": "Target-like circular lesions with subtle concentric rings and distinct yellow halos",
         "is_healthy": False,
         "severity": "Moderate",
-        "organic_treatment": ["Space plants widely for maximum aeration; avoid overhead wetting."],
-        "chemical_treatment": ["Apply Famoxadone + Cymoxanil or Boscalid fungicide."],
+        "organic_treatment": ["Improve plant spacing for airflow; prune lower leaves."],
+        "chemical_treatment": ["Spray Azoxystrobin + Difenoconazole @ 1ml/L or Boscalid @ 0.5g/L."],
         "outbreak_risk": "Moderate",
-        "neighbor_alert": "Target spot detected in tomato plot. Improve airflow.",
-        "hindi_summary": "टमाटर पर टारगेट स्पॉट के गोल भूरे धब्बे हैं। हवा का आवागमन सुधारें।"
+        "neighbor_alert": "Target spot lesions spreading in tomato canopy.",
+        "hindi_summary": "टमाटर पर टारगेट स्पॉट (हल्के भूरे केंद्र वाले गोल धब्बे) हैं। एजॉक्सीस्ट्रोबिन का छिड़काव करें।"
     },
     "Tomato___Tomato_Yellow_Leaf_Curl_Virus": {
         "crop": "Tomato",
         "disease": "Tomato Yellow Leaf Curl Virus (TYLCV)",
-        "pathogen_type": "Viral (Begomovirus, Whitefly vector)",
-        "leaf_morphology": "Compound tomato foliage, severely deformed",
-        "color_signature": "Bright yellow chlorosis on leaf margins with stunted pale foliage",
-        "lesion_pattern": "Severe upward rolling and cupping of leaf margins, puckered small leaves, bushy stunted growth",
+        "pathogen_type": "Viral (Vector: Bemisia tabaci Whitefly)",
+        "leaf_morphology": "Severely stunted, cupped, and distorted leaflets",
+        "color_signature": "Intense interveinal chlorosis and yellow margins",
+        "lesion_pattern": "Upward curling and cupping of leaflets, reduced leaflet size, bushy stunted plant habit",
         "is_healthy": False,
         "severity": "Critical",
         "organic_treatment": [
-            "Install yellow sticky traps (20 per acre) to catch whitefly vectors",
-            "Erect 50-mesh insect netting around seedlings and spray neem extract regularly"
+            "Install yellow sticky traps (10-15 traps per acre) to catch whiteflies",
+            "Spray neem seed kernel extract (NSKE 5%) or fish oil soap",
+            "Rogue out and destroy infected viral plants immediately"
         ],
         "chemical_treatment": [
-            "Control whitefly vector Bemisia tabaci with Acetamiprid 20% SP @ 0.5g/L or Spirotetramat"
+            "Control whitefly vector: Spray Diafenthiuron 50% WP @ 1.2g/L or Acetamiprid 20% SP @ 0.3g/L"
         ],
-        "outbreak_risk": "Critical (whiteflies transmit virus within 15-30 minutes across entire village clusters)",
-        "neighbor_alert": "VIRAL TYLCV ALERT: Whitefly-transmitted Leaf Curl Virus detected in tomato. Neighboring vegetable plots must spray whitefly controls immediately to prevent field destruction.",
-        "hindi_summary": "टमाटर में लीफ कर्ल वायरस (पत्तियां ऊपर मुड़ना और पीलापन) है। सफेद मक्खी (व्हाइटफ्लाई) का तुरंत नियंत्रण करें।"
+        "outbreak_risk": "Critical (whiteflies rapidly transmit virus across entire tomato clusters)",
+        "neighbor_alert": "WHITEFLY / TYLCV OUTBREAK: Yellow leaf curl virus spreading via whiteflies. Install yellow sticky traps immediately.",
+        "hindi_summary": "टमाटर में पत्ती मरोड़ रोग (लीफ कर्ल वायरस) है जो सफेद मक्खी से फैलता है। सफेद मक्खी को रोकने के लिए डायफेंथियूरॉन या एसिटामिप्रिड छिड़कें।"
     },
     "Tomato___Tomato_mosaic_virus": {
         "crop": "Tomato",
         "disease": "Tomato Mosaic Virus (ToMV)",
-        "pathogen_type": "Viral (Tobamovirus, Mechanical vector)",
-        "leaf_morphology": "Compound pinnate tomato foliage",
-        "color_signature": "Alternating light and dark green mosaic mottle",
-        "lesion_pattern": "Blistering, distortion, puckering, and extreme 'shoestring' narrowing of leaflets",
+        "pathogen_type": "Viral (Mechanically Transmitted)",
+        "leaf_morphology": "Distorted, blistered, strap-like 'shoestring' leaflets",
+        "color_signature": "Mottled pattern of alternating light and dark green patches",
+        "lesion_pattern": "Mosaic mottle of dark and light green islands, blistering of leaf surface, stunted growth",
         "is_healthy": False,
-        "severity": "Severe",
+        "severity": "High",
         "organic_treatment": [
-            "Disinfect hands and tools in 10% trisodium phosphate or whole milk before touching plants",
-            "Uproot and bury infected plants immediately; do not smoke or handle tobacco near tomatoes"
+            "Wash hands and dip tools in non-fat dry milk solution (20%) before handling plants",
+            "Never use tobacco products near tomato crops"
         ],
-        "chemical_treatment": ["No chemical cure exists; plant certified ToMV-resistant hybrid varieties."],
-        "outbreak_risk": "High (mechanically spread on pruning tools, hands, and clothing)",
-        "neighbor_alert": "Mosaic virus detected. Sanitize all farm pruning tools with milk or disinfectant to prevent mechanical spread.",
-        "hindi_summary": "टमाटर में मोज़ेक वायरस (पत्तियों पर हरा-पीला चितकबरापन) है। संक्रमित पौधों को उखाड़कर नष्ट करें और औजार सैनिटाइज करें।"
+        "chemical_treatment": ["No chemical cure exists for viral diseases; manage vector and sanitation."],
+        "outbreak_risk": "High via mechanical transmission (workers, tools, pruning)",
+        "neighbor_alert": "Mosaic virus detected. Sanitize hands and tools between handling tomato beds.",
+        "hindi_summary": "टमाटर में मोजेक वायरस (पत्तियों पर हरा-पीला चितकबरापन) है। रोगी पौधे उखाड़कर नष्ट करें और औजारों को साफ रखें।"
     },
     "Tomato___healthy": {
         "crop": "Tomato",
@@ -731,6 +846,512 @@ PLANTVILLAGE_MASTER_DB: Dict[str, Dict[str, Any]] = {
         "outbreak_risk": "Low",
         "neighbor_alert": "Tomato crop is healthy and flourishing.",
         "hindi_summary": "टमाटर की पत्तियां पूरी तरह स्वस्थ और हरी हैं।"
+    },
+
+    # ==================== COFFEE ====================
+    "Coffee___Leaf_rust": {
+        "crop": "Coffee",
+        "disease": "Coffee Leaf Rust (Hemileia vastatrix)",
+        "pathogen_type": "Fungal",
+        "leaf_morphology": "Opposite, glossy, oval to elliptical leaves with undulating margins",
+        "color_signature": "Bright yellow-orange powdery pustules on underside; chlorotic spots on top",
+        "lesion_pattern": "Circular yellow spots on upper surface; matching powdery orange-yellow spore pustules on the lower surface causing massive defoliation",
+        "is_healthy": False,
+        "severity": "Critical",
+        "organic_treatment": [
+            "Apply Bordeaux mixture (1% or 0.5%) before pre-monsoon showers and after monsoon",
+            "Regulate shade trees to maintain 40-50% filtered sunlight",
+            "Plant rust-resistant Arabica/Robusta cultivars (e.g., Catimor, Castillo, Chandragiri)"
+        ],
+        "chemical_treatment": [
+            "Spray Copper Oxychloride 50% WP @ 2.5g/L as preventive contact shield",
+            "Apply Epoxiconazole + Pyraclostrobin @ 1ml/L or Hexaconazole 5% EC @ 2ml/L for systemic cure"
+        ],
+        "outbreak_risk": "EXTREME CRITICAL (world's most destructive coffee pathogen, easily wind-blown)",
+        "neighbor_alert": "COFFEE RUST EPIDEMIC ALERT: Hemileia vastatrix pustules sporulating. Neighboring coffee estates must apply Bordeaux mixture immediately.",
+        "hindi_summary": "कॉफी की पत्ती के नीचे चमकीले पीले-नारंगी पाउडर जैसे जंग के धब्बे (कॉफी लीफ रस्ट - हेमिलिया वास्टेट्रिक्स) हैं। तुरंत बोर्डो मिश्रण या हेक्साकोनाजोल का छिड़काव करें।"
+    },
+    "Coffee___Brown_eye_spot": {
+        "crop": "Coffee",
+        "disease": "Coffee Brown Eye Spot / Cercospora (Cercospora coffeicola)",
+        "pathogen_type": "Fungal",
+        "leaf_morphology": "Glossy oval leaves with pointed tips",
+        "color_signature": "Circular brown spots with light grayish centers and brilliant yellow halo",
+        "lesion_pattern": "'Eye-like' circular spots with ash-white center, brown margin, and wide yellow halo",
+        "is_healthy": False,
+        "severity": "Moderate to High",
+        "organic_treatment": [
+            "Provide adequate shade in coffee nurseries and young plantations",
+            "Apply balanced nitrogen and potassium fertilizers"
+        ],
+        "chemical_treatment": [
+            "Spray Copper Hydroxide @ 2g/L or Carbendazim 50% WP @ 1g/L"
+        ],
+        "outbreak_risk": "Moderate",
+        "neighbor_alert": "Cercospora eye spots spreading on coffee foliage in high sun exposure.",
+        "hindi_summary": "कॉफी में भूरी आंख जैसे धब्बे (सर्कोस्पोरा) हैं। पौधों को पर्याप्त छाया दें और कॉपर का छिड़काव करें।"
+    },
+    "Coffee___healthy": {
+        "crop": "Coffee",
+        "disease": "Healthy Coffee Foliage",
+        "pathogen_type": "None",
+        "leaf_morphology": "Glossy dark green elliptical leaves with wavy edges",
+        "color_signature": "Deep waxy emerald green",
+        "lesion_pattern": "Unblemished thick waxy leaf lamina without rust pustules or eye spots",
+        "is_healthy": True,
+        "severity": "Healthy",
+        "organic_treatment": ["Maintain balanced agroforestry shade cover and compost mulching."],
+        "chemical_treatment": ["None required."],
+        "outbreak_risk": "Low",
+        "neighbor_alert": "Coffee estate foliage is lush and healthy.",
+        "hindi_summary": "कॉफी के पौधे पूरी तरह स्वस्थ और चमकदार हैं।"
+    },
+
+    # ==================== RICE (PADDY) ====================
+    "Rice___Blast": {
+        "crop": "Rice (Paddy)",
+        "disease": "Rice Blast (Magnaporthe oryzae / Pyricularia oryzae)",
+        "pathogen_type": "Fungal",
+        "leaf_morphology": "Long slender monocot blades with parallel veins and ligule",
+        "color_signature": "Spindle-shaped / diamond-shaped lesions with ash-gray center and brown border",
+        "lesion_pattern": "Classic eye-shaped or spindle lesions with pointed ends, gray center, and reddish-brown margin",
+        "is_healthy": False,
+        "severity": "Critical",
+        "organic_treatment": [
+            "Seed treatment with Pseudomonas fluorescens @ 10g/kg",
+            "Avoid excessive nitrogen fertilizer application; split nitrogen into 3-4 doses"
+        ],
+        "chemical_treatment": [
+            "Spray Tricyclazole 75% WP @ 0.6g/L or Isoprothiolane 40% EC @ 1.5ml/L",
+            "Apply Azoxystrobin 18.2% + Difenoconazole 11.4% SC @ 1ml/L"
+        ],
+        "outbreak_risk": "Critical in high humidity (>90%) with cool night temperatures (20-24°C)",
+        "neighbor_alert": "RICE BLAST EPIDEMIC ALERT: Spindle lesions detected. Neighboring paddy fields must apply Tricyclazole immediately.",
+        "hindi_summary": "धान (चावल) में ब्लास्ट रोग (आंख/नाव के आकार के धब्बे) है। ट्राइसाइक्लाजोल या आइसोप्रोपियोलेन का तुरंत छिड़काव करें।"
+    },
+    "Rice___Bacterial_leaf_blight": {
+        "crop": "Rice (Paddy)",
+        "disease": "Rice Bacterial Leaf Blight (Xanthomonas oryzae pv. oryzae)",
+        "pathogen_type": "Bacterial",
+        "leaf_morphology": "Long slender monocot blades",
+        "color_signature": "Water-soaked stripes turning wavy yellowish-white bleached lesions along leaf margins",
+        "lesion_pattern": "Lesions begin at tip/margins as wavy yellowish-white stripes; leaves dry and look bleached white",
+        "is_healthy": False,
+        "severity": "High",
+        "organic_treatment": [
+            "Drain standing water temporarily for 2-3 days to lower humidity",
+            "Avoid top-dressing nitrogen when blight is active"
+        ],
+        "chemical_treatment": [
+            "Spray Copper Oxychloride 50% WP @ 2.5g/L + Streptocycline @ 100ppm"
+        ],
+        "outbreak_risk": "High during monsoons and typhoons with strong winds",
+        "neighbor_alert": "Bacterial blight spreading through irrigation water across paddy terraces.",
+        "hindi_summary": "धान में जीवाणु झुलसा (किनारों से सूखती सफेद पत्तियां) है। कॉपर और स्ट्रेप्टोसाइक्लिन का छिड़काव करें और पानी निकालें।"
+    },
+    "Rice___Brown_spot": {
+        "crop": "Rice (Paddy)",
+        "disease": "Rice Brown Spot (Bipolaris oryzae)",
+        "pathogen_type": "Fungal",
+        "leaf_morphology": "Long slender monocot blades",
+        "color_signature": "Oval to circular brown spots with dark brown halo and gray center",
+        "lesion_pattern": "Uniformly distributed sesame-seed sized spots on leaf lamina; associated with nutrient-deficient soil",
+        "is_healthy": False,
+        "severity": "Moderate to High",
+        "organic_treatment": [
+            "Apply balanced potassium and silicon fertilizer to strengthen leaf cuticle",
+            "Seed treatment with Trichoderma viride @ 5g/kg"
+        ],
+        "chemical_treatment": [
+            "Spray Mancozeb 75% WP @ 2g/L or Propiconazole 25% EC @ 1ml/L"
+        ],
+        "outbreak_risk": "Moderate",
+        "neighbor_alert": "Brown spot active in paddy fields. Check soil fertility and apply potash.",
+        "hindi_summary": "धान की पत्ती पर भूरे तिल जैसे धब्बे हैं। पोटाश खाद डालें और मैनकोजेब या प्रोपिकोनाजोल छिड़कें।"
+    },
+    "Rice___healthy": {
+        "crop": "Rice (Paddy)",
+        "disease": "Healthy Rice Foliage",
+        "pathogen_type": "None",
+        "leaf_morphology": "Long erect emerald green blades",
+        "color_signature": "Vibrant emerald green",
+        "lesion_pattern": "Clean upright blades with clear parallel venation and no spindle lesions or bleached margins",
+        "is_healthy": True,
+        "severity": "Healthy",
+        "organic_treatment": ["Maintain balanced water management and Azospirillum biofertilizer."],
+        "chemical_treatment": ["None required."],
+        "outbreak_risk": "Low",
+        "neighbor_alert": "Paddy crop is robust and healthy.",
+        "hindi_summary": "धान की फसल पूरी तरह हरी और स्वस्थ है।"
+    },
+
+    # ==================== WHEAT ====================
+    "Wheat___Yellow_stripe_rust": {
+        "crop": "Wheat",
+        "disease": "Yellow Stripe Rust (Puccinia striiformis)",
+        "pathogen_type": "Fungal",
+        "leaf_morphology": "Slender linear monocot blades with parallel veins",
+        "color_signature": "Bright yellow-orange powdery pustules arranged in continuous narrow stripes",
+        "lesion_pattern": "Narrow linear stripes of lemon-yellow powdery uredinia running parallel to veins along entire leaf blade",
+        "is_healthy": False,
+        "severity": "Critical",
+        "organic_treatment": [
+            "Plant rust-resistant wheat varieties (e.g., HD 2967, HD 3086, DBW 187)",
+            "Early sowing in November to bypass cool humid rust peaks"
+        ],
+        "chemical_treatment": [
+            "Spray Propiconazole 25% EC (Tilt) @ 1ml/L or Tebuconazole 25.9% EC @ 1ml/L immediately at first yellow stripe"
+        ],
+        "outbreak_risk": "EXTREME CRITICAL (windblown spores travel hundreds of miles overnight)",
+        "neighbor_alert": "YELLOW RUST EPIDEMIC ALERT: Puccinia striiformis detected. All wheat plots in the block must spray Propiconazole.",
+        "hindi_summary": "गेहूं की पत्ती पर चमकीली पीली धारियों में जंग (पीला रतुआ) है। तुरंत प्रोपिकोनाजोल (टिल्ट) का 1 मिली/लीटर पानी में छिड़काव करें।"
+    },
+    "Wheat___Brown_leaf_rust": {
+        "crop": "Wheat",
+        "disease": "Brown / Leaf Rust (Puccinia triticina)",
+        "pathogen_type": "Fungal",
+        "leaf_morphology": "Slender linear monocot blades",
+        "color_signature": "Small round to oval orange-brown scattered pustules",
+        "lesion_pattern": "Scattered round orange-brown pustules randomly distributed across upper leaf surface (not in linear stripes)",
+        "is_healthy": False,
+        "severity": "High",
+        "organic_treatment": ["Early crop sowing and balanced N-P-K fertilization."],
+        "chemical_treatment": ["Spray Propiconazole 25% EC @ 1ml/L or Mancozeb 75% WP @ 2.5g/L."],
+        "outbreak_risk": "High in warm (20-25°C) humid weather",
+        "neighbor_alert": "Brown leaf rust detected on wheat flag leaves.",
+        "hindi_summary": "गेहूं पर भूरा रतुआ (बिखरे हुए नारंगी-भूरे फफोले) है। प्रोपिकोनाजोल या मैनकोजेब का छिड़काव करें।"
+    },
+    "Wheat___healthy": {
+        "crop": "Wheat",
+        "disease": "Healthy Wheat Foliage",
+        "pathogen_type": "None",
+        "leaf_morphology": "Slender erect green linear blades",
+        "color_signature": "Deep vibrant green",
+        "lesion_pattern": "Clean flag leaves with no rust stripes, powdery mold, or necrotic tips",
+        "is_healthy": True,
+        "severity": "Healthy",
+        "organic_treatment": ["Ensure timely irrigation at CRI and flowering stages."],
+        "chemical_treatment": ["None required."],
+        "outbreak_risk": "Low",
+        "neighbor_alert": "Wheat crop is healthy and vigorous.",
+        "hindi_summary": "गेहूं की फसल स्वस्थ और हरी है।"
+    },
+
+    # ==================== COTTON ====================
+    "Cotton___Leaf_curl_virus": {
+        "crop": "Cotton",
+        "disease": "Cotton Leaf Curl Virus (CLCuD / CLCuV)",
+        "pathogen_type": "Viral (Vector: Bemisia tabaci Whitefly)",
+        "leaf_morphology": "Palmately 3-5 lobed leaves",
+        "color_signature": "Dark green thickened veins; upward or downward leaf curling",
+        "lesion_pattern": "Upward or downward cupping of leaves, prominent thickening of main veins, and cup-shaped leaf enations on underside",
+        "is_healthy": False,
+        "severity": "Critical",
+        "organic_treatment": [
+            "Install yellow sticky cards (15 per acre) for whitefly mass trapping",
+            "Spray neem seed kernel extract (NSKE 5%) or castor oil barrier borders",
+            "Uproot and destroy early infected plants"
+        ],
+        "chemical_treatment": [
+            "Control whitefly vector: Spray Diafenthiuron 50% WP @ 1.2g/L or Pyriproxyfen 10% EC @ 2ml/L"
+        ],
+        "outbreak_risk": "Critical across cotton growing regions",
+        "neighbor_alert": "COTTON LEAF CURL VIRUS ALERT: Whitefly populations transmitting CLCuD. Control vectors immediately.",
+        "hindi_summary": "कपास में पत्ता मरोड़ (लीफ कर्ल वायरस) रोग है। सफेद मक्खी को मारने के लिए डायफेंथियूरॉन का छिड़काव करें।"
+    },
+    "Cotton___Bacterial_blight": {
+        "crop": "Cotton",
+        "disease": "Cotton Bacterial Blight / Angular Leaf Spot (Xanthomonas citri pv. malvacearum)",
+        "pathogen_type": "Bacterial",
+        "leaf_morphology": "Palmately lobed cotton leaves",
+        "color_signature": "Small angular water-soaked spots turning dark brown/black",
+        "lesion_pattern": "Lesions are sharply delimited by veinlets giving an angular geometric appearance; black arm on stems",
+        "is_healthy": False,
+        "severity": "High",
+        "organic_treatment": [
+            "Acid delinting of cottonseed with sulfuric acid before planting",
+            "Remove and destroy infected plant debris"
+        ],
+        "chemical_treatment": [
+            "Spray Copper Oxychloride 50% WP @ 2.5g/L + Streptocycline @ 100ppm"
+        ],
+        "outbreak_risk": "High in stormy wet weather",
+        "neighbor_alert": "Angular leaf spot detected in cotton fields.",
+        "hindi_summary": "कपास में कोणीय पत्ती धब्बा (बैक्टीरियल ब्लाइट) है। कॉपर ऑक्सीक्लोराइड + स्ट्रेप्टोसाइक्लिन का छिड़काव करें।"
+    },
+    "Cotton___healthy": {
+        "crop": "Cotton",
+        "disease": "Healthy Cotton Foliage",
+        "pathogen_type": "None",
+        "leaf_morphology": "Broad palmately lobed green leaves",
+        "color_signature": "Lush emerald green",
+        "lesion_pattern": "Supple unblemished lobed leaves with no vein thickening or angular spots",
+        "is_healthy": True,
+        "severity": "Healthy",
+        "organic_treatment": ["Maintain balanced potash nutrition and regular weed control."],
+        "chemical_treatment": ["None required."],
+        "outbreak_risk": "Low",
+        "neighbor_alert": "Cotton crop is vigorous and healthy.",
+        "hindi_summary": "कपास के पौधे पूरी तरह स्वस्थ हैं।"
+    },
+
+    # ==================== BANANA ====================
+    "Banana___Black_sigatoka": {
+        "crop": "Banana",
+        "disease": "Black Sigatoka / Black Leaf Streak (Pseudocercospora fijiensis)",
+        "pathogen_type": "Fungal",
+        "leaf_morphology": "Massive elongated paddle-shaped monocot leaves",
+        "color_signature": "Reddish-brown narrow specks enlarging to dark brown-black spindle lesions with gray center",
+        "lesion_pattern": "Parallel dark streaks coalescing into large necrotic black blotches causing massive leaf collapse",
+        "is_healthy": False,
+        "severity": "Critical",
+        "organic_treatment": [
+            "De-leaf and excise heavily infected leaf parts with clean sharp curved knives",
+            "Spray mineral oil (horticultural paraffinic oil) to inhibit spore germination"
+        ],
+        "chemical_treatment": [
+            "Spray Propiconazole 25% EC @ 1ml/L or Difenoconazole 25% EC @ 1ml/L mixed with 1% mineral oil"
+        ],
+        "outbreak_risk": "High in tropical warm humid plantations",
+        "neighbor_alert": "Black Sigatoka spreading in banana groves. Prune dead leaves immediately.",
+        "hindi_summary": "केले में सिगाटोका (काली धारियां और पत्तों का सूखना) रोग है। रोगी पत्ते काटें और प्रोपिकोनाजोल का छिड़काव करें।"
+    },
+    "Banana___healthy": {
+        "crop": "Banana",
+        "disease": "Healthy Banana Foliage",
+        "pathogen_type": "None",
+        "leaf_morphology": "Broad expansive paddle-shaped green leaves",
+        "color_signature": "Lush vibrant tropical green",
+        "lesion_pattern": "Intact wide green lamina with no necrotic streaks or yellow borders",
+        "is_healthy": True,
+        "severity": "Healthy",
+        "organic_treatment": ["Apply heavy farmyard manure compost and maintain soil drainage."],
+        "chemical_treatment": ["None required."],
+        "outbreak_risk": "Low",
+        "neighbor_alert": "Banana plants are vigorous and healthy.",
+        "hindi_summary": "केले के पत्ते पूरी तरह स्वस्थ और बड़े हैं।"
+    },
+
+    # ==================== MANGO ====================
+    "Mango___Anthracnose": {
+        "crop": "Mango",
+        "disease": "Mango Anthracnose (Colletotrichum gloeosporioides)",
+        "pathogen_type": "Fungal",
+        "leaf_morphology": "Oblong lanceolate leaves with leathery texture",
+        "color_signature": "Irregular dark brown to black necrotic lesions with yellow margins",
+        "lesion_pattern": "Circular to angular dark brown spots; leaf tips blighted; young leaves tear and twist ('shot-hole')",
+        "is_healthy": False,
+        "severity": "High",
+        "organic_treatment": [
+            "Prune overcrowded branches to allow maximum sunlight into canopy",
+            "Spray copper oxychloride (3g/L) before flowering flush"
+        ],
+        "chemical_treatment": [
+            "Apply Azoxystrobin 23% SC @ 1ml/L or Carbendazim 50% WP @ 1g/L at new vegetative flush"
+        ],
+        "outbreak_risk": "High during rainy humid conditions during new flush and blossom",
+        "neighbor_alert": "Anthracnose blighting new mango flush and blossoms.",
+        "hindi_summary": "आम में एन्थ्रेक्नोज (काले-भूरे धब्बे और पत्तों का सूखना) है। कॉपर ऑक्सीक्लोराइड या कार्बेन्डाजिम का छिड़काव करें।"
+    },
+    "Mango___healthy": {
+        "crop": "Mango",
+        "disease": "Healthy Mango Foliage",
+        "pathogen_type": "None",
+        "leaf_morphology": "Leathery lanceolate dark green glossy leaves",
+        "color_signature": "Glossy deep green",
+        "lesion_pattern": "Unblemished thick leaf blades with clear midrib and no black spots or powdery mold",
+        "is_healthy": True,
+        "severity": "Healthy",
+        "organic_treatment": ["Annual post-harvest canopy pruning and organic compost."],
+        "chemical_treatment": ["None required."],
+        "outbreak_risk": "Low",
+        "neighbor_alert": "Mango trees are healthy and strong.",
+        "hindi_summary": "आम के पत्ते पूरी तरह स्वस्थ और चमकदार हैं।"
+    },
+
+    # ==================== SUGARCANE ====================
+    "Sugarcane___Red_rot": {
+        "crop": "Sugarcane",
+        "disease": "Sugarcane Red Rot (Colletotrichum falcatum)",
+        "pathogen_type": "Fungal",
+        "leaf_morphology": "Long arching sword-like monocot leaves with prominent white midrib",
+        "color_signature": "Red lesions on midrib with dark borders; leaves wither yellow-brown from tip",
+        "lesion_pattern": "Blood-red streaks studded with dark spots along the leaf midrib; whole crown withers and dries",
+        "is_healthy": False,
+        "severity": "Critical",
+        "organic_treatment": [
+            "Use certified disease-free setts treated with hot water (52°C for 30 minutes)",
+            "Uproot and burn entire infected clumps immediately"
+        ],
+        "chemical_treatment": [
+            "Sett dip in Carbendazim 50% WP @ 1g/L before planting; foliar sprays cannot cure internal vascular rot"
+        ],
+        "outbreak_risk": "Critical across sugarcane growing belts",
+        "neighbor_alert": "RED ROT WARNING: Vascular fungal rot detected. Rogue out diseased clumps immediately.",
+        "hindi_summary": "गन्ने में लाल सड़न (रेड रॉट) रोग है। बीच की नस पर लाल धब्बे दिखते हैं। रोगी पौधों को उखाड़कर नष्ट करें।"
+    },
+    "Sugarcane___healthy": {
+        "crop": "Sugarcane",
+        "disease": "Healthy Sugarcane Foliage",
+        "pathogen_type": "None",
+        "leaf_morphology": "Long arching sword-like green blades with white central midrib",
+        "color_signature": "Deep vibrant green",
+        "lesion_pattern": "Clean green blades with bright white midrib without red lesions or drying",
+        "is_healthy": True,
+        "severity": "Healthy",
+        "organic_treatment": ["Adequate earthing-up and balanced fertilizer management."],
+        "chemical_treatment": ["None required."],
+        "outbreak_risk": "Low",
+        "neighbor_alert": "Sugarcane crop is healthy.",
+        "hindi_summary": "गन्ने की फसल पूरी तरह स्वस्थ और हरी है।"
+    },
+
+    # ==================== TEA ====================
+    "Tea___Blister_blight": {
+        "crop": "Tea",
+        "disease": "Tea Blister Blight (Exobasidium vexans)",
+        "pathogen_type": "Fungal",
+        "leaf_morphology": "Elliptical serrated tender tea leaves",
+        "color_signature": "Translucent circular spots turning into blistered white velvety concavities",
+        "lesion_pattern": "Raised convex pale green blister on upper leaf surface with a corresponding white velvety concave depression beneath",
+        "is_healthy": False,
+        "severity": "High",
+        "organic_treatment": [
+            "Regulate shade canopy in tea estates to allow sunlight during monsoon",
+            "Harvest tender two leaves and a bud on short 5-day rounds"
+        ],
+        "chemical_treatment": [
+            "Spray Copper Oxychloride 50% WP @ 2g/L + Hexaconazole 5% EC @ 1ml/L every 7 days during monsoon"
+        ],
+        "outbreak_risk": "High in mist-laden high-altitude tea gardens",
+        "neighbor_alert": "Blister blight attacking tender tea flushes.",
+        "hindi_summary": "चाय की पत्ती पर सफेद फफोले (ब्लिस्टर ब्लाइट) हैं। कॉपर ऑक्सीक्लोराइड + हेक्साकोनाजोल का छिड़काव करें।"
+    },
+    "Tea___healthy": {
+        "crop": "Tea",
+        "disease": "Healthy Tea Foliage",
+        "pathogen_type": "None",
+        "leaf_morphology": "Glossy green serrated tender leaves",
+        "color_signature": "Vibrant emerald green",
+        "lesion_pattern": "Clean glossy tender shoots and leaves free of blisters or red rust",
+        "is_healthy": True,
+        "severity": "Healthy",
+        "organic_treatment": ["Regular plucking and balanced micronutrient foliar spray."],
+        "chemical_treatment": ["None required."],
+        "outbreak_risk": "Low",
+        "neighbor_alert": "Tea bushes are in prime healthy flush.",
+        "hindi_summary": "चाय की पत्तियां पूरी तरह स्वस्थ हैं।"
+    },
+
+    # ==================== GROUNDNUT (PEANUT) ====================
+    "Groundnut___Tikka_leaf_spot": {
+        "crop": "Groundnut (Peanut)",
+        "disease": "Groundnut Tikka Disease / Cercospora Leaf Spot (Cercospora arachidicola / Phaeoisariopsis)",
+        "pathogen_type": "Fungal",
+        "leaf_morphology": "Even-pinnate leaves with 4 oval to obovate leaflets",
+        "color_signature": "Circular reddish-brown to dark brown spots surrounded by bright yellow halo",
+        "lesion_pattern": "Multiple small circular necrotic spots with yellow rings on leaflets, causing extensive premature leaf shedding",
+        "is_healthy": False,
+        "severity": "High",
+        "organic_treatment": [
+            "Seed treatment with Trichoderma viride @ 5g/kg",
+            "Spray neem seed kernel extract (NSKE 5%) before flowering"
+        ],
+        "chemical_treatment": [
+            "Spray Mancozeb 75% WP @ 2.5g/L or Carbendazim 50% WP @ 1g/L or Hexaconazole @ 1ml/L"
+        ],
+        "outbreak_risk": "High in warm humid weather with rain splash",
+        "neighbor_alert": "Tikka disease spreading across groundnut plots. Spray protective fungicide.",
+        "hindi_summary": "मूंगफली की पत्ती पर पीले घेरे वाले गोल भूरे धब्बे (टिक्का रोग) हैं। कार्बेन्डाजिम या मैनकोजेब का छिड़काव करें।"
+    },
+    "Groundnut___healthy": {
+        "crop": "Groundnut (Peanut)",
+        "disease": "Healthy Groundnut Foliage",
+        "pathogen_type": "None",
+        "leaf_morphology": "Four-leaflet pinnate compound leaves",
+        "color_signature": "Deep rich green",
+        "lesion_pattern": "Clean unblemished oval leaflets with no tikka spots or rust pustules",
+        "is_healthy": True,
+        "severity": "Healthy",
+        "organic_treatment": ["Rhizobium culture seed treatment and gypsum application at pegging."],
+        "chemical_treatment": ["None required."],
+        "outbreak_risk": "Low",
+        "neighbor_alert": "Groundnut foliage is healthy.",
+        "hindi_summary": "मूंगफली के पौधे स्वस्थ और हरे-भरे हैं।"
+    },
+
+    # ==================== MUSTARD ====================
+    "Mustard___White_rust": {
+        "crop": "Mustard",
+        "disease": "Mustard White Rust (Albugo candida)",
+        "pathogen_type": "Oomycete",
+        "leaf_morphology": "Lyrate-pinnatifid large green leaves",
+        "color_signature": "Prominent raised creamy-white blister-like pustules on lower leaf surface",
+        "lesion_pattern": "White chalky pustules scattered on underside of leaves; floral parts swell into distorted 'staghead'",
+        "is_healthy": False,
+        "severity": "High",
+        "organic_treatment": [
+            "Early sowing in October to escape cool humid infection windows",
+            "Destroy wild cruciferous weed hosts"
+        ],
+        "chemical_treatment": [
+            "Spray Metalaxyl 8% + Mancozeb 64% WP @ 2g/L or Mancozeb 75% WP @ 2.5g/L"
+        ],
+        "outbreak_risk": "High in foggy cold winter weather (12-18°C)",
+        "neighbor_alert": "White rust blisters detected in mustard fields.",
+        "hindi_summary": "सरसों की पत्ती के नीचे सफेद छाले (व्हाइट रस्ट) हैं। रिडोमिल या मैनकोजेब का छिड़काव करें।"
+    },
+    "Mustard___healthy": {
+        "crop": "Mustard",
+        "disease": "Healthy Mustard Foliage",
+        "pathogen_type": "None",
+        "leaf_morphology": "Broad green lobed leaves",
+        "color_signature": "Lush vibrant green",
+        "lesion_pattern": "Clean broad leaves free of white blisters or Alternaria concentric spots",
+        "is_healthy": True,
+        "severity": "Healthy",
+        "organic_treatment": ["Proper row spacing (30x10 cm) and balanced sulfur fertilization."],
+        "chemical_treatment": ["None required."],
+        "outbreak_risk": "Low",
+        "neighbor_alert": "Mustard crop is healthy.",
+        "hindi_summary": "सरसों की फसल पूरी तरह स्वस्थ है।"
+    },
+
+    # ==================== ONION & GARLIC ====================
+    "Onion___Purple_blotch": {
+        "crop": "Onion",
+        "disease": "Onion Purple Blotch (Alternaria porri)",
+        "pathogen_type": "Fungal",
+        "leaf_morphology": "Hollow cylindrical tubular leaves with waxy bloom",
+        "color_signature": "Sunken purplish-brown elliptical lesions with yellow chlorotic margin",
+        "lesion_pattern": "Small water-soaked areas that turn brown-purple with concentric rings; leaves break over at lesion point",
+        "is_healthy": False,
+        "severity": "High",
+        "organic_treatment": [
+            "Apply neem cake in soil and spray Trichoderma harzianum",
+            "Maintain wide bulb spacing to accelerate foliage drying"
+        ],
+        "chemical_treatment": [
+            "Spray Mancozeb 75% WP @ 2.5g/L + sticker (Sandovit @ 1ml/L) or Tebuconazole @ 1ml/L"
+        ],
+        "outbreak_risk": "High during warm humid monsoon or post-rain periods",
+        "neighbor_alert": "Purple blotch causing onion leaves to collapse. Add sticker with fungicide spray.",
+        "hindi_summary": "प्याज की पत्तियों पर बैंगनी-भूरे धब्बे (पर्पल ब्लॉच) हैं। मैनकोजेब में स्टीकर मिलाकर छिड़काव करें।"
+    },
+    "Onion___healthy": {
+        "crop": "Onion",
+        "disease": "Healthy Onion Foliage",
+        "pathogen_type": "None",
+        "leaf_morphology": "Erect cylindrical tubular hollow green leaves",
+        "color_signature": "Bluish-green with natural waxy bloom",
+        "lesion_pattern": "Firm upright tubular leaves with no purple spots, thrips silvering, or tip burn",
+        "is_healthy": True,
+        "severity": "Healthy",
+        "organic_treatment": ["Consistent light irrigation and balanced potassium."],
+        "chemical_treatment": ["None required."],
+        "outbreak_risk": "Low",
+        "neighbor_alert": "Onion crop is upright and healthy.",
+        "hindi_summary": "प्याज की फसल स्वस्थ और मजबूत है।"
     }
 }
 
@@ -739,34 +1360,46 @@ def diagnose_with_master_engine(
     vision_description: str,
     pixel_stats: Dict[str, Any],
     crop_hint: Optional[str] = "",
-    farmer_notes: Optional[str] = ""
+    farmer_notes: Optional[str] = "",
+    neural_class: Optional[str] = None,
+    neural_sim: float = 0.0
 ) -> Dict[str, Any]:
     """
-    Precision Deterministic Agronomic Diagnostic Matcher.
-    Uses leaf morphology, pathognomonic symptoms, and color signatures
-    from the 38-class PlantVillage benchmark dataset.
+    High-Precision Deterministic Agronomic Diagnostic Matcher.
+    Combines MobileNetV3 deep neural embeddings trained on PlantVillage & archive.zip,
+    leaf morphology, pathognomonic symptoms, and physical color signatures
+    across 60+ global and Indian agricultural crops.
     """
-    obs_text = f"{vision_description} {crop_hint or ''} {farmer_notes or ''}".lower()
-    
+    obs_text = f"{vision_description or ''} {farmer_notes or ''}".lower()
+    clean_crop_hint = (crop_hint or "").strip()
+
     # 1. Botanical Leaf Morphology Clues
     is_serrated = any(w in obs_text for w in ["serrated", "tooth", "teeth", "saw", "jagged", "dentate"])
     is_lobed = any(w in obs_text for w in ["lobe", "lobed", "palmate", "webbed"])
-    is_grassy = any(w in obs_text for w in ["grass", "corn", "narrow", "parallel", "maize", "strap"])
-    is_trifoliate = any(w in obs_text for w in ["trifoliate", "three", "3 leaf"])
-    
+    is_grassy = any(w in obs_text for w in ["grass", "corn", "narrow", "parallel", "maize", "strap", "linear", "blade", "paddy", "rice", "wheat"])
+    is_trifoliate = any(w in obs_text for w in ["trifoliate", "three", "3 leaf", "three leaflets"])
+    is_oval_waxy = any(w in obs_text for w in ["oval", "elliptical", "waxy", "glossy", "curved shape"])
+
     # 2. Pathognomonic Lesion Clues
-    has_rust = any(w in obs_text for w in ["rust", "orange", "cinnamon", "pustule", "reddish-orange"])
-    has_powdery = any(w in obs_text for w in ["powdery", "white powder", "talcum", "mycelium", "white spots on it", "white substance"])
+    has_rust = any(w in obs_text for w in ["rust", "orange", "cinnamon", "pustule", "pustules", "reddish-orange", "yellow or brown", "orange-yellow", "powdery pustule"])
+    has_powdery = any(w in obs_text for w in ["powdery", "white powder", "talcum", "white mold", "white spots on it", "white substance"])
     has_bullseye = any(w in obs_text for w in ["concentric", "bullseye", "target", "rings"])
     has_water_soaked = any(w in obs_text for w in ["water-soaked", "greasy", "downy", "cottony"])
-    has_scorch_spots = any(w in obs_text for w in ["small circular", "purple", "purplish", "spots with white", "spots with tan", "bird's eye", "scorch", "numerous", "many spots", "brown spots on it", "white spots on it"])
-    has_shot_hole = any(w in obs_text for w in ["shot-hole", "shot hole", "holes", "dropped out"])
+    has_bird_eye = any(w in obs_text for w in ["white center", "tan center", "gray center", "bird's eye", "purple ring", "small round", "small holes", "round spots"])
+    has_brown_spots = any(w in obs_text for w in ["brown spot", "brown spots", "red spot", "angular", "spots on it", "discoloration"])
+    has_shot_hole = any(w in obs_text for w in ["shot-hole", "shot hole", "holes", "dropped out", "ragged"])
     has_curl = any(w in obs_text for w in ["curl", "cupping", "puckering", "stunt", "mottle", "mosaic"])
-    is_clean = any(w in obs_text for w in ["healthy", "clean", "no spots", "good condition"]) and pixel_stats.get("healthy_green_pct", 0) > 75 and pixel_stats.get("brown_dried_pct", 0) < 6
 
-    # Score each of the 38 PlantVillage classes
+    is_clean = (
+        any(w in obs_text for w in ["healthy", "clean", "no spots", "good condition"])
+        and pixel_stats.get("healthy_green_pct", 0) > 75
+        and pixel_stats.get("brown_dried_pct", 0) < 6
+        and pixel_stats.get("pale_yellow_pct", 0) < 6
+    )
+
+    # 3. Score every class in the comprehensive master database
     class_scores = []
-    
+
     for class_id, info in PLANTVILLAGE_MASTER_DB.items():
         score = 0
         crop = info.get("crop", "").lower()
@@ -774,77 +1407,103 @@ def diagnose_with_master_engine(
         symptoms = (info.get("visual_symptoms", "") + " " + info.get("lesion_pattern", "")).lower()
         morphology = info.get("leaf_morphology", "").lower()
         color_sig = info.get("color_signature", "").lower()
-        
-        # A. USER CROP HINT: Absolute Priority (60 pts)
-        if crop_hint:
-            ch = crop_hint.lower()
+
+        # 0. NEURAL EMBEDDING MODEL PRIORITY (archive.zip + PlantVillage Trained)
+        if neural_class and class_id == neural_class:
+            score += 120 + int(neural_sim * 0.5)
+
+        # A. EXPLICIT CROP FILTER (Highest Priority)
+        if clean_crop_hint:
+            ch = clean_crop_hint.lower()
             if ch in crop or any(w in crop for w in ch.split()):
-                score += 80
+                score += 150  # Decisive crop lock
             else:
-                score -= 40 # Penalize non-matching crops
-                
-        # B. Direct Crop Name Detected in Vision
-        if not crop_hint:
+                score -= 100  # Completely exclude other crops
+
+        # B. Direct Crop Mentions in Vision / Farmer Notes (if no explicit hint given)
+        else:
             if "strawberry" in obs_text and "strawberry" in crop:
+                score += 60
+            elif "coffee" in obs_text and "coffee" in crop:
+                score += 60
+            elif "soybean" in obs_text and "soybean" in crop:
+                score += 60
+            elif "rice" in obs_text and "rice" in crop:
+                score += 60
+            elif "wheat" in obs_text and "wheat" in crop:
+                score += 60
+            elif "cotton" in obs_text and "cotton" in crop:
+                score += 60
+            elif "banana" in obs_text and "banana" in crop:
+                score += 60
+            elif "mango" in obs_text and "mango" in crop:
+                score += 60
+            elif "corn" in obs_text or "maize" in obs_text:
+                if "corn" in crop: score += 50
+            elif "potato" in obs_text and "potato" in crop:
+                score += 45
+            elif "apple" in obs_text and "apple" in crop:
+                score += 45
+            elif "grape" in obs_text and "grape" in crop:
                 score += 45
             elif "tomato" in obs_text and "tomato" in crop:
-                score += 40
-            elif "corn" in obs_text or "maize" in obs_text:
-                if "corn" in crop: score += 40
-            elif "potato" in obs_text and "potato" in crop:
-                score += 40
-            elif "apple" in obs_text and "apple" in crop:
-                score += 40
-            elif "grape" in obs_text and "grape" in crop:
-                score += 40
-            elif "pepper" in obs_text or "chilli" in obs_text:
-                if "pepper" in crop: score += 40
-            elif "soybean" in obs_text and "soybean" in crop:
-                score += 40
-            elif "squash" in obs_text or "cucumber" in obs_text or "cucurbit" in obs_text:
-                if "squash" in crop: score += 40
+                score += 35  # Moderate, don't let tomato dominate
 
         # C. Leaf Morphology Matching
-        if is_serrated and any(cr in crop for cr in ["strawberry", "apple", "cherry"]):
-            score += 20
-        if is_serrated and any(w in obs_text for w in ["spot", "spots", "dot", "dots", "speck"]):
-            if "strawberry" in crop and "scorch" in disease:
-                score += 25
-            elif "apple" in crop and "rot" in disease:
-                score += 10
-        if is_lobed and any(cr in crop for cr in ["grape", "squash"]):
-            score += 20
-        if is_grassy and "corn" in crop:
-            score += 25
-        if is_trifoliate and any(cr in crop for cr in ["strawberry", "soybean"]):
-            score += 15
+        if is_serrated:
+            if "strawberry" in crop: score += 30
+            elif "apple" in crop or "cherry" in crop or "peach" in crop: score += 15
+        if is_lobed:
+            if any(cr in crop for cr in ["grape", "squash", "cotton"]): score += 30
+        if is_grassy:
+            if any(cr in crop for cr in ["corn", "rice", "wheat", "sugarcane"]): score += 35
+        if is_trifoliate:
+            if any(cr in crop for cr in ["soybean", "strawberry"]): score += 30
+        if is_oval_waxy:
+            if any(cr in crop for cr in ["coffee", "orange", "citrus", "mango"]): score += 25
 
         # D. Specific Pathogen & Lesion Matching
-        if has_rust and ("rust" in disease or "pustule" in symptoms):
-            score += 25
+        if has_rust:
+            if "rust" in disease or "pustule" in symptoms: score += 40
+            if "coffee" in crop: score += 30  # Coffee leaf rust priority
+            if "wheat" in crop or "corn" in crop or "soybean" in crop: score += 20
+        if has_bird_eye or (has_brown_spots and is_serrated):
+            if "strawberry" in crop and ("spot" in disease or "scorch" in disease):
+                score += 50
+        if has_brown_spots or ("red spot" in obs_text):
+            if "soybean" in crop and "brown spot" in disease:
+                score += 45
+            elif "coffee" in crop and "brown eye" in disease:
+                score += 30
+            elif "apple" in crop and "rot" in disease:
+                score += 20
         if has_powdery and ("powdery" in disease or "mildew" in disease):
-            score += 25
-        if has_bullseye and ("early blight" in disease or "target" in disease):
-            score += 25
-        if has_water_soaked and "late blight" in disease:
-            score += 25
-        if has_scorch_spots and "strawberry" in crop and "scorch" in disease:
-            score += 30
-        if has_shot_hole and "peach" in crop and "bacterial" in disease:
-            score += 25
-        if has_curl and ("curl" in disease or "mosaic" in disease):
-            score += 25
-
-        # E. Healthy vs Diseased Discrimination
-        if is_clean and info["is_healthy"]:
             score += 35
-        elif not is_clean and info["is_healthy"]:
-            score -= 15
+        if has_bullseye and ("early blight" in disease or "target" in disease):
+            score += 40
+        if has_water_soaked and ("late blight" in disease or "bacterial" in disease):
+            score += 35
+        if has_shot_hole and ("peach" in crop or "shot" in symptoms):
+            score += 35
+        if has_curl and ("curl" in disease or "mosaic" in disease):
+            score += 35
+
+        # E. Pixel Discoloration Correlation
+        yellow_pct = pixel_stats.get("pale_yellow_pct", 0)
+        brown_pct = pixel_stats.get("brown_dried_pct", 0)
+        healthy_pct = pixel_stats.get("healthy_green_pct", 0)
+
+        if is_clean and info["is_healthy"]:
+            score += 50
+        elif (yellow_pct + brown_pct > 12) and info["is_healthy"]:
+            score -= 30  # Clearly diseased leaf, penalize healthy classes
+        elif (yellow_pct + brown_pct > 20) and not info["is_healthy"]:
+            score += 15  # Matches disease severity
 
         # F. Keyword Overlap
-        for kw in ["spot", "brown", "yellow", "blight", "scab", "rot", "mold", "lesion"]:
+        for kw in ["spot", "brown", "yellow", "orange", "rust", "blight", "scab", "rot", "mold", "lesion"]:
             if kw in obs_text and (kw in symptoms or kw in color_sig):
-                score += 3
+                score += 2
 
         class_scores.append((score, class_id, info))
 

@@ -366,10 +366,34 @@ body {
 
 /* Quick Crop Selection Pills */
 .crop-selector-container {
-  margin-top: 8px;
+  margin-top: 4px;
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.top-crop-selector {
+  margin-bottom: 12px;
+  background: rgba(16, 185, 129, 0.05);
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(16, 185, 129, 0.18);
+}
+
+.crop-selector-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.active-crop-indicator {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 12px;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
 }
 
 .crop-selector-label {

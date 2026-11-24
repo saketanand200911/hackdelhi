@@ -1,344 +1,702 @@
 [
   {
-    "id": "pv_apple_scab",
+    "id": "ref_Apple___Apple_scab",
     "crop": "Apple",
     "disease": "Apple Scab (Venturia inaequalis)",
-    "visual_symptoms": "Olive-green to dull dark brown or black velvety spots on upper leaf surfaces. Leaves become puckered, curled, and distorted, dropping prematurely.",
-    "treatment": "Organic: Liquid copper soap or wettable sulfur before bloom. Chemical: Mancozeb 75 WP (2g/L) or Captan 50 WP during spring spore releases.",
+    "visual_symptoms": "Olive-green to dark velvety brown/black lesions. Dull circular velvety spots that pucker and curl the leaf lamina",
+    "treatment": "Spray Mancozeb 75% WP @ 2.0g/L or Captan 50% WP @ 2.5g/L during primary infection",
     "risk_level": "High",
-    "github_folder": "Apple___Apple_scab"
+    "image_url": null,
+    "is_healthy": false
   },
   {
-    "id": "pv_apple_black_rot",
+    "id": "ref_Apple___Black_rot",
     "crop": "Apple",
     "disease": "Black Rot / Frogeye Leaf Spot (Botryosphaeria obtusa)",
-    "visual_symptoms": "Small purple flecks enlarging into circular 4-5mm 'frogeye' spots with tan/light brown centers and dark purple borders. Yellowing halo around old spots.",
-    "treatment": "Organic: Remove mummified fruit and dead twig cankers. Chemical: Thiophanate-methyl or Captan from petal fall through harvest.",
+    "visual_symptoms": "Purple specks enlarging to tan/light brown centers with dark purple rings. 'Frogeye' spots with circular light centers and double concentric margins",
+    "treatment": "Apply Thiophanate-methyl 70% WP @ 1.0g/L or Captan 50% WP @ 2.0g/L",
     "risk_level": "Moderate",
-    "github_folder": "Apple___Black_rot"
+    "image_url": null,
+    "is_healthy": false
   },
   {
-    "id": "pv_apple_cedar_rust",
+    "id": "ref_Apple___Cedar_apple_rust",
     "crop": "Apple",
     "disease": "Cedar Apple Rust (Gymnosporangium juniperi-virginianae)",
-    "visual_symptoms": "Brilliant yellow-orange or reddish spots on upper leaf surface. Small black dots (pycnia) appear inside spots, followed by tube-like aecia on leaf underside.",
-    "treatment": "Organic: Remove alternate host juniper/cedar trees within 1km. Chemical: Myclobutanil 20 EW or Propiconazole 25 EC at pink bud stage.",
-    "risk_level": "High",
-    "github_folder": "Apple___Cedar_apple_rust"
+    "visual_symptoms": "Brilliant bright orange-yellow circular spots. Bright yellow-orange spots on upper surface; small tubular aecia cups beneath",
+    "treatment": "Spray Myclobutanil 10% WP @ 0.4g/L or Mancozeb 75% WP @ 2.0g/L at pink bud to petal fall",
+    "risk_level": "Moderate",
+    "image_url": null,
+    "is_healthy": false
   },
   {
-    "id": "pv_apple_healthy",
+    "id": "ref_Apple___healthy",
     "crop": "Apple",
     "disease": "Healthy Apple Foliage",
-    "visual_symptoms": "Uniform deep green leaf lamina with clean serrated margins, smooth venation, and no necrotic lesions or rust pustules.",
-    "treatment": "Standard orchard management, balanced organic compost, drip irrigation, and annual winter pruning.",
-    "risk_level": "Low",
-    "github_folder": "Apple___healthy"
+    "visual_symptoms": "Uniform deep green glossy surface. Unblemished green lamina, clear venation, no lesions or cupping",
+    "treatment": "None required.",
+    "risk_level": "Moderate",
+    "image_url": null,
+    "is_healthy": true
   },
   {
-    "id": "pv_blueberry_healthy",
+    "id": "ref_Blueberry___healthy",
     "crop": "Blueberry",
-    "disease": "Healthy Blueberry",
-    "visual_symptoms": "Vibrant glossy dark green leaves, slightly waxy cuticle, intact margins, no interveinal chlorosis.",
-    "treatment": "Maintain acidic soil pH (4.5 - 5.2), pine bark mulch, and steady moisture.",
-    "risk_level": "Low",
-    "github_folder": "Blueberry___healthy"
+    "disease": "Healthy Blueberry Foliage",
+    "visual_symptoms": "Deep glossy green lamina. Healthy smooth leaf surface without rust, spots, or chlorosis",
+    "treatment": "None required.",
+    "risk_level": "Moderate",
+    "image_url": null,
+    "is_healthy": true
   },
   {
-    "id": "pv_cherry_powdery_mildew",
+    "id": "ref_Cherry___Powdery_mildew",
     "crop": "Cherry",
     "disease": "Powdery Mildew (Podosphaera clandestina)",
-    "visual_symptoms": "Patches of white talcum-like powdery fungal growth on leaves and shoots. Infected young leaves crinkle, roll upward, and become blistered.",
-    "treatment": "Organic: Potassium bicarbonate spray or 0.5% neem oil emulsion. Chemical: Tebuconazole or Myclobutanil fungicide.",
+    "visual_symptoms": "White circular powdery felt patches on leaf surface. Patches of white talcum-like mycelial growth causing upward leaf curling and distortion",
+    "treatment": "Apply Myclobutanil 10% WP @ 0.5g/L or Hexaconazole 5% EC @ 1ml/L",
     "risk_level": "Moderate",
-    "github_folder": "Cherry_(including_sour)___Powdery_mildew"
+    "image_url": null,
+    "is_healthy": false
   },
   {
-    "id": "pv_cherry_healthy",
+    "id": "ref_Cherry___healthy",
     "crop": "Cherry",
-    "disease": "Healthy Cherry",
-    "visual_symptoms": "Deep emerald green ovate leaves, distinct double serrations, firm texture without white mycelial powder.",
-    "treatment": "Annual pruning for good airflow and balanced organic nitrogen fertilizer.",
-    "risk_level": "Low",
-    "github_folder": "Cherry_(including_sour)___healthy"
+    "disease": "Healthy Cherry Foliage",
+    "visual_symptoms": "Vibrant emerald green. Intact leaf blades free of shot-holes, powdery mold, or necrotic spots",
+    "treatment": "None required.",
+    "risk_level": "Moderate",
+    "image_url": null,
+    "is_healthy": true
   },
   {
-    "id": "pv_corn_gray_leaf_spot",
+    "id": "ref_Corn___Cercospora_leaf_spot_Gray_leaf_spot",
     "crop": "Corn (Maize)",
     "disease": "Gray Leaf Spot (Cercospora zeae-maydis)",
-    "visual_symptoms": "Distinctive rectangular tan-to-gray necrotic lesions bounded strictly by parallel leaf veins (1-6 cm long). Blighted leaves dry up completely.",
-    "treatment": "Organic: Deep tillage of old corn stalks and crop rotation with legume. Chemical: Azoxystrobin + Propiconazole strobilurin/triazole mix.",
+    "visual_symptoms": "Tan to grayish rectangular lesions delimited strictly by leaf veins. Strictly rectangular block lesions running parallel to leaf veins; turn gray with spores",
+    "treatment": "Apply Azoxystrobin + Difenoconazole @ 1ml/L at tasseling (VT/R1 stage)",
     "risk_level": "High",
-    "github_folder": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot"
+    "image_url": null,
+    "is_healthy": false
   },
   {
-    "id": "pv_corn_common_rust",
+    "id": "ref_Corn___Common_rust",
     "crop": "Corn (Maize)",
     "disease": "Common Rust (Puccinia sorghi)",
-    "visual_symptoms": "Golden-brown to cinnamon-brown powdery pustules scattered across both leaf surfaces. Epidermis ruptures releasing powdery rust spores.",
-    "treatment": "Organic: Plant rust-resistant hybrids. Avoid overhead irrigation. Chemical: Mancozeb 75 WP or Tebuconazole when pustules first appear.",
-    "risk_level": "Critical",
-    "github_folder": "Corn_(maize)___Common_rust_"
+    "visual_symptoms": "Golden brown to cinnamon-brown powdery pustules. Small circular to elongate cinnamon-brown uredinial pustules scattered on both leaf surfaces",
+    "treatment": "Spray Mancozeb 75% WP @ 2.5g/L or Tebuconazole 25.9% EC @ 1ml/L at first sign of pustules",
+    "risk_level": "High",
+    "image_url": null,
+    "is_healthy": false
   },
   {
-    "id": "pv_corn_northern_blight",
+    "id": "ref_Corn___Northern_Leaf_Blight",
     "crop": "Corn (Maize)",
     "disease": "Northern Corn Leaf Blight (Exserohilum turcicum)",
-    "visual_symptoms": "Long, elliptical cigar-shaped grayish-green to tan lesions (3 to 15 cm long). Lesions merge to cause massive leaf scorch and drying.",
-    "treatment": "Organic: Plant resistant corn hybrids; bury infected crop residue. Chemical: Pyraclostrobin or Azoxystrobin fungicide at tassel emergence.",
+    "visual_symptoms": "Long grayish-green to tan cigar-shaped elliptical lesions. Large (2.5 - 15 cm) cigar-shaped or elliptical lesions with rounded ends",
+    "treatment": "Spray Propiconazole 25% EC @ 1ml/L or Azoxystrobin 23% SC @ 1ml/L",
     "risk_level": "High",
-    "github_folder": "Corn_(maize)___Northern_Leaf_Blight"
+    "image_url": null,
+    "is_healthy": false
   },
   {
-    "id": "pv_corn_healthy",
+    "id": "ref_Corn___healthy",
     "crop": "Corn (Maize)",
     "disease": "Healthy Corn Foliage",
-    "visual_symptoms": "Robust broad green arching leaves with intact midrib and uniform chlorophyll distribution, free of rust or streaks.",
-    "treatment": "Optimal nitrogen side-dressing and weed management.",
-    "risk_level": "Low",
-    "github_folder": "Corn_(maize)___healthy"
+    "visual_symptoms": "Deep vibrant green. Smooth green surface without pustules, stripes, or necrotic blight",
+    "treatment": "None required.",
+    "risk_level": "Moderate",
+    "image_url": null,
+    "is_healthy": true
   },
   {
-    "id": "pv_grape_black_rot",
+    "id": "ref_Grape___Black_rot",
     "crop": "Grape",
     "disease": "Grape Black Rot (Guignardia bidwellii)",
-    "visual_symptoms": "Reddish-brown circular spots with narrow dark brown margins on leaves. Tiny black specks (pycnidia) arranged in rings inside spots.",
-    "treatment": "Organic: Canopy management for sunlight penetration; destroy mummified clusters. Chemical: Mancozeb or Myclobutanil early season.",
+    "visual_symptoms": "Small reddish-brown circular spots with dark brown margins. Circular necrotic spots with tiny black pycnidia specks arranged in rings inside lesion",
+    "treatment": "Spray Mancozeb 75% WP @ 2g/L or Kresoxim-methyl 44.3% SC @ 0.7ml/L before bloom",
+    "risk_level": "Moderate",
+    "image_url": null,
+    "is_healthy": false
+  },
+  {
+    "id": "ref_Grape___Esca_Black_Measles",
+    "crop": "Grape",
+    "disease": "Esca / Black Measles (Complex: Phaeomoniella / Phaeoacremonium)",
+    "visual_symptoms": "Interveinal yellow and red discoloration with green veins ('Tiger-stripe'). Dramatic 'tiger-stripe' necrosis between major veins while primary veins stay green",
+    "treatment": "No chemical cure exists for internal trunk decay; apply wound sealants after pruning",
     "risk_level": "High",
-    "github_folder": "Grape___Black_rot"
+    "image_url": null,
+    "is_healthy": false
   },
   {
-    "id": "pv_grape_esca",
+    "id": "ref_Grape___Leaf_blight_Isariopsis_Leaf_Spot",
     "crop": "Grape",
-    "disease": "Esca / Black Measles (Phaeomoniella chlamydospora)",
-    "visual_symptoms": "'Tiger-stripe' chlorotic and necrotic bands between main leaf veins with sharp boundaries. Leaves scorch and drop mid-summer.",
-    "treatment": "Organic: Disinfect pruning shears between vines; remove dead cordons. Chemical: Protect fresh pruning wounds with thiophanate-methyl paste.",
+    "disease": "Grape Leaf Blight (Pseudocercospora vitis / Isariopsis)",
+    "visual_symptoms": "Irregular dark brown to black angular lesions with yellow halo. Lesions are sharply delimited by leaf veinlets, giving an angular shape; leaf drops early",
+    "treatment": "Apply Carbendazim 50% WP @ 1g/L or Azoxystrobin @ 1ml/L",
     "risk_level": "Moderate",
-    "github_folder": "Grape___Esca_(Black_Measles)"
+    "image_url": null,
+    "is_healthy": false
   },
   {
-    "id": "pv_grape_leaf_blight",
+    "id": "ref_Grape___healthy",
     "crop": "Grape",
-    "disease": "Leaf Blight / Isariopsis Cladosporioides",
-    "visual_symptoms": "Angular to irregular dark brown spots with a faint chlorotic ring. Spots coalesce into large necrotic scorched blotches on older leaves.",
-    "treatment": "Organic: Prune lower canopy foliage to reduce ground moisture. Chemical: Copper Oxychloride 50 WP or Difenoconazole 25 EC.",
+    "disease": "Healthy Grape Foliage",
+    "visual_symptoms": "Lush emerald green. Uniform green canopy without tiger stripes, black spots, or mold",
+    "treatment": "None required.",
     "risk_level": "Moderate",
-    "github_folder": "Grape___Leaf_blight_(Isariopsis_Leaf_Spot)"
+    "image_url": null,
+    "is_healthy": true
   },
   {
-    "id": "pv_grape_healthy",
-    "crop": "Grape",
-    "disease": "Healthy Grape Vine",
-    "visual_symptoms": "Vibrant palmately lobed green leaves, supple texture, clear vein networks without necrosis or mildew.",
-    "treatment": "Regular shoot positioning, suckering, and balanced potassium nutrition.",
-    "risk_level": "Low",
-    "github_folder": "Grape___healthy"
-  },
-  {
-    "id": "pv_orange_citrus_greening",
+    "id": "ref_Orange___Haunglongbing_Citrus_greening",
     "crop": "Orange / Citrus",
     "disease": "Citrus Greening / Huanglongbing (Candidatus Liberibacter asiaticus)",
-    "visual_symptoms": "Asymmetric blotchy yellowing (mottling) of leaves crossing veins unevenly. Hard, thickened, leathery leaves with raised corky veins.",
-    "treatment": "Organic: Intensive psyllid vector control with neem oil and parasitoid wasps. Chemical: Systemic Imidacloprid or Thiamethoxam; eradicate infected trees.",
-    "risk_level": "Critical",
-    "github_folder": "Orange___Haunglongbing_(Citrus_greening)"
+    "visual_symptoms": "Asymmetrical blotchy yellow mottle across the leaf lamina. Blotchy mottle (yellow pattern does not mirror across midrib), yellow veins, upright leaves",
+    "treatment": "Control psyllid vector with Imidacloprid 17.8% SL @ 0.5ml/L or Thiamethoxam 25% WG @ 0.3g/L",
+    "risk_level": "Moderate",
+    "image_url": null,
+    "is_healthy": false
   },
   {
-    "id": "pv_peach_bacterial_spot",
-    "crop": "Peach",
-    "disease": "Bacterial Spot (Xanthomonas arboricola)",
-    "visual_symptoms": "Angular, water-soaked dark purple to brown lesions that dry and drop out, giving a 'shot-hole' appearance to leaves.",
-    "treatment": "Organic: Copper sprays during dormant and pink bud stages. Chemical: Oxytetracycline bactericide during active vegetative growth.",
+    "id": "ref_Citrus___Citrus_canker",
+    "crop": "Orange / Citrus",
+    "disease": "Citrus Canker (Xanthomonas citri)",
+    "visual_symptoms": "Raised corky tan/brown crater pustules with yellow chlorotic halo. Raised blister-like eruptions on both sides of leaf surrounded by distinctive oily water-soaked yellow halo",
+    "treatment": "Copper Oxychloride 50% WP @ 3g/L + Streptocycline (antibacterial) @ 100ppm",
     "risk_level": "High",
-    "github_folder": "Peach___Bacterial_spot"
+    "image_url": null,
+    "is_healthy": false
   },
   {
-    "id": "pv_peach_healthy",
+    "id": "ref_Peach___Bacterial_spot",
     "crop": "Peach",
-    "disease": "Healthy Peach Leaf",
-    "visual_symptoms": "Lanceolate bright green leaves with finely serrated margins and clean, hole-free lamina.",
-    "treatment": "Dormant copper wash for leaf curl prevention and balanced irrigation.",
-    "risk_level": "Low",
-    "github_folder": "Peach___healthy"
+    "disease": "Peach Bacterial Spot (Xanthomonas arboricola pv. pruni)",
+    "visual_symptoms": "Small angular dark purple to black water-soaked lesions. Center of lesions dries, cracks, and falls out, creating a distinct 'shot-hole' appearance",
+    "treatment": "Spray Oxytetracycline @ 150ppm or Copper hydroxide at low rates during growing season",
+    "risk_level": "High",
+    "image_url": null,
+    "is_healthy": false
   },
   {
-    "id": "pv_pepper_bacterial_spot",
+    "id": "ref_Peach___healthy",
+    "crop": "Peach",
+    "disease": "Healthy Peach Foliage",
+    "visual_symptoms": "Smooth glossy vibrant green. Flawless green lamina without shot-holes, leaf curl, or bacterial specks",
+    "treatment": "None required.",
+    "risk_level": "Moderate",
+    "image_url": null,
+    "is_healthy": true
+  },
+  {
+    "id": "ref_Pepper__bell___Bacterial_spot",
     "crop": "Pepper (Bell / Chilli)",
-    "disease": "Bacterial Leaf Spot (Xanthomonas campestris)",
-    "visual_symptoms": "Small, circular to irregular water-soaked dark brown spots with a pale yellow chlorotic halo. Severely affected leaves turn yellow and drop.",
-    "treatment": "Organic: Certified disease-free seed; copper hydroxide + bio-fungicide spray. Chemical: Copper Oxychloride 50 WP (3g/L) + Streptocycline (100 ppm).",
+    "disease": "Bacterial Spot (Xanthomonas euvesicatoria)",
+    "visual_symptoms": "Small circular to irregular dark brown water-soaked lesions with yellow halo. Lesions on lower leaf surface appear blistered; leaves turn yellow and drop prematurely",
+    "treatment": "Spray Copper Oxychloride 50% WP @ 2.5g/L + Streptomycin sulfate @ 100ppm every 7-10 days",
     "risk_level": "High",
-    "github_folder": "Pepper,_bell___Bacterial_spot"
+    "image_url": "/static/reference_images/Pepper__bell___Bacterial_spot.jpg",
+    "is_healthy": false
   },
   {
-    "id": "pv_pepper_healthy",
+    "id": "ref_Pepper__bell___healthy",
     "crop": "Pepper (Bell / Chilli)",
     "disease": "Healthy Pepper Foliage",
-    "visual_symptoms": "Glossy dark green ovate leaves, firm smooth texture, clean undersides with no aphids, mites, or spots.",
-    "treatment": "Consistent soil moisture to prevent blossom end rot, organic mulch, and staked support.",
-    "risk_level": "Low",
-    "github_folder": "Pepper,_bell___healthy"
+    "visual_symptoms": "Uniform glossy dark green. Smooth, flat, unblemished leaves with no chlorosis, leaf curl, or spots",
+    "treatment": "None required.",
+    "risk_level": "Moderate",
+    "image_url": "/static/reference_images/Pepper__bell___healthy.jpg",
+    "is_healthy": true
   },
   {
-    "id": "pv_potato_early_blight",
+    "id": "ref_Pepper__bell___Anthracnose",
+    "crop": "Pepper (Bell / Chilli)",
+    "disease": "Chilli Anthracnose / Dieback (Colletotrichum capsici)",
+    "visual_symptoms": "Circular sunken spots with concentric rings of black acervuli specks. Necrotic patches on leaves; twigs die back from top downwards",
+    "treatment": "Spray Azoxystrobin 23% SC @ 1ml/L or Difenoconazole 25% EC @ 1ml/L",
+    "risk_level": "High",
+    "image_url": null,
+    "is_healthy": false
+  },
+  {
+    "id": "ref_Potato___Early_blight",
     "crop": "Potato",
     "disease": "Potato Early Blight (Alternaria solani)",
-    "visual_symptoms": "Circular to oval dark brown spots with concentric ring patterns (target-board appearance) surrounded by yellow chlorotic margins on lower leaves.",
-    "treatment": "Organic: Spray Neem oil (10,000 ppm) with soap emulsion; prune lower leaves. Chemical: Chlorothalonil 75 WP or Mancozeb 75 WP @ 2.5g/L.",
+    "visual_symptoms": "Dark brown circular spots with concentric target rings (bullseye). Concentric rings surrounded by narrow chlorotic yellow halos, starting on oldest bottom leaves",
+    "treatment": "Spray Chlorothalonil 75% WP @ 2g/L or Mancozeb 75% WP @ 2.5g/L",
     "risk_level": "High",
-    "github_folder": "Potato___Early_blight"
+    "image_url": "/static/reference_images/Potato___Early_blight.jpg",
+    "is_healthy": false
   },
   {
-    "id": "pv_potato_late_blight",
+    "id": "ref_Potato___Late_blight",
     "crop": "Potato",
     "disease": "Potato Late Blight (Phytophthora infestans)",
-    "visual_symptoms": "Large, irregular water-soaked pale to dark brown lesions at leaf edges and tips. White fuzzy mold forms on leaf undersides in wet morning dew.",
-    "treatment": "Organic: Spray Bordeaux mixture 1% or copper sulfate preventatively; rogue out diseased plants. Chemical: Metalaxyl + Mancozeb (Ridomil MZ) @ 2.5g/L.",
-    "risk_level": "Critical",
-    "github_folder": "Potato___Late_blight"
+    "visual_symptoms": "Water-soaked dark green-black greasy lesions with pale chlorotic border. Rapidly enlarging dark water-soaked patches; white cottony fungal growth on underside in high humidity",
+    "treatment": "Spray Cymoxanil 8% + Mancozeb 64% WP @ 2.5g/L or Metalaxyl-M + Mancozeb (Ridomil Gold) @ 2.5g/L",
+    "risk_level": "Moderate",
+    "image_url": "/static/reference_images/Potato___Late_blight.jpg",
+    "is_healthy": false
   },
   {
-    "id": "pv_potato_healthy",
+    "id": "ref_Potato___healthy",
     "crop": "Potato",
     "disease": "Healthy Potato Foliage",
-    "visual_symptoms": "Lush compound green leaves with smooth leaflets, robust upright stems, free of necrotic blotches.",
-    "treatment": "Proper hilling, certified seed tubers, and drip irrigation avoiding wet leaves.",
-    "risk_level": "Low",
-    "github_folder": "Potato___healthy"
+    "visual_symptoms": "Lush vibrant green. Clean green leaflets free of concentric spots, water-soaking, or white mildew",
+    "treatment": "None required.",
+    "risk_level": "Moderate",
+    "image_url": "/static/reference_images/Potato___healthy.jpg",
+    "is_healthy": true
   },
   {
-    "id": "pv_raspberry_healthy",
+    "id": "ref_Raspberry___healthy",
     "crop": "Raspberry",
-    "disease": "Healthy Raspberry",
-    "visual_symptoms": "Vibrant compound serrated green leaves with silver-green hairy undersides and vigorous primocanes.",
-    "treatment": "Prune out old floricanes after fruiting, maintain trellis airflow.",
-    "risk_level": "Low",
-    "github_folder": "Raspberry___healthy"
+    "disease": "Healthy Raspberry Foliage",
+    "visual_symptoms": "Rich green upper surface with silver-white hairy underside. Intact healthy leaflets with sharp serrations and no rust or cane spots",
+    "treatment": "None required.",
+    "risk_level": "Moderate",
+    "image_url": null,
+    "is_healthy": true
   },
   {
-    "id": "pv_soybean_healthy",
+    "id": "ref_Soybean___Brown_spot",
     "crop": "Soybean",
-    "disease": "Healthy Soybean",
-    "visual_symptoms": "Trifoliate dark green leaves with clean leaflets, no mosaic mottle or rust pustules.",
-    "treatment": "Inoculate with Bradyrhizobium at planting, ensure proper phosphorus fertilization.",
-    "risk_level": "Low",
-    "github_folder": "Soybean___healthy"
-  },
-  {
-    "id": "pv_squash_powdery_mildew",
-    "crop": "Squash / Cucurbits",
-    "disease": "Powdery Mildew (Podosphaera xanthii)",
-    "visual_symptoms": "Circular talcum powder-like white spots expanding over entire leaf surface. Leaves turn pale yellow, dry up brown, and become brittle.",
-    "treatment": "Organic: Spray 10% cow milk solution, potassium bicarbonate, or neem oil every 7 days. Chemical: Difenoconazole or Azoxystrobin fungicide.",
+    "disease": "Soybean Brown Spot / Septoria Spot (Septoria glycines)",
+    "visual_symptoms": "Small angular dark brown to red spots surrounded by chlorotic yellow halos. Small (2-5mm) angular irregular brown to bronze lesions on lower canopy; leaves turn yellow and drop early",
+    "treatment": "Spray Pyraclostrobin 20% WG @ 1g/L or Azoxystrobin + Difenoconazole @ 1ml/L at R3 (pod initiation) stage",
     "risk_level": "High",
-    "github_folder": "Squash___Powdery_mildew"
+    "image_url": "/static/reference_images/Soybean___Brown_spot.jpg",
+    "is_healthy": false
   },
   {
-    "id": "pv_strawberry_leaf_scorch",
+    "id": "ref_Soybean___Rust",
+    "crop": "Soybean",
+    "disease": "Asian Soybean Rust (Phakopsora pachyrhizi)",
+    "visual_symptoms": "Tan to reddish-brown tiny raised pustules on leaf underside. Volcano-like raised uredinial pustules packed with powdery spores causing rapid premature defoliation",
+    "treatment": "Apply Tebuconazole 25.9% EC @ 1ml/L or Hexaconazole 5% EC @ 1.5ml/L at first detection of rust pustules",
+    "risk_level": "Moderate",
+    "image_url": null,
+    "is_healthy": false
+  },
+  {
+    "id": "ref_Soybean___healthy",
+    "crop": "Soybean",
+    "disease": "Healthy Soybean Foliage",
+    "visual_symptoms": "Lush vibrant green. Unblemished green leaf surface with active nitrogen-fixing vigor",
+    "treatment": "None required.",
+    "risk_level": "Moderate",
+    "image_url": null,
+    "is_healthy": true
+  },
+  {
+    "id": "ref_Squash___Powdery_mildew",
+    "crop": "Squash / Cucurbits",
+    "disease": "Cucurbit Powdery Mildew (Podosphaera xanthii)",
+    "visual_symptoms": "White talcum powder-like patches covering both leaf surfaces. Round white powdery colonies coalescing to blanket the entire leaf blade; leaves yellow and dry crisp",
+    "treatment": "Apply Myclobutanil 10% WP @ 0.5g/L or Penconazole 10% EC @ 0.5ml/L",
+    "risk_level": "High",
+    "image_url": null,
+    "is_healthy": false
+  },
+  {
+    "id": "ref_Strawberry___Leaf_scorch",
     "crop": "Strawberry",
     "disease": "Strawberry Leaf Scorch (Diplocarpon earlianum)",
-    "visual_symptoms": "Small irregular purplish spots without pale centers. Spots enlarge and coalesce, giving leaves a burnt, reddish-brown scorched appearance.",
-    "treatment": "Organic: Prune off and discard old scorched leaves after harvest; improve soil drainage. Chemical: Captan 50 WP or Thiophanate-methyl.",
-    "risk_level": "Moderate",
-    "github_folder": "Strawberry___Leaf_scorch"
+    "visual_symptoms": "Dark purple to reddish-brown blotches without light center. Irregular purplish-black blotches that coalesce; leaf edges curl up and appear scorched/burnt",
+    "treatment": "Spray Captan 50% WP @ 2.5g/L or Thiophanate-methyl 70% WP @ 1g/L",
+    "risk_level": "High",
+    "image_url": null,
+    "is_healthy": false
   },
   {
-    "id": "pv_strawberry_healthy",
+    "id": "ref_Strawberry___Leaf_spot",
     "crop": "Strawberry",
-    "disease": "Healthy Strawberry",
-    "visual_symptoms": "Dark green trifoliate leaves with deep serrations, glossy surface, and sturdy leaf petioles.",
-    "treatment": "Straw mulch to keep fruit and leaves off bare wet soil; drip irrigation.",
-    "risk_level": "Low",
-    "github_folder": "Strawberry___healthy"
-  },
-  {
-    "id": "pv_tomato_bacterial_spot",
-    "crop": "Tomato",
-    "disease": "Tomato Bacterial Spot (Xanthomonas spp.)",
-    "visual_symptoms": "Small (1-3mm) circular water-soaked dark brown spots with a distinct yellow halo. Lesions may coalesce, causing ragged tear-like holes in leaves.",
-    "treatment": "Organic: Copper hydroxide + bio-fungicide (Bacillus subtilis); avoid working when plants are wet. Chemical: Copper Oxychloride 50 WP (3g/L) + Streptocycline.",
+    "disease": "Strawberry Common Leaf Spot (Mycosphaerella fragariae)",
+    "visual_symptoms": "Small circular spots with white to ash-gray centers and dark purple-red halos. Classic 'bird's eye' spots (3-6mm) with pale whitish necrotic centers bordered by deep reddish-purple margins",
+    "treatment": "Spray Copper Hydroxide @ 2g/L or Azoxystrobin @ 1ml/L at early vegetative stage",
     "risk_level": "High",
-    "github_folder": "Tomato___Bacterial_spot"
+    "image_url": "/static/reference_images/Strawberry___Leaf_spot.jpg",
+    "is_healthy": false
   },
   {
-    "id": "pv_tomato_early_blight",
+    "id": "ref_Strawberry___healthy",
+    "crop": "Strawberry",
+    "disease": "Healthy Strawberry Foliage",
+    "visual_symptoms": "Glossy vibrant emerald green. Supple serrated leaflets completely free of purple spots, scorch, or powder",
+    "treatment": "None required.",
+    "risk_level": "Moderate",
+    "image_url": null,
+    "is_healthy": true
+  },
+  {
+    "id": "ref_Tomato___Bacterial_spot",
     "crop": "Tomato",
-    "disease": "Tomato Early Blight (Alternaria linariae / solani)",
-    "visual_symptoms": "Concentric rings ('bullseye' target pattern) inside dark brown to black spots starting on older lower leaves. Surrounding area turns pale yellow.",
-    "treatment": "Organic: Prune lower 30cm branches; apply neem oil emulsion (5ml/L) and mulch base. Chemical: Mancozeb 75 WP (2.5g/L) or Azoxystrobin + Difenoconazole.",
+    "disease": "Tomato Bacterial Spot (Xanthomonas perforans)",
+    "visual_symptoms": "Small dark brown to black circular lesions with greasy translucent halos. Numerous small (under 3mm) dark greasy specks; lesions may tear giving leaf a ragged shot-hole look",
+    "treatment": "Spray Copper Oxychloride 50% WP @ 2.5g/L + Streptocycline @ 100ppm every 7 days",
     "risk_level": "High",
-    "github_folder": "Tomato___Early_blight"
+    "image_url": null,
+    "is_healthy": false
   },
   {
-    "id": "pv_tomato_late_blight",
+    "id": "ref_Tomato___Early_blight",
+    "crop": "Tomato",
+    "disease": "Tomato Early Blight (Alternaria solani)",
+    "visual_symptoms": "Dark brown circular spots with concentric target rings (bullseye). Target-board concentric rings surrounded by yellow chlorotic halo, starting on lower mature leaves",
+    "treatment": "Spray Mancozeb 75% WP @ 2.5g/L or Chlorothalonil 75% WP @ 2g/L",
+    "risk_level": "High",
+    "image_url": null,
+    "is_healthy": false
+  },
+  {
+    "id": "ref_Tomato___Late_blight",
     "crop": "Tomato",
     "disease": "Tomato Late Blight (Phytophthora infestans)",
-    "visual_symptoms": "Large, irregular water-soaked dark olive to brown lesions at leaf tips. White cottony fungal spores appear on leaf undersides in humid conditions.",
-    "treatment": "Organic: Rogue out and bag heavily infected plants immediately; spray copper sulfate. Chemical: Dimethomorph 50 WP or Metalaxyl-M (Ridomil MZ) @ 2.5g/L.",
-    "risk_level": "Critical",
-    "github_folder": "Tomato___Late_blight"
+    "visual_symptoms": "Water-soaked irregular pale green to dark purplish-black greasy lesions. Rapidly spreading large dark water-soaked patches; white fuzzy mold on leaf undersides during moist cool mornings",
+    "treatment": "Spray Metalaxyl-M + Mancozeb (Ridomil Gold) @ 2.5g/L or Cymoxanil + Mancozeb @ 2.5g/L",
+    "risk_level": "Moderate",
+    "image_url": "/static/reference_images/Tomato___Late_blight.jpg",
+    "is_healthy": false
   },
   {
-    "id": "pv_tomato_leaf_mold",
+    "id": "ref_Tomato___Leaf_Mold",
     "crop": "Tomato",
     "disease": "Tomato Leaf Mold (Passalora fulva)",
-    "visual_symptoms": "Pale green or yellow blotches on upper leaf surface. Lower leaf surface develops velvety olive-green to brown fungal growth.",
-    "treatment": "Organic: Maximize greenhouse airflow; reduce relative humidity below 80%. Chemical: Copper Hydroxide or Chlorothalonil spray.",
-    "risk_level": "High in polyhouses",
-    "github_folder": "Tomato___Leaf_Mold"
+    "visual_symptoms": "Pale yellow chlorotic blotches on upper surface; velvety olive-brown mold beneath. Diffuse pale yellow spots on upper leaf surface corresponding to olive-green to brown velvety sporulation underneath",
+    "treatment": "Spray Difenoconazole 25% EC @ 0.5ml/L or Azoxystrobin @ 1ml/L",
+    "risk_level": "Moderate",
+    "image_url": null,
+    "is_healthy": false
   },
   {
-    "id": "pv_tomato_septoria_leaf_spot",
+    "id": "ref_Tomato___Septoria_leaf_spot",
     "crop": "Tomato",
     "disease": "Septoria Leaf Spot (Septoria lycopersici)",
-    "visual_symptoms": "Numerous small circular spots (2-4mm) with pale grayish-white centers and dark brown margins. Tiny black speck pycnidia visible inside centers.",
-    "treatment": "Organic: Remove lower infected foliage; mulch beds; 3-year crop rotation. Chemical: Mancozeb 75 WP or Chlorothalonil every 7-10 days.",
+    "visual_symptoms": "Small circular spots with ash-gray centers and dark brown margins. Numerous small (1.5 - 3mm) round spots with pale gray centers containing tiny black speck pycnidia",
+    "treatment": "Spray Mancozeb 75% WP @ 2.5g/L or Chlorothalonil 75% WP @ 2g/L every 7-10 days",
     "risk_level": "High",
-    "github_folder": "Tomato___Septoria_leaf_spot"
+    "image_url": null,
+    "is_healthy": false
   },
   {
-    "id": "pv_tomato_spider_mites",
+    "id": "ref_Tomato___Spider_mites_Two-spotted_spider_mite",
     "crop": "Tomato",
     "disease": "Two-Spotted Spider Mites (Tetranychus urticae)",
-    "visual_symptoms": "Fine yellow stippling and speckled chlorotic dots across leaf surface. Silken webbing on leaf undersides. Foliage turns bronzed, dry, and brittle.",
-    "treatment": "Organic: Spray insecticidal potassium soap or neem oil (10,000 ppm); release predatory mites. Chemical: Abamectin 1.9% EC or Spiromesifen 22.9% SC.",
-    "risk_level": "High in hot, dry weather",
-    "github_folder": "Tomato___Spider_mites Two-spotted_spider_mite"
+    "visual_symptoms": "Fine yellow stippling, speckling, and bronzing on upper leaf surface. Dense yellow stippled pinpricks; fine silky webbing visible on leaf undersides and leaf axils",
+    "treatment": "Apply Spiromesifen 22.9% SC @ 1ml/L or Propargite 57% EC @ 2ml/L",
+    "risk_level": "High",
+    "image_url": null,
+    "is_healthy": false
   },
   {
-    "id": "pv_tomato_target_spot",
+    "id": "ref_Tomato___Target_Spot",
     "crop": "Tomato",
     "disease": "Tomato Target Spot (Corynespora cassiicola)",
-    "visual_symptoms": "Small pinpoint brown lesions expanding into circular spots with light brown centers and distinct concentric dark rings, similar to early blight.",
-    "treatment": "Organic: Space plants widely for airflow; prune lower leaves. Chemical: Famoxadone + Cymoxanil or Boscalid fungicide.",
+    "visual_symptoms": "Brown pinpoint spots expanding to circular lesions with light brown centers. Target-like circular lesions with subtle concentric rings and distinct yellow halos",
+    "treatment": "Spray Azoxystrobin + Difenoconazole @ 1ml/L or Boscalid @ 0.5g/L.",
     "risk_level": "Moderate",
-    "github_folder": "Tomato___Target_Spot"
+    "image_url": null,
+    "is_healthy": false
   },
   {
-    "id": "pv_tomato_yellow_leaf_curl",
+    "id": "ref_Tomato___Tomato_Yellow_Leaf_Curl_Virus",
     "crop": "Tomato",
     "disease": "Tomato Yellow Leaf Curl Virus (TYLCV)",
-    "visual_symptoms": "Severe upward rolling and cupping of leaf margins, bright yellow chlorosis on leaf borders, stunted bushy growth with small puckered leaves.",
-    "treatment": "Organic: Yellow sticky cards (20/acre) to trap whitefly vectors; fine mesh insect netting. Chemical: Systemic Acetamiprid 20% SP or Spirotetramat.",
-    "risk_level": "Critical",
-    "github_folder": "Tomato___Tomato_Yellow_Leaf_Curl_Virus"
+    "visual_symptoms": "Intense interveinal chlorosis and yellow margins. Upward curling and cupping of leaflets, reduced leaflet size, bushy stunted plant habit",
+    "treatment": "Control whitefly vector: Spray Diafenthiuron 50% WP @ 1.2g/L or Acetamiprid 20% SP @ 0.3g/L",
+    "risk_level": "Moderate",
+    "image_url": null,
+    "is_healthy": false
   },
   {
-    "id": "pv_tomato_mosaic_virus",
+    "id": "ref_Tomato___Tomato_mosaic_virus",
     "crop": "Tomato",
     "disease": "Tomato Mosaic Virus (ToMV)",
-    "visual_symptoms": "Mottled alternating light and dark green mosaic patterns on leaves. Leaf curling, puckering, and extreme 'shoestring' distortion of foliage.",
-    "treatment": "Organic: Disinfect hands and tools with 10% trisodium phosphate or milk; destroy infected plants. Chemical: No chemical cure; use resistant seed.",
+    "visual_symptoms": "Mottled pattern of alternating light and dark green patches. Mosaic mottle of dark and light green islands, blistering of leaf surface, stunted growth",
+    "treatment": "No chemical cure exists for viral diseases; manage vector and sanitation.",
     "risk_level": "High",
-    "github_folder": "Tomato___Tomato_mosaic_virus"
+    "image_url": null,
+    "is_healthy": false
   },
   {
-    "id": "pv_tomato_healthy",
+    "id": "ref_Tomato___healthy",
     "crop": "Tomato",
     "disease": "Healthy Tomato Foliage",
-    "visual_symptoms": "Even deep green leaflets, strong turgor pressure, clean serrated edges, no chlorosis, mottling, or necrotic spots.",
-    "treatment": "Balanced fertilization with compost, consistent calcium/magnesium to prevent deficiencies, and clean trellising.",
-    "risk_level": "Low",
-    "github_folder": "Tomato___healthy"
+    "visual_symptoms": "Deep uniform lush green. Firm supple leaflets with no spots, yellow halos, curling, or mildew",
+    "treatment": "None required.",
+    "risk_level": "Moderate",
+    "image_url": null,
+    "is_healthy": true
+  },
+  {
+    "id": "ref_Coffee___Leaf_rust",
+    "crop": "Coffee",
+    "disease": "Coffee Leaf Rust (Hemileia vastatrix)",
+    "visual_symptoms": "Bright yellow-orange powdery pustules on underside; chlorotic spots on top. Circular yellow spots on upper surface; matching powdery orange-yellow spore pustules on the lower surface causing massive defoliation",
+    "treatment": "Spray Copper Oxychloride 50% WP @ 2.5g/L as preventive contact shield",
+    "risk_level": "Moderate",
+    "image_url": "/static/reference_images/Coffee___Leaf_rust.jpg",
+    "is_healthy": false
+  },
+  {
+    "id": "ref_Coffee___Brown_eye_spot",
+    "crop": "Coffee",
+    "disease": "Coffee Brown Eye Spot / Cercospora (Cercospora coffeicola)",
+    "visual_symptoms": "Circular brown spots with light grayish centers and brilliant yellow halo. 'Eye-like' circular spots with ash-white center, brown margin, and wide yellow halo",
+    "treatment": "Spray Copper Hydroxide @ 2g/L or Carbendazim 50% WP @ 1g/L",
+    "risk_level": "High",
+    "image_url": null,
+    "is_healthy": false
+  },
+  {
+    "id": "ref_Coffee___healthy",
+    "crop": "Coffee",
+    "disease": "Healthy Coffee Foliage",
+    "visual_symptoms": "Deep waxy emerald green. Unblemished thick waxy leaf lamina without rust pustules or eye spots",
+    "treatment": "None required.",
+    "risk_level": "Moderate",
+    "image_url": null,
+    "is_healthy": true
+  },
+  {
+    "id": "ref_Rice___Blast",
+    "crop": "Rice (Paddy)",
+    "disease": "Rice Blast (Magnaporthe oryzae / Pyricularia oryzae)",
+    "visual_symptoms": "Spindle-shaped / diamond-shaped lesions with ash-gray center and brown border. Classic eye-shaped or spindle lesions with pointed ends, gray center, and reddish-brown margin",
+    "treatment": "Spray Tricyclazole 75% WP @ 0.6g/L or Isoprothiolane 40% EC @ 1.5ml/L",
+    "risk_level": "Moderate",
+    "image_url": null,
+    "is_healthy": false
+  },
+  {
+    "id": "ref_Rice___Bacterial_leaf_blight",
+    "crop": "Rice (Paddy)",
+    "disease": "Rice Bacterial Leaf Blight (Xanthomonas oryzae pv. oryzae)",
+    "visual_symptoms": "Water-soaked stripes turning wavy yellowish-white bleached lesions along leaf margins. Lesions begin at tip/margins as wavy yellowish-white stripes; leaves dry and look bleached white",
+    "treatment": "Spray Copper Oxychloride 50% WP @ 2.5g/L + Streptocycline @ 100ppm",
+    "risk_level": "High",
+    "image_url": null,
+    "is_healthy": false
+  },
+  {
+    "id": "ref_Rice___Brown_spot",
+    "crop": "Rice (Paddy)",
+    "disease": "Rice Brown Spot (Bipolaris oryzae)",
+    "visual_symptoms": "Oval to circular brown spots with dark brown halo and gray center. Uniformly distributed sesame-seed sized spots on leaf lamina; associated with nutrient-deficient soil",
+    "treatment": "Spray Mancozeb 75% WP @ 2g/L or Propiconazole 25% EC @ 1ml/L",
+    "risk_level": "High",
+    "image_url": null,
+    "is_healthy": false
+  },
+  {
+    "id": "ref_Rice___healthy",
+    "crop": "Rice (Paddy)",
+    "disease": "Healthy Rice Foliage",
+    "visual_symptoms": "Vibrant emerald green. Clean upright blades with clear parallel venation and no spindle lesions or bleached margins",
+    "treatment": "None required.",
+    "risk_level": "Moderate",
+    "image_url": null,
+    "is_healthy": true
+  },
+  {
+    "id": "ref_Wheat___Yellow_stripe_rust",
+    "crop": "Wheat",
+    "disease": "Yellow Stripe Rust (Puccinia striiformis)",
+    "visual_symptoms": "Bright yellow-orange powdery pustules arranged in continuous narrow stripes. Narrow linear stripes of lemon-yellow powdery uredinia running parallel to veins along entire leaf blade",
+    "treatment": "Spray Propiconazole 25% EC (Tilt) @ 1ml/L or Tebuconazole 25.9% EC @ 1ml/L immediately at first yellow stripe",
+    "risk_level": "Moderate",
+    "image_url": null,
+    "is_healthy": false
+  },
+  {
+    "id": "ref_Wheat___Brown_leaf_rust",
+    "crop": "Wheat",
+    "disease": "Brown / Leaf Rust (Puccinia triticina)",
+    "visual_symptoms": "Small round to oval orange-brown scattered pustules. Scattered round orange-brown pustules randomly distributed across upper leaf surface (not in linear stripes)",
+    "treatment": "Spray Propiconazole 25% EC @ 1ml/L or Mancozeb 75% WP @ 2.5g/L.",
+    "risk_level": "High",
+    "image_url": null,
+    "is_healthy": false
+  },
+  {
+    "id": "ref_Wheat___healthy",
+    "crop": "Wheat",
+    "disease": "Healthy Wheat Foliage",
+    "visual_symptoms": "Deep vibrant green. Clean flag leaves with no rust stripes, powdery mold, or necrotic tips",
+    "treatment": "None required.",
+    "risk_level": "Moderate",
+    "image_url": null,
+    "is_healthy": true
+  },
+  {
+    "id": "ref_Cotton___Leaf_curl_virus",
+    "crop": "Cotton",
+    "disease": "Cotton Leaf Curl Virus (CLCuD / CLCuV)",
+    "visual_symptoms": "Dark green thickened veins; upward or downward leaf curling. Upward or downward cupping of leaves, prominent thickening of main veins, and cup-shaped leaf enations on underside",
+    "treatment": "Control whitefly vector: Spray Diafenthiuron 50% WP @ 1.2g/L or Pyriproxyfen 10% EC @ 2ml/L",
+    "risk_level": "Moderate",
+    "image_url": null,
+    "is_healthy": false
+  },
+  {
+    "id": "ref_Cotton___Bacterial_blight",
+    "crop": "Cotton",
+    "disease": "Cotton Bacterial Blight / Angular Leaf Spot (Xanthomonas citri pv. malvacearum)",
+    "visual_symptoms": "Small angular water-soaked spots turning dark brown/black. Lesions are sharply delimited by veinlets giving an angular geometric appearance; black arm on stems",
+    "treatment": "Spray Copper Oxychloride 50% WP @ 2.5g/L + Streptocycline @ 100ppm",
+    "risk_level": "High",
+    "image_url": null,
+    "is_healthy": false
+  },
+  {
+    "id": "ref_Cotton___healthy",
+    "crop": "Cotton",
+    "disease": "Healthy Cotton Foliage",
+    "visual_symptoms": "Lush emerald green. Supple unblemished lobed leaves with no vein thickening or angular spots",
+    "treatment": "None required.",
+    "risk_level": "Moderate",
+    "image_url": null,
+    "is_healthy": true
+  },
+  {
+    "id": "ref_Banana___Black_sigatoka",
+    "crop": "Banana",
+    "disease": "Black Sigatoka / Black Leaf Streak (Pseudocercospora fijiensis)",
+    "visual_symptoms": "Reddish-brown narrow specks enlarging to dark brown-black spindle lesions with gray center. Parallel dark streaks coalescing into large necrotic black blotches causing massive leaf collapse",
+    "treatment": "Spray Propiconazole 25% EC @ 1ml/L or Difenoconazole 25% EC @ 1ml/L mixed with 1% mineral oil",
+    "risk_level": "Moderate",
+    "image_url": null,
+    "is_healthy": false
+  },
+  {
+    "id": "ref_Banana___healthy",
+    "crop": "Banana",
+    "disease": "Healthy Banana Foliage",
+    "visual_symptoms": "Lush vibrant tropical green. Intact wide green lamina with no necrotic streaks or yellow borders",
+    "treatment": "None required.",
+    "risk_level": "Moderate",
+    "image_url": null,
+    "is_healthy": true
+  },
+  {
+    "id": "ref_Mango___Anthracnose",
+    "crop": "Mango",
+    "disease": "Mango Anthracnose (Colletotrichum gloeosporioides)",
+    "visual_symptoms": "Irregular dark brown to black necrotic lesions with yellow margins. Circular to angular dark brown spots; leaf tips blighted; young leaves tear and twist ('shot-hole')",
+    "treatment": "Apply Azoxystrobin 23% SC @ 1ml/L or Carbendazim 50% WP @ 1g/L at new vegetative flush",
+    "risk_level": "High",
+    "image_url": null,
+    "is_healthy": false
+  },
+  {
+    "id": "ref_Mango___healthy",
+    "crop": "Mango",
+    "disease": "Healthy Mango Foliage",
+    "visual_symptoms": "Glossy deep green. Unblemished thick leaf blades with clear midrib and no black spots or powdery mold",
+    "treatment": "None required.",
+    "risk_level": "Moderate",
+    "image_url": null,
+    "is_healthy": true
+  },
+  {
+    "id": "ref_Sugarcane___Red_rot",
+    "crop": "Sugarcane",
+    "disease": "Sugarcane Red Rot (Colletotrichum falcatum)",
+    "visual_symptoms": "Red lesions on midrib with dark borders; leaves wither yellow-brown from tip. Blood-red streaks studded with dark spots along the leaf midrib; whole crown withers and dries",
+    "treatment": "Sett dip in Carbendazim 50% WP @ 1g/L before planting; foliar sprays cannot cure internal vascular rot",
+    "risk_level": "Moderate",
+    "image_url": null,
+    "is_healthy": false
+  },
+  {
+    "id": "ref_Sugarcane___healthy",
+    "crop": "Sugarcane",
+    "disease": "Healthy Sugarcane Foliage",
+    "visual_symptoms": "Deep vibrant green. Clean green blades with bright white midrib without red lesions or drying",
+    "treatment": "None required.",
+    "risk_level": "Moderate",
+    "image_url": null,
+    "is_healthy": true
+  },
+  {
+    "id": "ref_Tea___Blister_blight",
+    "crop": "Tea",
+    "disease": "Tea Blister Blight (Exobasidium vexans)",
+    "visual_symptoms": "Translucent circular spots turning into blistered white velvety concavities. Raised convex pale green blister on upper leaf surface with a corresponding white velvety concave depression beneath",
+    "treatment": "Spray Copper Oxychloride 50% WP @ 2g/L + Hexaconazole 5% EC @ 1ml/L every 7 days during monsoon",
+    "risk_level": "High",
+    "image_url": null,
+    "is_healthy": false
+  },
+  {
+    "id": "ref_Tea___healthy",
+    "crop": "Tea",
+    "disease": "Healthy Tea Foliage",
+    "visual_symptoms": "Vibrant emerald green. Clean glossy tender shoots and leaves free of blisters or red rust",
+    "treatment": "None required.",
+    "risk_level": "Moderate",
+    "image_url": null,
+    "is_healthy": true
+  },
+  {
+    "id": "ref_Groundnut___Tikka_leaf_spot",
+    "crop": "Groundnut (Peanut)",
+    "disease": "Groundnut Tikka Disease / Cercospora Leaf Spot (Cercospora arachidicola / Phaeoisariopsis)",
+    "visual_symptoms": "Circular reddish-brown to dark brown spots surrounded by bright yellow halo. Multiple small circular necrotic spots with yellow rings on leaflets, causing extensive premature leaf shedding",
+    "treatment": "Spray Mancozeb 75% WP @ 2.5g/L or Carbendazim 50% WP @ 1g/L or Hexaconazole @ 1ml/L",
+    "risk_level": "High",
+    "image_url": null,
+    "is_healthy": false
+  },
+  {
+    "id": "ref_Groundnut___healthy",
+    "crop": "Groundnut (Peanut)",
+    "disease": "Healthy Groundnut Foliage",
+    "visual_symptoms": "Deep rich green. Clean unblemished oval leaflets with no tikka spots or rust pustules",
+    "treatment": "None required.",
+    "risk_level": "Moderate",
+    "image_url": null,
+    "is_healthy": true
+  },
+  {
+    "id": "ref_Mustard___White_rust",
+    "crop": "Mustard",
+    "disease": "Mustard White Rust (Albugo candida)",
+    "visual_symptoms": "Prominent raised creamy-white blister-like pustules on lower leaf surface. White chalky pustules scattered on underside of leaves; floral parts swell into distorted 'staghead'",
+    "treatment": "Spray Metalaxyl 8% + Mancozeb 64% WP @ 2g/L or Mancozeb 75% WP @ 2.5g/L",
+    "risk_level": "High",
+    "image_url": null,
+    "is_healthy": false
+  },
+  {
+    "id": "ref_Mustard___healthy",
+    "crop": "Mustard",
+    "disease": "Healthy Mustard Foliage",
+    "visual_symptoms": "Lush vibrant green. Clean broad leaves free of white blisters or Alternaria concentric spots",
+    "treatment": "None required.",
+    "risk_level": "Moderate",
+    "image_url": null,
+    "is_healthy": true
+  },
+  {
+    "id": "ref_Onion___Purple_blotch",
+    "crop": "Onion",
+    "disease": "Onion Purple Blotch (Alternaria porri)",
+    "visual_symptoms": "Sunken purplish-brown elliptical lesions with yellow chlorotic margin. Small water-soaked areas that turn brown-purple with concentric rings; leaves break over at lesion point",
+    "treatment": "Spray Mancozeb 75% WP @ 2.5g/L + sticker (Sandovit @ 1ml/L) or Tebuconazole @ 1ml/L",
+    "risk_level": "High",
+    "image_url": null,
+    "is_healthy": false
+  },
+  {
+    "id": "ref_Onion___healthy",
+    "crop": "Onion",
+    "disease": "Healthy Onion Foliage",
+    "visual_symptoms": "Bluish-green with natural waxy bloom. Firm upright tubular leaves with no purple spots, thrips silvering, or tip burn",
+    "treatment": "None required.",
+    "risk_level": "Moderate",
+    "image_url": null,
+    "is_healthy": true
   }
 ]

@@ -22,6 +22,12 @@ function selectCropPill(btn, cropName) {
   document.querySelectorAll(".crop-pill").forEach(p => p.classList.remove("active"));
   btn.classList.add("active");
   document.getElementById("crop-hint").value = cropName;
+  const badge = document.getElementById("active-crop-badge");
+  if (badge) {
+    badge.innerText = cropName ? `Locked: ${cropName}` : "🌱 Auto-Detect";
+    badge.style.borderColor = cropName ? "var(--color-primary)" : "var(--color-border)";
+    badge.style.color = cropName ? "var(--color-primary-light)" : "var(--color-text-muted)";
+  }
 }
 
 // Initial Setup
@@ -239,7 +245,9 @@ function renderDiagnosis(data) {
 
   // Condition & Crop
   document.getElementById("diag-condition").textContent = data.condition || "Leaf Condition";
-  document.getElementById("diag-crop").textContent = `${isHindi ? "फसल" : "Crop"}: ${data.crop || "Identified Plant"}`;
+  const cropStr = `${isHindi ? "फसल" : "Crop"}: ${data.crop || "Identified Plant"}`;
+  const modelStr = data.neural_similarity ? ` • 🧠 Trained PlantVillage Model: ${data.neural_similarity}%` : "";
+  document.getElementById("diag-crop").textContent = cropStr + modelStr;
   document.getElementById("diag-confidence").textContent = data.confidence || "90%";
 
   // Severity Pill

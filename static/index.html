@@ -76,6 +76,35 @@
             <div class="camera-mode-badge" id="camera-state">Ready</div>
           </div>
 
+          <!-- Quick Crop Selector Pills Prominently Displayed at Top -->
+          <div class="crop-selector-container top-crop-selector">
+            <div class="crop-selector-header">
+              <span class="crop-selector-label" data-en="Target Crop / Plant:" data-hi="फसल / पौधा चुनें:">Target Crop / Plant:</span>
+              <span class="active-crop-indicator" id="active-crop-badge">🌱 Auto-Detect</span>
+            </div>
+            <div class="crop-pills" id="crop-pills">
+              <button type="button" class="crop-pill active" data-crop="" onclick="selectCropPill(this, '')">🌱 Auto-Detect</button>
+              <button type="button" class="crop-pill" data-crop="Strawberry" onclick="selectCropPill(this, 'Strawberry')">🍓 Strawberry</button>
+              <button type="button" class="crop-pill" data-crop="Soybean" onclick="selectCropPill(this, 'Soybean')">🫘 Soybean</button>
+              <button type="button" class="crop-pill" data-crop="Coffee" onclick="selectCropPill(this, 'Coffee')">☕ Coffee</button>
+              <button type="button" class="crop-pill" data-crop="Tomato" onclick="selectCropPill(this, 'Tomato')">🍅 Tomato</button>
+              <button type="button" class="crop-pill" data-crop="Potato" onclick="selectCropPill(this, 'Potato')">🥔 Potato</button>
+              <button type="button" class="crop-pill" data-crop="Rice" onclick="selectCropPill(this, 'Rice')">🌾 Rice</button>
+              <button type="button" class="crop-pill" data-crop="Wheat" onclick="selectCropPill(this, 'Wheat')">🌾 Wheat</button>
+              <button type="button" class="crop-pill" data-crop="Cotton" onclick="selectCropPill(this, 'Cotton')">🪴 Cotton</button>
+              <button type="button" class="crop-pill" data-crop="Corn" onclick="selectCropPill(this, 'Corn')">🌽 Corn</button>
+              <button type="button" class="crop-pill" data-crop="Apple" onclick="selectCropPill(this, 'Apple')">🍎 Apple</button>
+              <button type="button" class="crop-pill" data-crop="Grape" onclick="selectCropPill(this, 'Grape')">🍇 Grape</button>
+              <button type="button" class="crop-pill" data-crop="Pepper" onclick="selectCropPill(this, 'Pepper')">🌶️ Chilli</button>
+              <button type="button" class="crop-pill" data-crop="Banana" onclick="selectCropPill(this, 'Banana')">🍌 Banana</button>
+              <button type="button" class="crop-pill" data-crop="Mango" onclick="selectCropPill(this, 'Mango')">🥭 Mango</button>
+              <button type="button" class="crop-pill" data-crop="Peach" onclick="selectCropPill(this, 'Peach')">🍑 Peach</button>
+              <button type="button" class="crop-pill" data-crop="Orange" onclick="selectCropPill(this, 'Orange')">🍊 Citrus</button>
+              <button type="button" class="crop-pill" data-crop="Groundnut" onclick="selectCropPill(this, 'Groundnut')">🥜 Groundnut</button>
+              <button type="button" class="crop-pill" data-crop="Onion" onclick="selectCropPill(this, 'Onion')">🧅 Onion</button>
+            </div>
+          </div>
+
           <div class="viewport-box">
             <video id="webcam" autoplay playsinline muted></video>
             <canvas id="photo-canvas" style="display:none;"></canvas>
@@ -120,24 +149,6 @@
                 <span class="upload-icon">📁</span>
                 <span class="upload-text" data-en="Upload Photo of Leaf / Crop / Fruit" data-hi="पत्ती या फसल की फोटो अपलोड करें">Upload Photo of Leaf / Crop / Fruit</span>
                 <span class="upload-hint">PNG, JPG, WebP supported</span>
-              </div>
-            </div>
-
-            <!-- Quick Crop Selector Pills -->
-            <div class="crop-selector-container">
-              <label class="crop-selector-label" data-en="Select Crop (or Auto-Detect):" data-hi="फसल चुनें (या ऑटो-डिटेक्ट):">Select Crop (or Auto-Detect):</label>
-              <div class="crop-pills" id="crop-pills">
-                <button type="button" class="crop-pill active" data-crop="" onclick="selectCropPill(this, '')">🌱 Auto-Detect</button>
-                <button type="button" class="crop-pill" data-crop="Strawberry" onclick="selectCropPill(this, 'Strawberry')">🍓 Strawberry</button>
-                <button type="button" class="crop-pill" data-crop="Tomato" onclick="selectCropPill(this, 'Tomato')">🍅 Tomato</button>
-                <button type="button" class="crop-pill" data-crop="Potato" onclick="selectCropPill(this, 'Potato')">🥔 Potato</button>
-                <button type="button" class="crop-pill" data-crop="Corn" onclick="selectCropPill(this, 'Corn')">🌽 Corn</button>
-                <button type="button" class="crop-pill" data-crop="Apple" onclick="selectCropPill(this, 'Apple')">🍎 Apple</button>
-                <button type="button" class="crop-pill" data-crop="Grape" onclick="selectCropPill(this, 'Grape')">🍇 Grape</button>
-                <button type="button" class="crop-pill" data-crop="Pepper" onclick="selectCropPill(this, 'Pepper')">🌶️ Chilli/Pepper</button>
-                <button type="button" class="crop-pill" data-crop="Peach" onclick="selectCropPill(this, 'Peach')">🍑 Peach</button>
-                <button type="button" class="crop-pill" data-crop="Orange" onclick="selectCropPill(this, 'Orange')">🍊 Citrus</button>
-                <button type="button" class="crop-pill" data-crop="Soybean" onclick="selectCropPill(this, 'Soybean')">🫘 Soybean</button>
               </div>
             </div>
 
