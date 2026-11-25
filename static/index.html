@@ -3,36 +3,88 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LeafGuard AI • Hyper-Local Crop Disease Early Warning</title>
+  <title>LEAFGUARD — Field Crop Pathology</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/style.css?v=5">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css?v=6">
 </head>
 <body>
-  <!-- Top Navigation Header -->
+  <!-- Single-Row Sticky Header -->
   <header class="app-header">
     <div class="header-container">
       <div class="brand">
-        <div class="brand-logo">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <div class="brand-logo" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
             <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
             <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
           </svg>
         </div>
-        <div>
-          <h1 class="brand-title">LeafGuard <span class="tag-highlight">AI</span></h1>
-          <p class="brand-subtitle">Hyper-Local Pest & Disease Early Warning for Smallholder Farmers (&lt;2 ha)</p>
+        <div class="brand-text">
+          <span class="brand-title">LEAFGUARD</span>
+          <span class="brand-divider" aria-hidden="true"></span>
+          <span class="brand-subtitle" data-en="Field Crop Pathology" data-hi="क्षेत्रीय फसल रोग विज्ञान">Field Crop Pathology</span>
         </div>
       </div>
+
+      <!-- Segmented Navigation Tabs -->
+      <nav class="tabs-nav" aria-label="Primary Views">
+        <button class="tab-btn active" data-tab="scanner" onclick="switchTab('scanner')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+            <circle cx="12" cy="13" r="4"/>
+          </svg>
+          <span class="tab-label" data-en="Diagnose" data-hi="जांच (निदान)">Diagnose</span>
+        </button>
+
+        <button class="tab-btn" data-tab="outbreak" onclick="switchTab('outbreak')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <circle cx="12" cy="12" r="6"/>
+            <circle cx="12" cy="12" r="2"/>
+          </svg>
+          <span class="tab-label" data-en="Nearby Radar" data-hi="नज़दीकी रडार">Nearby Radar</span>
+          <span class="badge-alert">3</span>
+        </button>
+
+        <button class="tab-btn" data-tab="weather" onclick="switchTab('weather')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
+          </svg>
+          <span class="tab-label" data-en="Weather Risk" data-hi="मौसम जोखिम">Weather Risk</span>
+          <span class="badge-alert" id="weather-risk-badge" style="display:none;">1</span>
+        </button>
+
+        <button class="tab-btn" data-tab="training" onclick="switchTab('training')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M19.07 4.93 4.93 19.07"/>
+          </svg>
+          <span class="tab-label" data-en="Field Samples" data-hi="फील्ड सैंपल">Field Samples</span>
+          <span class="badge-pill" id="ref-count-badge">4</span>
+        </button>
+
+        <button class="tab-btn" data-tab="history" onclick="switchTab('history')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+          </svg>
+          <span class="tab-label" data-en="Logbook" data-hi="लॉगबुक">Logbook</span>
+        </button>
+      </nav>
 
       <div class="header-actions">
         <div class="system-status" id="system-status">
           <span class="status-dot"></span>
-          <span class="status-text">Ollama AI: Local (Moondream + LLaMA-3)</span>
+          <span class="status-text" data-en="Ready Offline" data-hi="ऑफ़लाइन तैयार">Ready Offline</span>
         </div>
         <div class="lang-select-wrap">
-          <span class="lang-icon">🌐</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="2" y1="12" x2="22" y2="12"/>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+          </svg>
           <select class="lang-select" id="lang-select" onchange="changeLanguage(this.value)" aria-label="Select Language">
             <option value="en">English</option>
             <option value="hi">हिन्दी (Hindi)</option>
@@ -48,11 +100,11 @@
             <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
             <option value="as">অসমীয়া (Assamese)</option>
             <option value="mai">मैथिली (Maithili)</option>
-            <option value="sat">संताली / ᱥᱟᱱᱛᱟᱲᱤ (Santali)</option>
-            <option value="ks">कश्मीरी / कॉशुर (Kashmiri)</option>
+            <option value="sat">संताली (Santali)</option>
+            <option value="ks">कश्मीरी (Kashmiri)</option>
             <option value="ne">नेपाली (Nepali)</option>
             <option value="kok">कोंकणी (Konkani)</option>
-            <option value="sd">सिंधी / سنڌي (Sindhi)</option>
+            <option value="sd">सिंधी (Sindhi)</option>
             <option value="doi">डोगरी (Dogri)</option>
             <option value="mni">মৈতৈলোন্ (Manipuri)</option>
             <option value="brx">बड़ो (Bodo)</option>
@@ -61,356 +113,343 @@
         </div>
       </div>
     </div>
-
-    <!-- Navigation Tabs -->
-    <nav class="tabs-nav">
-      <button class="tab-btn active" data-tab="scanner" onclick="switchTab('scanner')">
-        <span class="tab-icon">📷</span>
-        <span class="tab-label" data-en="Leaf Scanner & Diagnosis" data-hi="पत्ती स्कैनर व जांच">Leaf Scanner & Diagnosis</span>
-      </button>
-      <button class="tab-btn" data-tab="weather" onclick="switchTab('weather')">
-        <span class="tab-icon">🌦️</span>
-        <span class="tab-label" data-en="Weather & Disease Risk" data-hi="मौसम व रोग जोखिम">Weather & Disease Risk</span>
-        <span class="badge-pill" id="weather-risk-badge" style="display:none;">!</span>
-      </button>
-      <button class="tab-btn" data-tab="outbreak" onclick="switchTab('outbreak')">
-        <span class="tab-icon">🗺️</span>
-        <span class="tab-label" data-en="Hyper-Local Outbreak Radar" data-hi="क्षेत्रीय प्रकोप चेतावनी (रडार)">Hyper-Local Outbreak Radar</span>
-        <span class="badge-alert">3 Nearby</span>
-      </button>
-      <button class="tab-btn" data-tab="training" onclick="switchTab('training')">
-        <span class="tab-icon">🧠</span>
-        <span class="tab-label" data-en="Teach AI / Reference Samples" data-hi="एआई को सिखाएं (रेफरेंस)">Teach AI / Reference Samples</span>
-        <span class="badge-pill" id="ref-count-badge">4</span>
-      </button>
-      <button class="tab-btn" data-tab="history" onclick="switchTab('history')">
-        <span class="tab-icon">📜</span>
-        <span class="tab-label" data-en="Diagnosis History" data-hi="पुराना रिकॉर्ड">Diagnosis History</span>
-      </button>
-    </nav>
   </header>
 
   <!-- Main Container -->
   <main class="main-content">
-    
-    <!-- TAB 1: SCANNER & DIAGNOSIS -->
+
+    <!-- VIEW 1: DIAGNOSE -->
     <section id="tab-scanner" class="tab-pane active">
       <div class="scanner-layout">
-        <!-- Left: Camera Viewfinder & Controls -->
-        <div class="card viewfinder-card">
-          <div class="card-header">
+
+        <!-- Left Panel: Step 01 — Leaf Specimen -->
+        <div class="panel capture-panel">
+          <div class="panel-header">
             <div>
-              <h2 class="card-title" data-en="Live Leaf & Crop Camera" data-hi="लाइव कैमरा से पत्ती दिखाएं">Live Leaf & Crop Camera</h2>
-              <p class="card-desc" data-en="Point camera at affected leaves, discoloration, spots, or dried margins." data-hi="प्रभावित पत्ती, पीलापन या धब्बों पर कैमरा रखें।">Point camera at affected leaves, discoloration, spots, or dried margins.</p>
+              <div class="panel-eyebrow" data-en="STEP 01 — LEAF SPECIMEN" data-hi="चरण 01 — पत्ती का नमूना">STEP 01 — LEAF SPECIMEN</div>
+              <h2 class="panel-title" data-en="Capture or Upload Leaf" data-hi="पत्ती की फोटो लें या अपलोड करें">Capture or Upload Leaf</h2>
             </div>
-            <div class="camera-mode-badge" id="camera-state">Ready</div>
+            <div class="camera-mode-badge" id="camera-state" data-en="Standby" data-hi="तैयार">Standby</div>
           </div>
 
-          <!-- Quick Crop Selector Pills Prominently Displayed at Top -->
-          <div class="crop-selector-container top-crop-selector">
+          <!-- Viewport + Side-Rail Instrument Dock -->
+          <div class="viewport-shell">
+            <div class="viewport-box">
+              <div class="viewport-placeholder" id="viewport-placeholder">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
+                  <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+                </svg>
+                <span data-en="Awaiting camera or photo" data-hi="कैमरा या फोटो की प्रतीक्षा">Awaiting camera or photo</span>
+              </div>
+              <video id="webcam" autoplay playsinline muted></video>
+              <canvas id="photo-canvas" style="display:none;"></canvas>
+              <div id="captured-preview" class="captured-preview" style="display:none;">
+                <img id="preview-img" src="" alt="Captured Leaf">
+              </div>
+
+              <!-- Viewfinder Overlay Reticle (hidden until live) -->
+              <div class="target-reticle" id="reticle" style="display:none;">
+                <div class="reticle-corner top-left"></div>
+                <div class="reticle-corner top-right"></div>
+                <div class="reticle-corner bottom-left"></div>
+                <div class="reticle-corner bottom-right"></div>
+                <div class="reticle-text" data-en="Hold leaf inside frame" data-hi="पत्ती को फ्रेम के अंदर रखें">Hold leaf inside frame</div>
+              </div>
+
+              <div id="scan-laser" class="scan-laser" style="display:none;"></div>
+            </div>
+
+            <!-- Right Vertical Control Rail -->
+            <aside class="instrument-dock">
+              <div class="dock-top-actions">
+                <label for="file-upload" class="btn btn-bone">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                  </svg>
+                  <span data-en="Upload Photo" data-hi="फोटो अपलोड">Upload Photo</span>
+                </label>
+                <input id="file-upload" type="file" accept="image/*" style="display:none;" onchange="handleFileUpload(event)">
+
+                <button type="button" class="btn btn-secondary" id="start-cam-btn" onclick="startCamera()">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M23 7l-7 5 7 5V7z"/>
+                    <rect x="1" y="5" width="15" height="14"/>
+                  </svg>
+                  <span data-en="Open Camera" data-hi="कैमरा खोलें">Open Camera</span>
+                </button>
+
+                <button type="button" class="btn btn-secondary" id="flip-cam-btn" style="display:none;" onclick="flipCamera()">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="23 4 23 10 17 10"/>
+                    <polyline points="1 20 1 14 7 14"/>
+                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                  </svg>
+                  <span data-en="Flip Camera" data-hi="कैमरा पलटें">Flip Camera</span>
+                </button>
+              </div>
+
+              <button type="button" class="btn btn-primary dock-capture-btn" id="capture-btn" disabled onclick="captureAndDiagnose()">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="3"/>
+                  <path d="M3 9a2 2 0 0 1 2-2h.93a2 2 0 0 0 1.664-.89l.812-1.22A2 2 0 0 1 10.07 4h3.86a2 2 0 0 1 1.664.89l.812 1.22A2 2 0 0 0 18.07 7H19a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z"/>
+                </svg>
+                <span data-en="Capture & Diagnose" data-hi="कैप्चर व जांच">Capture & Diagnose</span>
+              </button>
+            </aside>
+          </div>
+
+          <!-- Specimen Metadata & Crop Selector -->
+          <div class="specimen-meta">
             <div class="crop-selector-header">
-              <span class="crop-selector-label" data-en="Target Crop / Plant:" data-hi="फसल / पौधा चुनें:">Target Crop / Plant:</span>
-              <span class="active-crop-indicator" id="active-crop-badge" data-en="🌱 Auto-Detect" data-hi="🌱 ऑटो-डिटेक्ट">🌱 Auto-Detect</span>
+              <span class="crop-selector-label" data-en="Target Crop" data-hi="फसल चुनें">Target Crop</span>
+              <span class="active-crop-indicator" id="active-crop-badge" data-en="Auto-Detect" data-hi="ऑटो-डिटेक्ट">Auto-Detect</span>
             </div>
+
             <div class="crop-pills" id="crop-pills">
-              <button type="button" class="crop-pill active" data-crop="" data-en="🌱 Auto-Detect" data-hi="🌱 ऑटो-डिटेक्ट" onclick="selectCropPill(this, '')">🌱 Auto-Detect</button>
-              <button type="button" class="crop-pill" data-crop="Strawberry" data-en="🍓 Strawberry" data-hi="🍓 स्ट्रॉबेरी" onclick="selectCropPill(this, 'Strawberry')">🍓 Strawberry</button>
-              <button type="button" class="crop-pill" data-crop="Soybean" data-en="🫘 Soybean" data-hi="🫘 सोयाबीन" onclick="selectCropPill(this, 'Soybean')">🫘 Soybean</button>
-              <button type="button" class="crop-pill" data-crop="Coffee" data-en="☕ Coffee" data-hi="☕ कॉफ़ी" onclick="selectCropPill(this, 'Coffee')">☕ Coffee</button>
-              <button type="button" class="crop-pill" data-crop="Tomato" data-en="🍅 Tomato" data-hi="🍅 टमाटर" onclick="selectCropPill(this, 'Tomato')">🍅 Tomato</button>
-              <button type="button" class="crop-pill" data-crop="Potato" data-en="🥔 Potato" data-hi="🥔 आलू" onclick="selectCropPill(this, 'Potato')">🥔 Potato</button>
-              <button type="button" class="crop-pill" data-crop="Rice" data-en="🌾 Rice" data-hi="🌾 धान (चावल)" onclick="selectCropPill(this, 'Rice')">🌾 Rice</button>
-              <button type="button" class="crop-pill" data-crop="Wheat" data-en="🌾 Wheat" data-hi="🌾 गेहूँ" onclick="selectCropPill(this, 'Wheat')">🌾 Wheat</button>
-              <button type="button" class="crop-pill" data-crop="Cotton" data-en="🪴 Cotton" data-hi="🪴 कपास" onclick="selectCropPill(this, 'Cotton')">🪴 Cotton</button>
-              <button type="button" class="crop-pill" data-crop="Corn" data-en="🌽 Corn" data-hi="🌽 मक्का" onclick="selectCropPill(this, 'Corn')">🌽 Corn</button>
-              <button type="button" class="crop-pill" data-crop="Apple" data-en="🍎 Apple" data-hi="🍎 सेब" onclick="selectCropPill(this, 'Apple')">🍎 Apple</button>
-              <button type="button" class="crop-pill" data-crop="Grape" data-en="🍇 Grape" data-hi="🍇 अंगूर" onclick="selectCropPill(this, 'Grape')">🍇 Grape</button>
-              <button type="button" class="crop-pill" data-crop="Pepper" data-en="🌶️ Chilli" data-hi="🌶️ मिर्च" onclick="selectCropPill(this, 'Pepper')">🌶️ Chilli</button>
-              <button type="button" class="crop-pill" data-crop="Banana" data-en="🍌 Banana" data-hi="🍌 केला" onclick="selectCropPill(this, 'Banana')">🍌 Banana</button>
-              <button type="button" class="crop-pill" data-crop="Mango" data-en="🥭 Mango" data-hi="🥭 आम" onclick="selectCropPill(this, 'Mango')">🥭 Mango</button>
-              <button type="button" class="crop-pill" data-crop="Peach" data-en="🍑 Peach" data-hi="🍑 आड़ू" onclick="selectCropPill(this, 'Peach')">🍑 Peach</button>
-              <button type="button" class="crop-pill" data-crop="Orange" data-en="🍊 Citrus" data-hi="🍊 नींबू / संतरा" onclick="selectCropPill(this, 'Orange')">🍊 Citrus</button>
-              <button type="button" class="crop-pill" data-crop="Groundnut" data-en="🥜 Groundnut" data-hi="🥜 मूंगफली" onclick="selectCropPill(this, 'Groundnut')">🥜 Groundnut</button>
-              <button type="button" class="crop-pill" data-crop="Onion" data-en="🧅 Onion" data-hi="🧅 प्याज़" onclick="selectCropPill(this, 'Onion')">🧅 Onion</button>
-            </div>
-          </div>
-
-          <div class="viewport-box">
-            <video id="webcam" autoplay playsinline muted></video>
-            <canvas id="photo-canvas" style="display:none;"></canvas>
-            <div id="captured-preview" class="captured-preview" style="display:none;">
-              <img id="preview-img" src="" alt="Captured Leaf">
+              <button type="button" class="crop-pill active" data-crop="" data-en="Auto-Detect" data-hi="ऑटो-डिटेक्ट" onclick="selectCropPill(this, '')">Auto-Detect</button>
+              <button type="button" class="crop-pill" data-crop="Tomato" data-en="Tomato" data-hi="टमाटर" onclick="selectCropPill(this, 'Tomato')">Tomato</button>
+              <button type="button" class="crop-pill" data-crop="Potato" data-en="Potato" data-hi="आलू" onclick="selectCropPill(this, 'Potato')">Potato</button>
+              <button type="button" class="crop-pill" data-crop="Rice" data-en="Rice" data-hi="धान" onclick="selectCropPill(this, 'Rice')">Rice</button>
+              <button type="button" class="crop-pill" data-crop="Wheat" data-en="Wheat" data-hi="गेहूँ" onclick="selectCropPill(this, 'Wheat')">Wheat</button>
+              <button type="button" class="crop-pill" data-crop="Cotton" data-en="Cotton" data-hi="कपास" onclick="selectCropPill(this, 'Cotton')">Cotton</button>
+              <button type="button" class="crop-pill" data-crop="Corn" data-en="Corn" data-hi="मक्का" onclick="selectCropPill(this, 'Corn')">Corn</button>
+              <button type="button" class="crop-pill" data-crop="Pepper" data-en="Chilli" data-hi="मिर्च" onclick="selectCropPill(this, 'Pepper')">Chilli</button>
+              <button type="button" class="crop-pill" data-crop="Soybean" data-en="Soybean" data-hi="सोयाबीन" onclick="selectCropPill(this, 'Soybean')">Soybean</button>
+              <button type="button" class="crop-pill" data-crop="Strawberry" data-en="Strawberry" data-hi="स्ट्रॉबेरी" onclick="selectCropPill(this, 'Strawberry')">Strawberry</button>
+              <button type="button" class="crop-pill" data-crop="Coffee" data-en="Coffee" data-hi="कॉफ़ी" onclick="selectCropPill(this, 'Coffee')">Coffee</button>
+              <button type="button" class="crop-pill" data-crop="Apple" data-en="Apple" data-hi="सेब" onclick="selectCropPill(this, 'Apple')">Apple</button>
+              <button type="button" class="crop-pill" data-crop="Grape" data-en="Grape" data-hi="अंगूर" onclick="selectCropPill(this, 'Grape')">Grape</button>
+              <button type="button" class="crop-pill" data-crop="Banana" data-en="Banana" data-hi="केला" onclick="selectCropPill(this, 'Banana')">Banana</button>
+              <button type="button" class="crop-pill" data-crop="Mango" data-en="Mango" data-hi="आम" onclick="selectCropPill(this, 'Mango')">Mango</button>
+              <button type="button" class="crop-pill" data-crop="Peach" data-en="Peach" data-hi="आड़ू" onclick="selectCropPill(this, 'Peach')">Peach</button>
+              <button type="button" class="crop-pill" data-crop="Orange" data-en="Citrus" data-hi="नींबू / संतरा" onclick="selectCropPill(this, 'Orange')">Citrus</button>
+              <button type="button" class="crop-pill" data-crop="Groundnut" data-en="Groundnut" data-hi="मूंगफली" onclick="selectCropPill(this, 'Groundnut')">Groundnut</button>
+              <button type="button" class="crop-pill" data-crop="Onion" data-en="Onion" data-hi="प्याज़" onclick="selectCropPill(this, 'Onion')">Onion</button>
             </div>
 
-            <!-- Viewfinder Overlay Reticle -->
-            <div class="target-reticle" id="reticle">
-              <div class="reticle-corner top-left"></div>
-              <div class="reticle-corner top-right"></div>
-              <div class="reticle-corner bottom-left"></div>
-              <div class="reticle-corner bottom-right"></div>
-              <div class="reticle-text" data-en="Hold leaf inside frame" data-hi="पत्ती को फ्रेम के अंदर रखें">Hold leaf inside frame</div>
-            </div>
-
-            <div id="scan-laser" class="scan-laser" style="display:none;"></div>
-          </div>
-
-          <!-- Controls Toolbar -->
-          <div class="viewfinder-controls">
-            <div class="primary-actions">
-              <button class="btn btn-secondary" id="start-cam-btn" onclick="startCamera()">
-                <span class="btn-icon">📹</span>
-                <span data-en="Open Camera" data-hi="कैमरा शुरू करें">Open Camera</span>
-              </button>
-              <button class="btn btn-secondary" id="flip-cam-btn" onclick="flipCamera()" style="display:none;">
-                <span class="btn-icon">🔄</span>
-                <span data-en="Flip" data-hi="कैमरा बदलें">Flip</span>
-              </button>
-              <button class="btn btn-primary" id="capture-btn" onclick="captureAndDiagnose()" disabled>
-                <span class="btn-icon">📸</span>
-                <span data-en="Capture & Diagnose" data-hi="फोटो लें और जांचें">Capture & Diagnose</span>
-              </button>
-            </div>
-
-            <div class="divider-text"><span>OR UPLOAD</span></div>
-
-            <div class="upload-dropzone" onclick="document.getElementById('file-input').click()">
-              <input type="file" id="file-input" accept="image/*" style="display:none;" onchange="handleFileUpload(event)">
-              <div class="upload-inner">
-                <span class="upload-icon">📁</span>
-                <span class="upload-text" data-en="Upload Photo of Leaf / Crop / Fruit" data-hi="पत्ती या फसल की फोटो अपलोड करें">Upload Photo of Leaf / Crop / Fruit</span>
-                <span class="upload-hint">PNG, JPG, WebP supported</span>
+            <div class="meta-inputs-grid">
+              <div class="field-group">
+                <label for="crop-hint" data-en="Other Crop" data-hi="अन्य फसल">Other Crop</label>
+                <input type="text" id="crop-hint" placeholder="e.g. Mustard, Brinjal">
+              </div>
+              <div class="field-group">
+                <label for="farmer-notes" data-en="Visible Symptoms" data-hi="दिखने वाले लक्षण">Visible Symptoms</label>
+                <input type="text" id="farmer-notes" placeholder="e.g. yellow halo, curled edges">
               </div>
             </div>
 
-            <!-- Optional Context Fields -->
-            <div class="meta-row">
-              <div class="input-group">
-                <label for="crop-hint" data-en="Crop Hint (Optional)" data-hi="फसल का नाम (वैकल्पिक)">Crop Hint (Optional)</label>
-                <input type="text" id="crop-hint" placeholder="e.g. Tomato, Chilli, Wheat, Potato, Rice">
-              </div>
-              <div class="input-group">
-                <label for="farmer-notes" data-en="Observation / Symptoms" data-hi="लक्षण या समस्या">Observation / Symptoms</label>
-                <input type="text" id="farmer-notes" placeholder="e.g. Yellowing on bottom leaves, brown dots">
-              </div>
+            <div class="specimen-tip-bar">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="16" x2="12" y2="12"/>
+                <line x1="12" y1="8" x2="12.01" y2="8"/>
+              </svg>
+              <span data-en="Best results: photograph a single leaf in clear daylight against a plain background." data-hi="बेहतर परिणाम के लिए साफ़ दिन की रोशनी में एक पत्ती की फोटो लें।">Best results: photograph a single leaf in clear daylight against a plain background.</span>
             </div>
           </div>
         </div>
 
-        <!-- Right: Real-Time Diagnostic & Action Plan Card -->
-        <div class="card result-card" id="diagnosis-panel">
-          <div class="card-header">
+        <!-- Right Panel: Step 02 — Pathology Dossier -->
+        <div class="panel report-panel">
+          <div class="panel-header">
             <div>
-              <h2 class="card-title" data-en="AI Plant Pathology Report" data-hi="रोग निदान व उपचार रिपोर्ट">AI Plant Pathology Report</h2>
-              <p class="card-desc" data-en="Powered by Local Vision AI + Agronomy LLM" data-hi="लोकल विज़न एआई और कृषि विशेषज्ञ मॉडल द्वारा संचालित">Powered by Local Vision AI + Agronomy LLM</p>
+              <div class="panel-eyebrow" data-en="STEP 02 — PATHOLOGY DOSSIER" data-hi="चरण 02 — रोग जांच रिपोर्ट">STEP 02 — PATHOLOGY DOSSIER</div>
+              <h2 class="panel-title" data-en="Diagnosis & Treatment Plan" data-hi="रोग निदान व उपचार योजना">Diagnosis & Treatment Plan</h2>
             </div>
-            <button class="btn-sound" id="speak-btn" onclick="speakDiagnosis()" title="Listen aloud / सुनें" style="display:none;">
-              🔊 <span data-en="Listen" data-hi="सुनें">Listen</span>
+            <button type="button" class="btn btn-secondary" id="speak-btn" style="display:none;" onclick="speakDiagnosis()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+              </svg>
+              <span data-en="Listen" data-hi="सुनें">Listen</span>
             </button>
           </div>
 
           <!-- Empty State -->
-          <div id="result-empty" class="empty-state">
-            <div class="empty-icon">🌱</div>
-            <h3 data-en="No leaf scanned yet" data-hi="अभी कोई पत्ती स्कैन नहीं की गई">No leaf scanned yet</h3>
-            <p data-en="Turn on the camera or upload a picture of any diseased or healthy plant leaf to receive an instant analysis, color/spot diagnosis, and treatment plan." data-hi="कैमरा ऑन करें या पत्ती की फोटो अपलोड करें। सिस्टम तुरंत पत्ती के रंग, धब्बों और सूखेपन की जांच कर के उपचार बताएगा।">
-              Turn on the camera or upload a picture of any diseased or healthy plant leaf to receive an instant analysis, color/spot diagnosis, and treatment plan.
-            </p>
+          <div id="result-empty" class="result-empty">
+            <h3 class="empty-heading" data-en="Awaiting leaf specimen" data-hi="पत्ती के नमूने की प्रतीक्षा">Awaiting leaf specimen</h3>
+            <p class="empty-sub" data-en="Capture or upload a leaf image on the left to run neural pathology matching and hyper-local agronomy guidance." data-hi="निदान और उपचार योजना देखने के लिए बाईं ओर पत्ती की फोटो अपलोड या कैप्चर करें।">Capture or upload a leaf image on the left to run neural pathology matching and hyper-local agronomy guidance.</p>
+            <div class="empty-steps">
+              <div class="empty-step-row">
+                <span class="step-num">01</span>
+                <span data-en="Select target crop or leave on Auto-Detect" data-hi="फसल चुनें या ऑटो-डिटेक्ट पर छोड़ें">Select target crop or leave on Auto-Detect</span>
+              </div>
+              <div class="empty-step-row">
+                <span class="step-num">02</span>
+                <span data-en="Upload a leaf photo or capture live via camera" data-hi="पत्ती की फोटो अपलोड करें या कैमरे से लें">Upload a leaf photo or capture live via camera</span>
+              </div>
+              <div class="empty-step-row">
+                <span class="step-num">03</span>
+                <span data-en="Review tissue health metrics, spray protocol & broadcast alerts" data-hi="ऊतक स्वास्थ्य, उपचार और नज़दीकी अलर्ट देखें">Review tissue health metrics, spray protocol & broadcast alerts</span>
+              </div>
+            </div>
           </div>
 
           <!-- Loading State -->
-          <div id="result-loading" class="loading-state" style="display:none;">
-            <div class="loading-spinner"></div>
-            <h3 class="loading-title" id="loading-step-title">Analyzing Leaf Features...</h3>
-            <p class="loading-desc" id="loading-step-desc">Inspecting leaf color, pale yellow areas, brown spots, and dried margins with offline AI...</p>
-            <div class="loading-progress-bar"><div class="progress-fill"></div></div>
+          <div id="result-loading" class="result-loading" style="display:none;">
+            <div class="loading-bar-track">
+              <div class="loading-bar-fill"></div>
+            </div>
+            <h3 id="loading-step-title" data-en="Analyzing Leaf Specimen..." data-hi="पत्ती के नमूने का विश्लेषण...">Analyzing Leaf Specimen...</h3>
+            <p id="loading-step-desc" data-en="Running MobileNetV3 pathology classifier and vector similarity lookup." data-hi="न्यूरल मॉडल और वेक्टर डेटाबेस से मिलान हो रहा है।">Running MobileNetV3 pathology classifier and vector similarity lookup.</p>
           </div>
 
           <!-- Active Diagnosis Content -->
-          <div id="result-content" class="diagnosis-content" style="display:none;">
-            
-            <!-- Disease & Severity Banner -->
-            <div class="diagnosis-banner" id="diag-banner">
-              <div class="diag-banner-main">
-                <span class="severity-pill" id="diag-severity">Moderate</span>
-                <span class="risk-pill" id="diag-outbreak-risk">High Risk Plot</span>
-                <h3 class="diag-condition" id="diag-condition">Early Blight (Alternaria solani)</h3>
-                <div class="diag-crop" id="diag-crop">Crop: Tomato</div>
+          <div id="result-content" class="result-content" style="display:none;">
+            <div class="diagnosis-banner">
+              <div class="diag-main-col">
+                <div class="diag-pills-row">
+                  <span class="severity-pill" id="diag-severity">Moderate</span>
+                  <span class="risk-pill" id="diag-outbreak-risk">Moderate Risk</span>
+                </div>
+                <h3 class="diag-condition" id="diag-condition">Leaf Condition</h3>
+                <div class="diag-crop" id="diag-crop">Crop: —</div>
               </div>
-              <div class="diag-confidence-box">
-                <div class="confidence-val" id="diag-confidence">94%</div>
-                <div class="confidence-lbl" data-en="Confidence" data-hi="सटीकता">Confidence</div>
+              <div class="diag-conf-col">
+                <div class="diag-conf-value" id="diag-confidence">0%</div>
+                <div class="diag-conf-label" data-en="CONFIDENCE" data-hi="सटीकता">CONFIDENCE</div>
               </div>
             </div>
 
-            <!-- Hindi Quick Summary (Audio friendly) -->
-            <div class="hindi-summary-box" id="hindi-box">
-              <span class="hi-icon">🇮🇳 किसान सहायता (Hindi):</span>
-              <p id="hindi-summary-text">पत्ती में अर्ली ब्लाइट रोग के लक्षण दिखे हैं। तुरंत नीम के तेल का छिड़काव करें।</p>
+            <div class="hindi-summary-box">
+              <div class="summary-kicker" data-en="FARMER ADVISORY (HINDI)" data-hi="किसान सलाह (हिन्दी)">FARMER ADVISORY (HINDI)</div>
+              <p id="hindi-summary-text"></p>
             </div>
 
-            <!-- Visual Pixel & Observation Breakdown -->
-            <div class="diag-section">
-              <h4 class="section-title">
-                <span class="sec-icon">🔬</span>
-                <span data-en="Physical Visual Inspection" data-hi="दृश्य लक्षण व रंग जांच">Physical Visual Inspection</span>
-              </h4>
-              <p class="visual-summary" id="diag-visual-summary">Leaves display pale yellow discoloration with dark concentric spots and curling dried edges.</p>
-              
-              <!-- Metric bars -->
-              <div class="pixel-metrics-grid">
-                <div class="metric-card">
-                  <div class="metric-label" data-en="Healthy Green" data-hi="हरा पत्ता">Healthy Green</div>
-                  <div class="metric-bar-bg"><div class="metric-bar-fill green-bar" id="bar-green" style="width: 50%;"></div></div>
-                  <span class="metric-val" id="val-green">50%</span>
-                </div>
-                <div class="metric-card">
-                  <div class="metric-label" data-en="Pale / Chlorosis" data-hi="पीलापन">Pale / Chlorosis</div>
-                  <div class="metric-bar-bg"><div class="metric-bar-fill yellow-bar" id="bar-yellow" style="width: 28%;"></div></div>
-                  <span class="metric-val" id="val-yellow">28%</span>
-                </div>
-                <div class="metric-card">
-                  <div class="metric-label" data-en="Brown / Dried Margins" data-hi="सूखा व धब्बे">Brown / Dried Margins</div>
-                  <div class="metric-bar-bg"><div class="metric-bar-fill brown-bar" id="bar-brown" style="width: 22%;"></div></div>
-                  <span class="metric-val" id="val-brown">22%</span>
-                </div>
-              </div>
-
-              <!-- Specific symptoms list -->
-              <ul class="symptoms-list" id="diag-symptoms">
-                <li>Brown circular spots with concentric rings</li>
-                <li>Pale chlorotic halo around lesions</li>
-                <li>Crisp, dried leaf margins</li>
-              </ul>
-            </div>
-
-            <!-- Actionable Treatment Protocols -->
-            <div class="diag-section">
-              <h4 class="section-title">
-                <span class="sec-icon">🍃</span>
-                <span data-en="Localized Treatment Plan (Smallholders &lt; 2ha)" data-hi="उपचार व समाधान योजना (छोटे किसान)">Localized Treatment Plan (Smallholders &lt; 2ha)</span>
-              </h4>
-              
-              <div class="treatment-grid">
-                <!-- Organic / Low-Cost Remedies -->
-                <div class="treatment-col organic-col">
-                  <div class="treatment-header">
-                    <span class="t-icon">🌿</span>
-                    <strong data-en="Organic & Low-Cost Remedies" data-hi="जैविक व घरेलू उपाय">Organic & Low-Cost Remedies</strong>
+            <div class="visual-inspection-block">
+              <div class="section-label" data-en="PHYSICAL VISUAL INSPECTION" data-hi="भौतिक दृश्य निरीक्षण">PHYSICAL VISUAL INSPECTION</div>
+              <p id="diag-visual-summary" class="visual-summary-text"></p>
+              <div class="metrics-grid">
+                <div class="metric-cell">
+                  <div class="metric-head">
+                    <span data-en="Healthy Green" data-hi="स्वस्थ हरा">Healthy Green</span>
+                    <span class="mono-val" id="val-green">0%</span>
                   </div>
-                  <ul id="diag-organic-list">
-                    <li>Spray Neem Oil emulsion (5ml/L) in evening.</li>
-                    <li>Prune and safely burn infected lower foliage.</li>
-                  </ul>
+                  <div class="metric-track"><div class="metric-fill fill-lime" id="bar-green"></div></div>
                 </div>
-
-                <!-- Targeted Chemical Spray -->
-                <div class="treatment-col chemical-col">
-                  <div class="treatment-header">
-                    <span class="t-icon">🧪</span>
-                    <strong data-en="Targeted Fungicide / Pesticide" data-hi="दवा का छिड़काव">Targeted Fungicide / Pesticide</strong>
+                <div class="metric-cell">
+                  <div class="metric-head">
+                    <span data-en="Chlorosis / Pale" data-hi="पीलापन">Chlorosis / Pale</span>
+                    <span class="mono-val" id="val-yellow">0%</span>
                   </div>
-                  <ul id="diag-chemical-list">
-                    <li>Apply Copper Oxychloride 50 WP @ 2.5g/L water.</li>
-                  </ul>
+                  <div class="metric-track"><div class="metric-fill fill-bone" id="bar-yellow"></div></div>
                 </div>
+                <div class="metric-cell">
+                  <div class="metric-head">
+                    <span data-en="Necrotic / Dried" data-hi="सूखे / काले धब्बे">Necrotic / Dried</span>
+                    <span class="mono-val" id="val-brown">0%</span>
+                  </div>
+                  <div class="metric-track"><div class="metric-fill fill-dim" id="bar-brown"></div></div>
+                </div>
+              </div>
+              <ul class="symptoms-list" id="diag-symptoms"></ul>
+            </div>
+
+            <div class="protocol-grid">
+              <div class="protocol-col protocol-organic">
+                <div class="protocol-head">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
+                  </svg>
+                  <span data-en="Organic & Low-Cost" data-hi="जैविक व कम लागत उपचार">Organic & Low-Cost</span>
+                </div>
+                <ul id="diag-organic-list" class="protocol-list"></ul>
+              </div>
+              <div class="protocol-col protocol-chemical">
+                <div class="protocol-head">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 3h6v4l4 9a2 2 0 0 1-1.8 3H6.8a2 2 0 0 1-1.8-3l4-9V3z"/>
+                  </svg>
+                  <span data-en="Targeted Spray" data-hi="लक्षित छिड़काव">Targeted Spray</span>
+                </div>
+                <ul id="diag-chemical-list" class="protocol-list"></ul>
               </div>
             </div>
 
-            <!-- Hyper-Local Neighborhood Outbreak Warning -->
-            <div class="diag-section alert-box-container">
-              <div class="outbreak-warning-box">
-                <div class="warning-header">
-                  <span class="warn-badge">🚨 Hyper-Local Outbreak Warning (&lt; 2 km)</span>
-                </div>
-                <p class="warning-text" id="diag-neighbor-alert">
-                  Warning: Spores travel via morning wind drift. Notify neighboring farmers in 1.5km radius to inspect lower foliage.
-                </p>
-                <button class="btn btn-danger-sm" onclick="broadcastCurrentScan()">
-                  📢 <span data-en="Broadcast Alert to Nearby Farmers" data-hi="आस-पास के किसानों को अलर्ट भेजें">Broadcast Alert to Nearby Farmers</span>
-                </button>
+            <div class="neighbor-advisory-box">
+              <div class="neighbor-text-col">
+                <div class="summary-kicker" data-en="NEIGHBORHOOD SPREAD ADVISORY" data-hi="पड़ोसी खेत चेतावनी">NEIGHBORHOOD SPREAD ADVISORY</div>
+                <p id="diag-neighbor-alert"></p>
               </div>
+              <button type="button" class="btn btn-primary" onclick="broadcastCurrentScan()">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/>
+                  <path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/>
+                  <circle cx="12" cy="12" r="2"/>
+                  <path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/>
+                  <path d="M19.1 4.9C23 8.8 23 15.1 19.1 19"/>
+                </svg>
+                <span data-en="Broadcast Alert" data-hi="चेतावनी प्रसारित करें">Broadcast Alert</span>
+              </button>
             </div>
-
           </div>
         </div>
       </div>
     </section>
 
-    <!-- TAB 2: HYPER-LOCAL OUTBREAK RADAR -->
+    <!-- VIEW 2: NEARBY RADAR & GOOGLE MAP -->
     <section id="tab-outbreak" class="tab-pane">
       <div class="outbreak-layout">
-        <!-- Outbreak Map Card -->
-        <div class="card outbreak-map-card">
-          <div class="card-header">
+        <div class="panel outbreak-map-panel">
+          <div class="panel-header">
             <div>
-              <h2 class="card-title" data-en="Hyper-Local Outbreak Radar" data-hi="स्थानीय प्रकोप रडार नक्शा">Hyper-Local Outbreak Radar</h2>
-              <p class="card-desc" data-en="Live cluster tracking for smallholder plots under 2 hectares within a 2.5 km radius" data-hi="2.5 किमी के दायरे में 2 हेक्टेयर से छोटे खेतों में सक्रिय बीमारियों की ट्रैकिंग">Live cluster tracking for smallholder plots under 2 hectares within a 2.5 km radius</p>
+              <div class="panel-eyebrow" data-en="HYPER-LOCAL SURVEILLANCE (< 2.5 KM)" data-hi="क्षेत्रीय निगरानी (< 2.5 किमी)">HYPER-LOCAL SURVEILLANCE (&lt; 2.5 KM)</div>
+              <h2 class="panel-title" data-en="Neighborhood Outbreak Radar" data-hi="पड़ोसी प्रकोप रडार">Neighborhood Outbreak Radar</h2>
             </div>
-            <button class="btn btn-secondary-sm" onclick="loadOutbreaks()">🔄 Refresh</button>
+            <div class="map-view-toggle">
+              <button type="button" class="view-toggle-btn active" id="btn-view-radar" onclick="switchOutbreakView('radar')" data-en="Live Radar" data-hi="लाइव रडार">Live Radar</button>
+              <button type="button" class="view-toggle-btn" id="btn-view-gmap" onclick="switchOutbreakView('gmap')" data-en="Google Map" data-hi="गूगल मैप">Google Map</button>
+            </div>
           </div>
 
-          <div class="map-view-toggle">
-            <button class="view-toggle-btn active" id="btn-view-radar" onclick="switchOutbreakView('radar')" data-en="📡 Live Radar">📡 Live Radar</button>
-            <button class="view-toggle-btn" id="btn-view-gmap" onclick="switchOutbreakView('gmap')" data-en="🗺️ Google Map">🗺️ Google Map</button>
-          </div>
           <div id="outbreak-gmap" class="outbreak-gmap" style="display:none;"></div>
+
           <div class="radar-container" id="radar-container">
             <div class="radar-screen">
-              <div class="radar-circle circle-1"><span class="ring-label">500m</span></div>
-              <div class="radar-circle circle-2"><span class="ring-label">1.2km</span></div>
-              <div class="radar-circle circle-3"><span class="ring-label">2.5km</span></div>
-              <div class="radar-crosshair-x"></div>
-              <div class="radar-crosshair-y"></div>
-              <div class="radar-sweep"></div>
-              
-              <!-- Center Farm Marker -->
-              <div class="radar-pin center-pin" title="Your Farm (&lt;2 ha)">
-                <span class="pin-icon">🏡</span>
-                <span class="pin-label">Your Plot</span>
-              </div>
-
-              <!-- Dynamic Outbreak Pins -->
-              <div id="radar-pins"></div>
-            </div>
-
-            <div class="radar-legend">
-              <span class="legend-item"><span class="legend-dot red"></span> Critical / Airborne</span>
-              <span class="legend-item"><span class="legend-dot orange"></span> High Spread</span>
-              <span class="legend-item"><span class="legend-dot yellow"></span> Moderate</span>
+              <div class="radar-ring ring-500"><span>500m</span></div>
+              <div class="radar-ring ring-1200"><span>1.2km</span></div>
+              <div class="radar-ring ring-2500"><span>2.5km</span></div>
+              <div class="radar-axis-h"></div>
+              <div class="radar-axis-v"></div>
+              <div class="radar-center-badge" data-en="Your Plot" data-hi="आपका खेत">Your Plot</div>
+              <div id="radar-pins" class="radar-pins"></div>
             </div>
           </div>
         </div>
 
-        <!-- Outbreak Alerts List & Broadcast Tool -->
-        <div class="card alerts-list-card">
-          <div class="card-header">
+        <div class="panel outbreak-feed-panel">
+          <div class="panel-header">
             <div>
-              <h2 class="card-title" data-en="Neighborhood Outbreak Feed" data-hi="पड़ोसी खेतों की ताजा चेतावनियां">Neighborhood Outbreak Feed</h2>
-              <p class="card-desc" data-en="Verified crop disease detections in adjoining fields" data-hi="नजदीकी खेतों में पाए गए रोग">Verified crop disease detections in adjoining fields</p>
+              <div class="panel-eyebrow" data-en="LIVE FARMER REPORTS" data-hi="लाइव किसान रिपोर्ट">LIVE FARMER REPORTS</div>
+              <h2 class="panel-title" data-en="Active Alerts & Broadcast" data-hi="सक्रिय अलर्ट व प्रसारण">Active Alerts & Broadcast</h2>
             </div>
           </div>
 
-          <div class="alerts-feed" id="alerts-feed">
-            <!-- Dynamic alerts loaded from JS -->
-          </div>
+          <div id="alerts-feed" class="alerts-feed"></div>
 
-          <!-- Quick Post Outbreak Form -->
           <div class="broadcast-box">
-            <h4 data-en="Post an Outbreak Alert for Neighbors" data-hi="आस-पास के किसानों के लिए चेतावनी जोड़ें">Post an Outbreak Alert for Neighbors</h4>
-            <div class="form-row">
-              <input type="text" id="alert-crop" placeholder="Crop (e.g. Tomato)" class="form-input">
-              <input type="text" id="alert-disease" placeholder="Disease (e.g. Late Blight)" class="form-input">
-            </div>
-            <div class="form-row">
-              <input type="text" id="alert-distance" placeholder="Distance (e.g. 500m North)" class="form-input">
-              <select id="alert-risk" class="form-input">
-                <option value="High">High Risk</option>
+            <h3 class="broadcast-title" data-en="Broadcast New Field Alert" data-hi="नई खेत चेतावनी प्रसारित करें">Broadcast New Field Alert</h3>
+            <div class="broadcast-grid">
+              <input type="text" id="alert-crop" placeholder="Crop (e.g. Tomato)">
+              <input type="text" id="alert-disease" placeholder="Disease (e.g. Late Blight)">
+              <input type="text" id="alert-distance" placeholder="Distance (e.g. 500m)" value="500m">
+              <select id="alert-risk">
                 <option value="Critical">Critical (Wind-Borne)</option>
+                <option value="High">High</option>
                 <option value="Moderate">Moderate</option>
               </select>
             </div>
-            <textarea id="alert-advisory" placeholder="Advisory / Precaution for neighbors..." class="form-textarea" rows="2"></textarea>
-            <button class="btn btn-primary" onclick="submitCustomAlert()">
+            <textarea id="alert-advisory" rows="2" placeholder="Advisory / Precaution for nearby farmers..."></textarea>
+            <button type="button" class="btn btn-primary" onclick="submitCustomAlert()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/>
+                <circle cx="12" cy="12" r="2"/>
+                <path d="M19.1 4.9C23 8.8 23 15.1 19.1 19"/>
+              </svg>
               <span data-en="Broadcast Alert" data-hi="चेतावनी प्रसारित करें">Broadcast Alert</span>
             </button>
           </div>
@@ -418,94 +457,137 @@
       </div>
     </section>
 
-    <!-- TAB 3: TEACH AI / REFERENCE SAMPLES -->
-    <section id="tab-training" class="tab-pane">
-      <div class="training-layout">
-        <!-- Add New Reference Form -->
-        <div class="card add-ref-card">
-          <div class="card-header">
-            <div>
-              <h2 class="card-title" data-en="Teach AI with New Leaf References" data-hi="नए पत्तों के रेफरेंस से AI को सिखाएं">Teach AI with New Leaf References</h2>
-              <p class="card-desc" data-en="Upload custom images and disease symptoms. The local AI will use these for few-shot learning and instant matching." data-hi="फोटो और बीमारी के लक्षण जोड़ें। लोकल AI मॉडल इन्हें रेफरेंस के तौर पर याद रखेगा।">Upload custom images and disease symptoms. The local AI will use these for few-shot learning and instant matching.</p>
-            </div>
+    <!-- VIEW 3: WEATHER & DISEASE RISK -->
+    <section id="tab-weather" class="tab-pane">
+      <div class="weather-dashboard">
+        <div class="panel weather-hero-card">
+          <div class="weather-hero-left">
+            <div class="panel-eyebrow" data-en="AUTO GPS WEATHER & OUTBREAK FORECAST" data-hi="स्वचालित जीपीएस मौसम व रोग पूर्वानुमान">AUTO GPS WEATHER & OUTBREAK FORECAST</div>
+            <h2 class="weather-hero-loc" id="weather-loc-name" data-en="Detecting farm location..." data-hi="खेत का स्थान खोजा जा रहा है...">Detecting farm location...</h2>
+            <p class="weather-hero-sub" id="weather-summary" data-en="Fetching GPS coordinates & live local weather..." data-hi="जीपीएस और लाइव मौसम डेटा प्राप्त किया जा रहा है...">Fetching GPS coordinates & live local weather...</p>
           </div>
-
-          <form id="ref-form" onsubmit="handleReferenceSubmit(event)" class="ref-form">
-            <div class="form-row">
-              <div class="input-group">
-                <label data-en="Crop / Plant Name *" data-hi="फसल / पौधे का नाम *">Crop / Plant Name *</label>
-                <input type="text" id="ref-crop" required placeholder="e.g. Tomato, Potato, Apple, Cotton">
-              </div>
-              <div class="input-group">
-                <label data-en="Disease or Deficiency *" data-hi="बीमारी या पोषक तत्व कमी *">Disease or Deficiency *</label>
-                <input type="text" id="ref-disease" required placeholder="e.g. Early Blight, Powdery Mildew, Iron Deficiency">
-              </div>
-            </div>
-
-            <div class="input-group">
-              <label data-en="Visual Clues & Symptoms (Color, Dots, Dried Edges) *" data-hi="दिखने वाले लक्षण (रंग, धब्बे, सूखापन) *">Visual Clues & Symptoms (Color, Dots, Dried Edges) *</label>
-              <textarea id="ref-symptoms" required rows="3" placeholder="Describe the color of the leaf, whether it's pale, yellowed, dried out, has concentric spots, powdery white residue, or curled margins..."></textarea>
-            </div>
-
-            <div class="form-row">
-              <div class="input-group">
-                <label data-en="Recommended Treatment / Solution *" data-hi="सुझाया गया उपचार *">Recommended Treatment / Solution *</label>
-                <input type="text" id="ref-treatment" required placeholder="e.g. Neem oil spray 5ml/L, Copper Oxychloride, prune bottom leaves">
-              </div>
-              <div class="input-group">
-                <label data-en="Outbreak Risk Level" data-hi="जोखिम स्तर">Outbreak Risk Level</label>
-                <select id="ref-risk">
-                  <option value="Moderate">Moderate</option>
-                  <option value="High">High</option>
-                  <option value="Critical">Critical (Spreads rapidly)</option>
-                  <option value="Low">Low / Non-infectious</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="input-group">
-              <label data-en="Reference Image (Optional)" data-hi="रेफरेंस फोटो (वैकल्पिक)">Reference Image (Optional)</label>
-              <div class="ref-file-picker">
-                <input type="file" id="ref-image-file" accept="image/*" onchange="handleRefImageSelect(event)">
-                <div id="ref-img-preview" class="ref-img-preview" style="display:none;">
-                  <img id="ref-preview-elem" src="" alt="Preview">
-                </div>
-              </div>
-            </div>
-
-            <button type="submit" class="btn btn-primary" id="save-ref-btn">
-              <span class="btn-icon">💾</span>
-              <span data-en="Save Reference to AI Knowledge Base" data-hi="AI नॉलेज बेस में सेव करें">Save Reference to AI Knowledge Base</span>
-            </button>
-          </form>
+          <button type="button" class="btn btn-primary" id="btn-detect-weather" onclick="detectLocationAndWeather(false)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="23 4 23 10 17 10"/>
+              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+            </svg>
+            <span data-en="Refresh Weather" data-hi="मौसम रिफ्रेश करें">Refresh Weather</span>
+          </button>
         </div>
 
-        <!-- Trained References Knowledge Base List -->
-        <div class="card ref-list-card">
-          <div class="card-header">
-            <div>
-              <h2 class="card-title" data-en="Active AI Reference Library" data-hi="सक्रिय रेफरेंस लाइब्रेरी">Active AI Reference Library</h2>
-              <p class="card-desc" data-en="These reference patterns are actively conditioned into the offline Llama-3 model for leaf detection." data-hi="यह रेफरेंस सीधे Llama-3 मॉडल को सही पहचान के लिए दिए जाते हैं।">These reference patterns are actively conditioned into the offline Llama-3 model for leaf detection.</p>
-            </div>
-            <button class="btn btn-secondary-sm" onclick="loadReferences()">🔄 Refresh</button>
+        <div class="weather-stats-grid" id="weather-metrics">
+          <div class="panel weather-stat-card">
+            <div class="w-stat-label" data-en="Temperature" data-hi="तापमान">Temperature</div>
+            <div class="w-stat-value" id="w-temp">--°C</div>
           </div>
+          <div class="panel weather-stat-card">
+            <div class="w-stat-label" data-en="Relative Humidity" data-hi="नमी (आर्द्रता)">Relative Humidity</div>
+            <div class="w-stat-value" id="w-humidity">--%</div>
+          </div>
+          <div class="panel weather-stat-card">
+            <div class="w-stat-label" data-en="Wind Speed" data-hi="हवा की गति">Wind Speed</div>
+            <div class="w-stat-value" id="w-wind">-- km/h</div>
+          </div>
+          <div class="panel weather-stat-card">
+            <div class="w-stat-label" data-en="Rain Probability" data-hi="बारिश की संभावना">Rain Probability</div>
+            <div class="w-stat-value" id="w-precip">--%</div>
+          </div>
+        </div>
 
-          <div class="ref-items-grid" id="ref-items-container">
-            <!-- Dynamic references loaded from API -->
+        <div class="panel weather-risks-panel">
+          <div class="panel-header">
+            <div>
+              <div class="panel-eyebrow" data-en="WEATHER-DRIVEN PATHOLOGY WATCH" data-hi="मौसम आधारित रोग चेतावनी">WEATHER-DRIVEN PATHOLOGY WATCH</div>
+              <h3 class="panel-title" data-en="Crop Disease Risks (Next 24–48h)" data-hi="फसल रोग जोखिम (अगले 24–48 घंटे)">Crop Disease Risks (Next 24–48h)</h3>
+            </div>
+          </div>
+          <div class="weather-risk-grid" id="weather-risk-list">
+            <div class="weather-risk-empty" data-en="Waiting for GPS coordinates to calculate disease risks..." data-hi="रोग जोखिम की गणना के लिए जीपीएस की प्रतीक्षा...">Waiting for GPS coordinates to calculate disease risks...</div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- TAB 4: DIAGNOSIS HISTORY -->
-    <section id="tab-history" class="tab-pane">
-      <div class="card history-card">
-        <div class="card-header">
-          <div>
-            <h2 class="card-title" data-en="Leaf Diagnosis History" data-hi="पिछली जांचों का रिकॉर्ड">Leaf Diagnosis History</h2>
-            <p class="card-desc" data-en="Log of all recent scans, severity ratings, and treatment plans" data-hi="हाल ही में की गई जांचों और सुझावों की सूची">Log of all recent scans, severity ratings, and treatment plans</p>
+    <!-- VIEW 4: FIELD SAMPLES -->
+    <section id="tab-training" class="tab-pane">
+      <div class="training-layout">
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <div class="panel-eyebrow" data-en="KNOWLEDGE BASE" data-hi="नॉलेज बेस">KNOWLEDGE BASE</div>
+              <h2 class="panel-title" data-en="Add Field Sample" data-hi="नया फील्ड सैंपल जोड़ें">Add Field Sample</h2>
+            </div>
           </div>
-          <button class="btn btn-secondary-sm" onclick="loadHistory()">🔄 Refresh</button>
+          <form id="ref-form" class="ref-form" onsubmit="handleReferenceSubmit(event)">
+            <div class="field-group">
+              <label for="ref-crop" data-en="Crop Name" data-hi="फसल का नाम">Crop Name</label>
+              <input type="text" id="ref-crop" required placeholder="e.g. Wheat, Tomato">
+            </div>
+            <div class="field-group">
+              <label for="ref-disease" data-en="Disease / Pest" data-hi="रोग / कीट">Disease / Pest</label>
+              <input type="text" id="ref-disease" required placeholder="e.g. Yellow Rust">
+            </div>
+            <div class="field-group">
+              <label for="ref-symptoms" data-en="Visual Symptoms" data-hi="दिखने वाले लक्षण">Visual Symptoms</label>
+              <textarea id="ref-symptoms" rows="2" required placeholder="Describe spots, color, curling..."></textarea>
+            </div>
+            <div class="field-group">
+              <label for="ref-treatment" data-en="Recommended Treatment" data-hi="अनुशंसित उपचार">Recommended Treatment</label>
+              <textarea id="ref-treatment" rows="2" required placeholder="Organic and spray steps..."></textarea>
+            </div>
+            <div class="field-group">
+              <label for="ref-risk" data-en="Spread Risk" data-hi="फैलने का जोखिम">Spread Risk</label>
+              <select id="ref-risk">
+                <option value="High">High</option>
+                <option value="Moderate">Moderate</option>
+                <option value="Low">Low</option>
+              </select>
+            </div>
+            <div class="field-group ref-file-picker">
+              <label for="ref-image" data-en="Reference Leaf Photo (Optional)" data-hi="पत्ती की फोटो (वैकल्पिक)">Reference Leaf Photo (Optional)</label>
+              <input type="file" id="ref-image" accept="image/*" onchange="handleRefImageSelect(event)">
+              <div id="ref-img-preview" style="display:none;margin-top:8px;">
+                <img id="ref-preview-elem" src="" alt="Preview" style="max-height:120px;border:1px solid #8a8a85;">
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary" id="save-ref-btn">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                <polyline points="17 21 17 13 7 13 7 21"/>
+                <polyline points="7 3 7 8 15 8"/>
+              </svg>
+              <span data-en="Save Field Sample" data-hi="फील्ड सैंपल सेव करें">Save Field Sample</span>
+            </button>
+          </form>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <div class="panel-eyebrow" data-en="VECTOR INDEX" data-hi="वेक्टर इंडेक्स">VECTOR INDEX</div>
+              <h2 class="panel-title" data-en="Stored Field Samples" data-hi="सहेजे गए फील्ड सैंपल">Stored Field Samples</h2>
+            </div>
+          </div>
+          <div id="ref-items-container" class="ref-items-container"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 5: LOGBOOK -->
+    <section id="tab-history" class="tab-pane">
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-eyebrow" data-en="DIAGNOSTIC LEDGER" data-hi="निदान रजिस्टर">DIAGNOSTIC LEDGER</div>
+            <h2 class="panel-title" data-en="Specimen Logbook" data-hi="जांच लॉगबुक">Specimen Logbook</h2>
+          </div>
+          <button type="button" class="btn btn-secondary" onclick="loadHistory()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="23 4 23 10 17 10"/>
+              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+            </svg>
+            <span data-en="Refresh" data-hi="रिफ्रेश">Refresh</span>
+          </button>
         </div>
 
         <div class="table-responsive">
@@ -514,11 +596,11 @@
               <tr>
                 <th data-en="Time" data-hi="समय">Time</th>
                 <th data-en="Crop" data-hi="फसल">Crop</th>
-                <th data-en="Detected Condition" data-hi="रोग / समस्या">Detected Condition</th>
+                <th data-en="Condition" data-hi="रोग / स्थिति">Condition</th>
                 <th data-en="Severity" data-hi="गंभीरता">Severity</th>
                 <th data-en="Outbreak Risk" data-hi="प्रकोप जोखिम">Outbreak Risk</th>
-                <th data-en="Visual Finding" data-hi="दिखने वाले लक्षण">Visual Finding</th>
-                <th data-en="Speed" data-hi="समय">Speed</th>
+                <th data-en="Visual Finding" data-hi="दृश्य निष्कर्ष">Visual Finding</th>
+                <th data-en="Speed" data-hi="गति">Speed</th>
               </tr>
             </thead>
             <tbody id="history-table-body">
@@ -529,77 +611,28 @@
       </div>
     </section>
 
-    <!-- TAB 5: WEATHER & DISEASE RISK DASHBOARD -->
-    <section id="tab-weather" class="tab-pane">
-      <div class="weather-dashboard">
-        <div class="card weather-hero-card">
-          <div class="weather-hero-left">
-            <div class="weather-hero-icon">🌦️</div>
-            <div>
-              <div class="weather-hero-kicker" data-en="LIVE FARM WEATHER & EARLY WARNING" data-hi="लाइव खेत मौसम व पूर्व चेतावनी">LIVE FARM WEATHER & EARLY WARNING</div>
-              <h2 class="weather-hero-loc" id="weather-loc-name" data-en="Detecting your farm location...">Detecting your farm location...</h2>
-              <p class="weather-hero-sub" id="weather-summary" data-en="Automatically fetching GPS coordinates & local weather forecast...">Automatically fetching GPS coordinates & local weather forecast...</p>
-            </div>
-          </div>
-          <button class="btn-detect-weather" id="btn-detect-weather" onclick="detectLocationAndWeather(false)">
-            <span data-en="🔄 Refresh Weather & Location">🔄 Refresh Weather & Location</span>
-          </button>
-        </div>
-
-        <div class="weather-stats-grid" id="weather-metrics">
-          <div class="card weather-stat-card">
-            <div class="w-stat-label" data-en="Temperature" data-hi="तापमान">Temperature</div>
-            <div class="w-stat-value" id="w-temp">--°C</div>
-            <div class="w-stat-icon">🌡️</div>
-          </div>
-          <div class="card weather-stat-card">
-            <div class="w-stat-label" data-en="Relative Humidity" data-hi="नमी (आर्द्रता)">Relative Humidity</div>
-            <div class="w-stat-value" id="w-humidity">--%</div>
-            <div class="w-stat-icon">💧</div>
-          </div>
-          <div class="card weather-stat-card">
-            <div class="w-stat-label" data-en="Wind Speed" data-hi="हवा की गति">Wind Speed</div>
-            <div class="w-stat-value" id="w-wind">-- km/h</div>
-            <div class="w-stat-icon">💨</div>
-          </div>
-          <div class="card weather-stat-card">
-            <div class="w-stat-label" data-en="Rain Probability" data-hi="बारिश की संभावना">Rain Probability</div>
-            <div class="w-stat-value" id="w-precip">--%</div>
-            <div class="w-stat-icon">🌧️</div>
-          </div>
-        </div>
-
-        <div class="card weather-risks-card">
-          <div class="card-header">
-            <div>
-              <h3 class="card-title" data-en="Crop Disease Outbreak Risks (Next 24–48h)" data-hi="फसल रोग प्रकोप जोखिम (अगले 24–48 घंटे)">Crop Disease Outbreak Risks (Next 24–48h)</h3>
-              <p class="card-desc" data-en="Calculated automatically from temperature, humidity, wind, and rainfall conditions at your farm." data-hi="आपके खेत के तापमान, नमी, हवा और बारिश के आधार पर स्वचालित गणना।">Calculated automatically from temperature, humidity, wind, and rainfall conditions at your farm.</p>
-            </div>
-          </div>
-          <div class="weather-risk-grid" id="weather-risk-list">
-            <div class="weather-risk-empty" data-en="Waiting for GPS location to compute disease risks...">Waiting for GPS location to compute disease risks...</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
   </main>
 
   <!-- Live Outbreak Broadcast Popup Modal -->
   <div id="live-alert-modal" class="live-alert-modal" style="display:none;" role="alertdialog" aria-modal="true">
     <div class="live-alert-card">
       <div class="live-alert-header">
-        <span class="live-alert-badge" data-en="🚨 LIVE FARMER OUTBREAK ALERT">🚨 LIVE FARMER OUTBREAK ALERT</span>
-        <button class="live-alert-close" onclick="closeLiveAlertModal()" aria-label="Close">✕</button>
+        <span class="live-alert-badge" data-en="LIVE FARMER OUTBREAK ALERT" data-hi="लाइव किसान प्रकोप चेतावनी">LIVE FARMER OUTBREAK ALERT</span>
+        <button type="button" class="live-alert-close" onclick="closeLiveAlertModal()" aria-label="Close">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
       </div>
       <h3 id="live-alert-title">Crop Disease Alert</h3>
       <p id="live-alert-meta" class="live-alert-meta"></p>
       <p id="live-alert-advisory" class="live-alert-advisory"></p>
       <div class="live-alert-actions">
-        <select id="live-alert-lang" class="lang-select" onchange="translateLiveAlertModal(this.value)" aria-label="Translate Alert Language" style="border:1px solid var(--border-color);border-radius:8px;padding:6px 10px;"></select>
-        <button class="btn-secondary" id="live-alert-translate-btn" onclick="translateLiveAlertModal()" data-en="🌐 Translate" data-hi="🌐 अनुवाद करें">🌐 Translate</button>
-        <button class="btn-primary" onclick="viewOutbreakOnRadar()" data-en="View on Radar & Map" data-hi="रडार व मैप पर देखें">View on Radar & Map</button>
-        <button class="btn-secondary" onclick="closeLiveAlertModal()" data-en="Dismiss" data-hi="बंद करें">Dismiss</button>
+        <select id="live-alert-lang" class="lang-select" onchange="translateLiveAlertModal(this.value)" aria-label="Translate Alert Language"></select>
+        <button type="button" class="btn btn-secondary" id="live-alert-translate-btn" onclick="translateLiveAlertModal()" data-en="Translate" data-hi="अनुवाद करें">Translate</button>
+        <button type="button" class="btn btn-primary" onclick="viewOutbreakOnRadar()" data-en="View on Radar" data-hi="रडार पर देखें">View on Radar</button>
+        <button type="button" class="btn btn-secondary" onclick="closeLiveAlertModal()" data-en="Dismiss" data-hi="बंद करें">Dismiss</button>
       </div>
     </div>
   </div>
@@ -607,6 +640,6 @@
   <!-- Notification Toast -->
   <div id="toast" class="toast"></div>
 
-  <script src="/static/app.js?v=4"></script>
+  <script src="/static/app.js?v=6"></script>
 </body>
 </html>

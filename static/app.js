@@ -39,9 +39,9 @@ function selectCropPill(btn, cropName) {
   document.getElementById("crop-hint").value = cropName;
   const badge = document.getElementById("active-crop-badge");
   if (badge) {
-    badge.innerText = cropName ? `Locked: ${cropName}` : "🌱 Auto-Detect";
-    badge.style.borderColor = cropName ? "var(--color-primary)" : "var(--color-border)";
-    badge.style.color = cropName ? "var(--color-primary-light)" : "var(--color-text-muted)";
+    badge.innerText = cropName ? `Locked: ${cropName}` : (isHindi ? "ऑटो-डिटेक्ट" : "Auto-Detect");
+    badge.style.borderColor = cropName ? "#c8ff3d" : "#2a2a2c";
+    badge.style.color = cropName ? "#c8ff3d" : "#b3b1a8";
   }
 }
 
@@ -85,7 +85,7 @@ function switchTab(tabId) {
 function showToast(message, isError = false) {
   const toast = document.getElementById("toast");
   toast.textContent = message;
-  toast.style.borderColor = isError ? "#ef4444" : "#10b981";
+  toast.style.borderColor = isError ? "#f1efe8" : "#c8ff3d";
   toast.classList.add("show");
   setTimeout(() => toast.classList.remove("show"), 3500);
 }
@@ -97,9 +97,9 @@ async function checkBackendHealth() {
     const data = await res.json();
     const statusElem = document.getElementById("system-status");
     if (data.ollama_available) {
-      statusElem.innerHTML = `<span class="status-dot"></span><span>Local AI Online: ${data.vision_model} + ${data.llm_model}</span>`;
+      statusElem.innerHTML = `<span class="status-dot"></span><span class="status-text">AI Ready</span>`;
     } else {
-      statusElem.innerHTML = `<span class="status-dot" style="background:#f59e0b;box-shadow:0 0 8px #f59e0b;"></span><span>Pixel Vision Engine Active</span>`;
+      statusElem.innerHTML = `<span class="status-dot" style="background:#f1efe8;"></span><span class="status-text">Ready Offline</span>`;
     }
   } catch (e) {
     console.warn("Health check error:", e);
@@ -127,13 +127,15 @@ async function startCamera() {
     webcam.srcObject = stream;
     webcam.style.display = "block";
     previewContainer.style.display = "none";
-    
+    const ph = document.getElementById("viewport-placeholder");
+    if (ph) ph.style.display = "none";
+
     captureBtn.disabled = false;
-    startCamBtn.innerHTML = `<span class="btn-icon">🛑</span><span>${isHindi ? "कैमरा बंद करें" : "Stop Camera"}</span>`;
+    startCamBtn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12"/></svg><span>${isHindi ? "कैमरा बंद करें" : "Stop Camera"}</span>`;
     startCamBtn.onclick = stopCamera;
     flipCamBtn.style.display = "inline-flex";
     cameraStateBadge.textContent = "Live Stream";
-    cameraStateBadge.style.color = "#34d399";
+    cameraStateBadge.style.color = "#c8ff3d";
     reticle.style.display = "block";
   } catch (err) {
     console.error("Camera access error:", err);
@@ -147,11 +149,18 @@ function stopCamera() {
     currentStream = null;
   }
   webcam.srcObject = null;
+  webcam.style.display = "none";
+  if (previewContainer.style.display === "none") {
+    const ph = document.getElementById("viewport-placeholder");
+    if (ph) ph.style.display = "flex";
+  }
   captureBtn.disabled = true;
-  startCamBtn.innerHTML = `<span class="btn-icon">📹</span><span>${isHindi ? "कैमरा शुरू करें" : "Open Camera"}</span>`;
+  startCamBtn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14"/></svg><span>${isHindi ? "कैमरा खोलें" : "Open Camera"}</span>`;
   startCamBtn.onclick = startCamera;
+  flipCamBtn.style.display = "none";
+  reticle.style.display = "none";
   cameraStateBadge.textContent = "Standby";
-  cameraStateBadge.style.color = "var(--text-muted)";
+  cameraStateBadge.style.color = "#b3b1a8";
 }
 
 function flipCamera() {
@@ -170,6 +179,8 @@ function handleFileUpload(event) {
     previewImg.src = capturedBase64;
     previewContainer.style.display = "block";
     webcam.style.display = "none";
+    const ph = document.getElementById("viewport-placeholder");
+    if (ph) ph.style.display = "none";
     stopCamera();
     cameraStateBadge.textContent = "Image Loaded";
     reticle.style.display = "none";
@@ -279,7 +290,7 @@ function renderDiagnosis(data) {
   const cropStr = data.crop && data.crop !== "—"
     ? `${isHindi ? "फसल" : "Crop"}: ${data.crop}`
     : "";
-  const modelStr = data.neural_similarity ? ` • 🧠 Trained Model: ${data.neural_similarity}%` : "";
+  const modelStr = data.neural_similarity ? ` | Model: ${data.neural_similarity}%` : "";
   document.getElementById("diag-crop").textContent = cropStr + modelStr;
   document.getElementById("diag-confidence").textContent = data.confidence || "—";
 
@@ -367,11 +378,13 @@ async function speakDiagnosis() {
     return;
   }
 
+  const speakIcon = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>`;
+  const stopIcon = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12"/></svg>`;
   const speakBtn = document.getElementById("speak-btn");
   if (window.speechSynthesis.speaking) {
     window.speechSynthesis.cancel();
     window._activeUtterance = null;
-    if (speakBtn) speakBtn.innerHTML = `<span class="btn-icon">🔊</span> <span>${isHindi ? "सुनें" : "Listen"}</span>`;
+    if (speakBtn) speakBtn.innerHTML = `${speakIcon} <span>${isHindi ? "सुनें" : "Listen"}</span>`;
     return;
   }
 
@@ -412,14 +425,14 @@ async function speakDiagnosis() {
         utterance.voice = matchedVoice;
       }
 
-      if (speakBtn) speakBtn.innerHTML = `<span class="btn-icon">⏹️</span> <span>${isHindi ? "रुकें" : "Stop"}</span>`;
+      if (speakBtn) speakBtn.innerHTML = `${stopIcon} <span>${isHindi ? "रुकें" : "Stop"}</span>`;
       utterance.onend = () => {
         window._activeUtterance = null;
-        if (speakBtn) speakBtn.innerHTML = `<span class="btn-icon">🔊</span> <span>${isHindi ? "सुनें" : "Listen"}</span>`;
+        if (speakBtn) speakBtn.innerHTML = `${speakIcon} <span>${isHindi ? "सुनें" : "Listen"}</span>`;
       };
       utterance.onerror = () => {
         window._activeUtterance = null;
-        if (speakBtn) speakBtn.innerHTML = `<span class="btn-icon">🔊</span> <span>${isHindi ? "सुनें" : "Listen"}</span>`;
+        if (speakBtn) speakBtn.innerHTML = `${speakIcon} <span>${isHindi ? "सुनें" : "Listen"}</span>`;
       };
 
       window._activeUtterance = utterance;
@@ -493,7 +506,6 @@ function renderOutbreakRadar(alerts) {
   const container = document.getElementById("radar-pins");
   container.innerHTML = "";
 
-  // Map alerts onto the radar circular coords (center is 190px, 190px)
   const centerX = 190;
   const centerY = 190;
 
@@ -501,23 +513,36 @@ function renderOutbreakRadar(alerts) {
     const blip = document.createElement("div");
     blip.className = "radar-blip";
 
-    // distribute visually on radar concentric rings
-    const angle = (idx * 115 + 45) * (Math.PI / 180);
-    const radius = 60 + (idx * 45) % 110;
+    const distStr = (alt.distance || "").toLowerCase();
+    let angleDeg = (idx * 72 + 35) % 360;
+    if (distStr.includes("north-west") || distStr.includes("nw")) angleDeg = 225;
+    else if (distStr.includes("north-east") || distStr.includes("ne")) angleDeg = 315;
+    else if (distStr.includes("south-west") || distStr.includes("sw")) angleDeg = 135;
+    else if (distStr.includes("south-east") || distStr.includes("se")) angleDeg = 45;
+    else if (distStr.includes("east")) angleDeg = 0;
+    else if (distStr.includes("west")) angleDeg = 180;
+    else if (distStr.includes("north")) angleDeg = 270;
+    else if (distStr.includes("south")) angleDeg = 90;
 
-    const x = centerX + Math.cos(angle) * radius;
-    const y = centerY + Math.sin(angle) * radius;
+    let radius = 78 + (idx * 34) % 86;
+    if (angleDeg === 0 || angleDeg === 180) {
+      radius = Math.max(radius, 122);
+    }
+
+    const rad = angleDeg * (Math.PI / 180);
+    const x = centerX + Math.cos(rad) * radius;
+    const y = centerY + Math.sin(rad) * radius;
 
     blip.style.left = `${x}px`;
     blip.style.top = `${y}px`;
 
-    const colorClass = alt.risk_level === "Critical" ? "red" : (alt.risk_level === "High" ? "orange" : "yellow");
+    const colorClass = alt.risk_level === "Critical" ? "" : (alt.risk_level === "High" ? "bone" : "muted");
 
     blip.innerHTML = `
       <div class="blip-dot ${colorClass}"></div>
-      <div class="blip-name">${alt.crop}: ${alt.disease.split(" ")[0]} (${alt.distance.split(" ")[0]})</div>
+      <div class="blip-name">${alt.crop}: ${(alt.disease || "").split(" ")[0]} (${(alt.distance || "").split(" ")[0]})</div>
     `;
-    blip.onclick = () => showToast(`🚨 ${alt.crop} - ${alt.disease} (${alt.distance}): ${alt.advisory}`);
+    blip.onclick = () => showToast(`${alt.crop} - ${alt.disease} (${alt.distance}): ${alt.advisory}`);
     container.appendChild(blip);
   });
 }
@@ -548,14 +573,14 @@ async function renderOutbreakFeed(alerts) {
     const locTxt = translatedItems ? translatedItems[base + 2] : (alt.location_name || alt.distance);
     const riskTxt = translatedItems ? translatedItems[base + 3] : alt.risk_level;
     const advTxt = translatedItems ? translatedItems[base + 4] : alt.advisory;
-    const btnLabel = targetLang === "hi" ? "🌐 अनुवाद करें" : "🌐 Translate";
+    const btnLabel = targetLang === "hi" ? "अनुवाद करें" : "Translate";
 
     item.innerHTML = `
       <div class="alert-top">
         <span class="alert-crop-name" id="alert-title-${idx}">${cropTxt} • ${disTxt}</span>
         <span class="alert-time">${alt.timestamp}</span>
       </div>
-      <div class="alert-meta" id="alert-meta-${idx}">📍 ${locTxt} &nbsp;|&nbsp; Plot: ${alt.plot_size} &nbsp;|&nbsp; Risk: <strong>${riskTxt}</strong></div>
+      <div class="alert-meta" id="alert-meta-${idx}">${locTxt} | Plot: ${alt.plot_size} | Risk: <strong>${riskTxt}</strong></div>
       <p class="alert-desc" id="alert-desc-${idx}">${advTxt}</p>
       <div class="alert-translate-row">
         <button type="button" class="btn-alert-translate" onclick="translateSingleAlert(${idx}, this)">${btnLabel}</button>
@@ -579,7 +604,7 @@ async function translateSingleAlert(idx, btn) {
     const mEl = document.getElementById(`alert-meta-${idx}`);
     const dEl = document.getElementById(`alert-desc-${idx}`);
     if (tEl) tEl.textContent = `${translated[0]} • ${translated[1]}`;
-    if (mEl) mEl.innerHTML = `📍 ${translated[2]} &nbsp;|&nbsp; Plot: ${alt.plot_size} &nbsp;|&nbsp; Risk: <strong>${translated[3]}</strong>`;
+    if (mEl) mEl.innerHTML = `${translated[2]} | Plot: ${alt.plot_size} | Risk: <strong>${translated[3]}</strong>`;
     if (dEl) dEl.textContent = translated[4];
   }
   if (btn) btn.disabled = false;
@@ -684,7 +709,7 @@ async function handleReferenceSubmit(event) {
     showToast("Error saving reference", true);
   } finally {
     btn.disabled = false;
-    btn.innerHTML = `<span class="btn-icon">💾</span><span>${isHindi ? "AI नॉलेज बेस में सेव करें" : "Save Reference to AI Knowledge Base"}</span>`;
+    btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg><span>${isHindi ? "फील्ड सैंपल सेव करें" : "Save Field Sample"}</span>`;
   }
 }
 
@@ -704,7 +729,7 @@ function renderReferences(refs) {
   container.innerHTML = "";
 
   if (refs.length === 0) {
-    container.innerHTML = `<p style="color:var(--text-dim);text-align:center;padding:30px;">No custom references trained yet.</p>`;
+    container.innerHTML = `<p style="color:#8a8a85;text-align:center;padding:32px;">No custom references trained yet.</p>`;
     return;
   }
 
@@ -717,7 +742,9 @@ function renderReferences(refs) {
           <span class="ref-crop-badge">${r.crop}</span>
           <h4 class="ref-title">${r.disease}</h4>
         </div>
-        <button class="ref-del-btn" onclick="deleteReference('${r.id}')" title="Delete reference">🗑️</button>
+        <button class="ref-del-btn" onclick="deleteReference('${r.id}')" title="Delete reference">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        </button>
       </div>
       <p class="ref-symptoms-text"><strong>${isHindi ? "दृश्य लक्षण:" : "Visual Clues:"}</strong> ${r.visual_symptoms}</p>
       <div class="ref-treatment-box">
@@ -765,13 +792,13 @@ function renderHistory(history) {
     const sevClass = (item.severity || "Moderate").toLowerCase();
 
     tr.innerHTML = `
-      <td style="font-family:var(--font-mono);">${timeFormatted}</td>
+      <td class="mono-cell">${timeFormatted}</td>
       <td><strong>${item.crop}</strong></td>
       <td>${item.condition}</td>
       <td><span class="severity-pill ${sevClass}">${item.severity}</span></td>
       <td>${item.outbreak_risk}</td>
       <td style="max-width:280px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.visual_summary}</td>
-      <td style="font-family:var(--font-mono);color:var(--primary-text);">${item.processing_seconds}s</td>
+      <td class="mono-cell" style="color:#c8ff3d;">${item.processing_seconds}s</td>
     `;
     tbody.appendChild(tr);
   });
@@ -937,7 +964,7 @@ function detectLocationAndWeather(silent = false) {
             const chip = document.createElement("div");
             chip.className = `risk-chip ${r.risk}`;
             chip.innerHTML = `
-              <div class="risk-chip-title">${r.risk === "Critical" || r.risk === "High" ? "⚠️" : "🌱"} ${r.disease} (${r.risk})</div>
+              <div class="risk-chip-title">${r.disease} (${r.risk})</div>
               <div class="risk-chip-meta"><strong>Crops:</strong> ${(r.crops || []).join(", ")}<br/>${r.reason}</div>
             `;
             riskList.appendChild(chip);
@@ -1132,10 +1159,10 @@ async function showLiveAlertModal(alt) {
     modalLangSel.value = currentLang;
   }
   document.getElementById("live-alert-title").textContent = `${alt.crop} — ${alt.disease}`;
-  document.getElementById("live-alert-meta").textContent = `📍 ${alt.location_name || alt.distance} • Risk: ${alt.risk_level} • ${alt.timestamp}`;
+  document.getElementById("live-alert-meta").textContent = `${alt.location_name || alt.distance} • Risk: ${alt.risk_level} • ${alt.timestamp}`;
   document.getElementById("live-alert-advisory").textContent = alt.advisory;
   modal.style.display = "flex";
-  showToast(`🚨 New Outbreak Broadcast: ${alt.crop} - ${alt.disease}`, true);
+  showToast(`New Outbreak Broadcast: ${alt.crop} - ${alt.disease}`, true);
 
   if (currentLang !== "en") {
     translateLiveAlertModal(currentLang);
@@ -1165,7 +1192,7 @@ async function translateLiveAlertModal(forcedLang = null) {
   }
   if (targetLang === "en") {
     document.getElementById("live-alert-title").textContent = `${alt.crop} — ${alt.disease}`;
-    document.getElementById("live-alert-meta").textContent = `📍 ${alt.location_name || alt.distance} • Risk: ${alt.risk_level} • ${alt.timestamp}`;
+    document.getElementById("live-alert-meta").textContent = `${alt.location_name || alt.distance} • Risk: ${alt.risk_level} • ${alt.timestamp}`;
     document.getElementById("live-alert-advisory").textContent = alt.advisory;
     return;
   }
@@ -1175,7 +1202,7 @@ async function translateLiveAlertModal(forcedLang = null) {
   );
   if (tr && tr.length === 5) {
     document.getElementById("live-alert-title").textContent = `${tr[0]} — ${tr[1]}`;
-    document.getElementById("live-alert-meta").textContent = `📍 ${tr[2]} • Risk: ${tr[3]} • ${alt.timestamp}`;
+    document.getElementById("live-alert-meta").textContent = `${tr[2]} • Risk: ${tr[3]} • ${alt.timestamp}`;
     document.getElementById("live-alert-advisory").textContent = tr[4];
   }
 }
