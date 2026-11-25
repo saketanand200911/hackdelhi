@@ -1,5 +1,60 @@
 [
   {
+    "id": "diag_b808dd29",
+    "timestamp": "2026-11-25T15:17:56.315913",
+    "crop": "Onion",
+    "condition": "Onion Purple Blotch (Alternaria porri)",
+    "severity": "High",
+    "is_healthy": false,
+    "outbreak_risk": "High during warm humid monsoon or post-rain periods",
+    "visual_summary": "Onion foliage showing small water-soaked areas that turn brown-purple with concentric rings; leaves break over at lesion point with sunken purplish-brown elliptical lesions with yellow chlorotic margin.",
+    "processing_seconds": 0.11
+  },
+  {
+    "id": "diag_6d87ff88",
+    "timestamp": "2026-11-25T15:17:56.208274",
+    "crop": "Lemon",
+    "condition": "Lemon Citrus Canker (Xanthomonas citri)",
+    "severity": "Critical",
+    "is_healthy": false,
+    "outbreak_risk": "Critical during monsoon wind-driven rain",
+    "visual_summary": "Lemon foliage showing scabby raised tan-brown spots visible on both leaf surfaces surrounded by chlorotic halo with raised corky brown crater-like lesions with bright yellow halos.",
+    "processing_seconds": 0.1
+  },
+  {
+    "id": "diag_151d49bd",
+    "timestamp": "2026-11-25T15:17:56.103668",
+    "crop": "Sugarcane",
+    "condition": "Sugarcane Red Rot (Colletotrichum falcatum)",
+    "severity": "Critical",
+    "is_healthy": false,
+    "outbreak_risk": "Critical across sugarcane growing belts",
+    "visual_summary": "Sugarcane foliage showing blood-red streaks studded with dark spots along the leaf midrib; whole crown withers and dries with red lesions on midrib with dark borders; leaves wither yellow-brown from tip.",
+    "processing_seconds": 0.11
+  },
+  {
+    "id": "diag_2eafe449",
+    "timestamp": "2026-11-25T15:17:55.992570",
+    "crop": "Cotton",
+    "condition": "Cotton Leaf Curl Virus (CLCuV)",
+    "severity": "Critical",
+    "is_healthy": false,
+    "outbreak_risk": "Critical when whitefly population is high",
+    "visual_summary": "Cotton foliage showing severe upward/downward curling, vein swelling, and leafy enations on underside with dark green thickened veins with upward or downward leaf cupping.",
+    "processing_seconds": 0.08
+  },
+  {
+    "id": "diag_2a3947ca",
+    "timestamp": "2026-11-25T15:17:55.914563",
+    "crop": "Rice (Paddy)",
+    "condition": "Rice Leaf Smut (Entyloma oryzae)",
+    "severity": "Moderate",
+    "is_healthy": false,
+    "outbreak_risk": "Moderate in humid late-season paddy fields",
+    "visual_summary": "Rice (Paddy) foliage showing short linear to rectangular black smut sori (0.5-5mm) scattered between veins; leaf tips turn yellow and dry with small slightly raised angular black or dark brown spots on both leaf surfaces.",
+    "processing_seconds": 0.26
+  },
+  {
     "id": "diag_acdb4ca1",
     "timestamp": "2026-11-25T14:42:37.069385",
     "crop": "Coffee",
@@ -493,60 +548,5 @@
     "outbreak_risk": "High (foliar nematodes spread via rain splash, wind, and birds)",
     "visual_summary": "Beech foliage showing distinctive dark thickened interveinal stripes/bands that turn yellow, orange-brown, and leathery/crinkled with dark green, yellow, and reddish-brown interveinal banding between lateral veins.",
     "processing_seconds": 0.14
-  },
-  {
-    "id": "diag_7c7b9200",
-    "timestamp": "2026-11-25T13:16:34.486132",
-    "crop": "Beech",
-    "condition": "Beech Leaf Disease (Litylenchus crenatae)",
-    "severity": "High to Critical",
-    "is_healthy": false,
-    "outbreak_risk": "High (foliar nematodes spread via rain splash, wind, and birds)",
-    "visual_summary": "Beech foliage showing distinctive dark thickened interveinal stripes/bands that turn yellow, orange-brown, and leathery/crinkled with dark green, yellow, and reddish-brown interveinal banding between lateral veins.",
-    "processing_seconds": 0.16
-  },
-  {
-    "id": "diag_7709fd24",
-    "timestamp": "2026-11-25T13:04:47.383400",
-    "crop": "Strawberry",
-    "condition": "Strawberry Common Leaf Spot (Mycosphaerella fragariae)",
-    "severity": "Moderate to High",
-    "is_healthy": false,
-    "outbreak_risk": "High (spores splash from infected crown and soil during rain or overhead watering)",
-    "visual_summary": "Strawberry foliage showing classic 'bird's eye' spots (3-6mm) with pale whitish necrotic centers bordered by deep reddish-purple margins with small circular spots with white to ash-gray centers and dark purple-red halos.",
-    "processing_seconds": 0.07
-  },
-  {
-    "id": "diag_9ee6074c",
-    "timestamp": "2026-11-25T13:04:47.312293",
-    "crop": "Tomato",
-    "condition": "Tomato Late Blight (Phytophthora infestans)",
-    "severity": "Critical",
-    "is_healthy": false,
-    "outbreak_risk": "EXTREME CRITICAL (can wipe out tomato field in 48-72 hours)",
-    "visual_summary": "Tomato foliage showing rapidly spreading large dark water-soaked patches; white fuzzy mold on leaf undersides during moist cool mornings with water-soaked irregular pale green to dark purplish-black greasy lesions.",
-    "processing_seconds": 0.07
-  },
-  {
-    "id": "diag_f4318631",
-    "timestamp": "2026-11-25T13:04:47.234187",
-    "crop": "Strawberry",
-    "condition": "Strawberry Common Leaf Spot (Mycosphaerella fragariae)",
-    "severity": "Moderate to High",
-    "is_healthy": false,
-    "outbreak_risk": "High (spores splash from infected crown and soil during rain or overhead watering)",
-    "visual_summary": "Strawberry foliage showing classic 'bird's eye' spots (3-6mm) with pale whitish necrotic centers bordered by deep reddish-purple margins with small circular spots with white to ash-gray centers and dark purple-red halos.",
-    "processing_seconds": 0.07
-  },
-  {
-    "id": "diag_e83bd324",
-    "timestamp": "2026-11-25T13:04:47.160619",
-    "crop": "Soybean",
-    "condition": "Soybean Brown Spot / Septoria Spot (Septoria glycines)",
-    "severity": "Moderate to High",
-    "is_healthy": false,
-    "outbreak_risk": "High during warm wet monsoon periods with frequent rain splash",
-    "visual_summary": "Soybean foliage showing small (2-5mm) angular irregular brown to bronze lesions on lower canopy; leaves turn yellow and drop early with small angular dark brown to red spots surrounded by chlorotic yellow halos.",
-    "processing_seconds": 0.07
   }
 ]

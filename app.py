@@ -472,18 +472,50 @@ def _compute_weather_disease_risks(temp_c: float, humidity: float, precip_prob: 
     return risks
 
 
+_GEOCODE_CACHE: Dict[str, str] = {}
+
+
 def _reverse_geocode_name(lat: float, lon: float) -> str:
+    cache_key = f"{round(lat, 2)},{round(lon, 2)}"
+    if cache_key in _GEOCODE_CACHE:
+        return _GEOCODE_CACHE[cache_key]
+
+    # 1. BigDataCloud (fast, reliable on both local & Vercel without rate-limit blocks)
+    try:
+        bdc_url = f"https://api.bigdatacloud.net/data/reverse-geocode-client?latitude={lat}&longitude={lon}&localityLanguage=en"
+        req = urllib.request.Request(bdc_url, headers={"User-Agent": "LeafGuardAI/1.0"})
+        with urllib.request.urlopen(req, timeout=4) as r:
+            d = json.loads(r.read().decode("utf-8"))
+            locality = d.get("locality") or d.get("city") or ""
+            city = d.get("city") or ""
+            sub = d.get("principalSubdivision") or ""
+            parts = []
+            for p in [locality, city, sub]:
+                if p and p not in parts:
+                    parts.append(p)
+            if parts:
+                name = ", ".join(parts[:2])
+                _GEOCODE_CACHE[cache_key] = name
+                return name
+    except Exception:
+        pass
+
+    # 2. Nominatim fallback
     try:
         url = f"https://nominatim.openstreetmap.org/reverse?format=json&lat={lat}&lon={lon}&zoom=12"
-        req = urllib.request.Request(url, headers={"User-Agent": "LeafGuardAI/1.0"})
-        with urllib.request.urlopen(req, timeout=5) as r:
+        req = urllib.request.Request(url, headers={"User-Agent": "LeafGuardAI/1.0 (contact@leafguard.app)"})
+        with urllib.request.urlopen(req, timeout=4) as r:
             d = json.loads(r.read().decode("utf-8"))
             addr = d.get("address", {})
             parts = [addr.get("village") or addr.get("town") or addr.get("suburb") or addr.get("city") or addr.get("county"), addr.get("state")]
             name = ", ".join([p for p in parts if p])
-            return name or f"{lat:.3f}, {lon:.3f}"
+            if name:
+                _GEOCODE_CACHE[cache_key] = name
+                return name
     except Exception:
-        return f"{lat:.3f}, {lon:.3f}"
+        pass
+
+    return f"{lat:.3f}, {lon:.3f}"
 
 
 @app.get("/api/config")

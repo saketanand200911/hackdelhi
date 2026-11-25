@@ -1467,3 +1467,122 @@ button:disabled {
     align-items: stretch;
   }
 }
+
+/* Light Mode Theme Override (High-Contrast Outdoor Readability) */
+html[data-theme="light"],
+html[data-theme="light"] body {
+  background-color: #f1efe8;
+  color: #0b0b0c;
+}
+
+html[data-theme="light"] .app-header,
+html[data-theme="light"] .panel,
+html[data-theme="light"] .tabs-nav,
+html[data-theme="light"] .lang-select-wrap,
+html[data-theme="light"] .lang-select,
+html[data-theme="light"] .lang-select option,
+html[data-theme="light"] .crop-pill,
+html[data-theme="light"] .field-group input,
+html[data-theme="light"] .field-group textarea,
+html[data-theme="light"] .field-group select,
+html[data-theme="light"] .alert-item,
+html[data-theme="light"] .radar-screen,
+html[data-theme="light"] .blip-name,
+html[data-theme="light"] .live-alert-card,
+html[data-theme="light"] .btn-secondary,
+html[data-theme="light"] .btn-alert-translate,
+html[data-theme="light"] .ref-del-btn,
+html[data-theme="light"] .view-toggle-btn,
+html[data-theme="light"] .hindi-summary-box,
+html[data-theme="light"] .viewport-box {
+  background-color: #ffffff;
+  color: #0b0b0c;
+  border-color: #2a2a2c;
+}
+
+html[data-theme="light"] .panel-title,
+html[data-theme="light"] .brand-title,
+html[data-theme="light"] .empty-heading,
+html[data-theme="light"] .diag-condition,
+html[data-theme="light"] .weather-hero-loc,
+html[data-theme="light"] .protocol-head,
+html[data-theme="light"] .alert-crop-name,
+html[data-theme="light"] .ref-title,
+html[data-theme="light"] .risk-chip-title,
+html[data-theme="light"] .mono-val,
+html[data-theme="light"] .live-alert-card h3 {
+  color: #0b0b0c;
+}
+
+html[data-theme="light"] .brand-subtitle,
+html[data-theme="light"] .panel-eyebrow,
+html[data-theme="light"] .summary-kicker,
+html[data-theme="light"] .section-label,
+html[data-theme="light"] .w-stat-label,
+html[data-theme="light"] .field-group label,
+html[data-theme="light"] .alert-time {
+  color: #2a2a2c;
+}
+
+html[data-theme="light"] .empty-sub,
+html[data-theme="light"] .weather-hero-sub,
+html[data-theme="light"] .visual-summary-text,
+html[data-theme="light"] .symptoms-list li,
+html[data-theme="light"] .protocol-list li,
+html[data-theme="light"] .alert-meta,
+html[data-theme="light"] .alert-desc,
+html[data-theme="light"] .risk-chip-meta,
+html[data-theme="light"] .ref-symptoms-text,
+html[data-theme="light"] .ref-treatment-box,
+html[data-theme="light"] .data-table td,
+html[data-theme="light"] .mono-cell,
+html[data-theme="light"] .empty-step-row {
+  color: #2a2a2c;
+}
+
+html[data-theme="light"] .instrument-dock,
+html[data-theme="light"] .diagnosis-banner,
+html[data-theme="light"] .specimen-tip-bar,
+html[data-theme="light"] .neighbor-advisory-box,
+html[data-theme="light"] .broadcast-box,
+html[data-theme="light"] .data-table th,
+html[data-theme="light"] .live-alert-advisory,
+html[data-theme="light"] .toast {
+  background-color: #e6e3da;
+  color: #0b0b0c;
+}
+
+html[data-theme="light"] .tab-btn {
+  color: #2a2a2c;
+}
+
+html[data-theme="light"] .tab-btn.active,
+html[data-theme="light"] .view-toggle-btn.active {
+  background-color: #0b0b0c;
+  color: #f1efe8;
+}
+
+html[data-theme="light"] .diag-conf-value,
+html[data-theme="light"] .w-stat-value {
+  color: #0b0b0c;
+}
+
+html[data-theme="light"] .btn-primary,
+html[data-theme="light"] .crop-pill.active,
+html[data-theme="light"] .step-num,
+html[data-theme="light"] .badge-alert {
+  background-color: #c8ff3d;
+  color: #0b0b0c;
+  border-color: #0b0b0c;
+}
+
+html[data-theme="light"] .radar-center-badge {
+  background-color: #0b0b0c;
+  color: #c8ff3d;
+}
+
+html[data-theme="light"] .panel-header,
+html[data-theme="light"] .diagnosis-banner,
+html[data-theme="light"] .toast {
+  box-shadow: #0b0b0c 0px -3px 0px 0px inset;
+}

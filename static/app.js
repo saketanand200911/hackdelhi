@@ -14,6 +14,7 @@ if (!farmerSenderId) {
 }
 let lastSeenOutbreakTs = 0;
 let latestOutbreaks = [];
+let latestWeatherData = null;
 let googleMap = null;
 let googleMapCircle = null;
 let googleMapMarkers = [];
@@ -47,6 +48,7 @@ function selectCropPill(btn, cropName) {
 
 // Initial Setup
 window.addEventListener("DOMContentLoaded", () => {
+  initTheme();
   checkBackendHealth();
   loadAppConfig();
   loadReferences();
@@ -832,6 +834,7 @@ async function changeLanguage(lang) {
     elements.forEach(el => {
       el.textContent = el.dataset.en;
     });
+    await translateDynamicContent("en");
     showToast("Language switched to English");
     return;
   }
@@ -877,6 +880,9 @@ async function translateDynamicContent(lang) {
   if (latestOutbreaks && latestOutbreaks.length > 0) {
     await renderOutbreakFeed(latestOutbreaks);
   }
+  if (latestWeatherData) {
+    await renderWeatherData(latestWeatherData);
+  }
   if (currentDiagnosis && lang !== "en") {
     const condEl = document.getElementById("diag-condition");
     const visEl = document.getElementById("diag-visual-summary");
@@ -892,14 +898,6 @@ async function translateDynamicContent(lang) {
       if (visEl) visEl.textContent = tr[1];
       if (nEl) nEl.textContent = tr[2];
     }
-  }
-  const riskChips = Array.from(document.querySelectorAll("#weather-risk-list .risk-chip"));
-  if (riskChips.length > 0 && lang !== "en") {
-    const texts = riskChips.map(c => c.innerText);
-    const tr = await translateTextsBatch(texts, lang);
-    riskChips.forEach((c, i) => {
-      if (tr[i]) c.querySelector(".risk-chip-meta").textContent = tr[i];
-    });
   }
 }
 
@@ -935,47 +933,21 @@ function detectLocationAndWeather(silent = false) {
       try {
         const res = await fetch(`/api/weather-risk?lat=${lat}&lon=${lon}`);
         const data = await res.json();
+        latestWeatherData = data;
         farmerCoords = {
           lat,
           lon,
           location_name: data.location_name || `${lat.toFixed(3)}, ${lon.toFixed(3)}`
         };
 
-        if (locEl) locEl.textContent = farmerCoords.location_name;
-        const w = data.weather || {};
-        if (sumEl) {
-          sumEl.textContent = `${w.condition || "Live Weather"} • Lat ${lat.toFixed(3)}, Lon ${lon.toFixed(3)} (${data.source || "Weather API"})`;
-        }
+        await renderWeatherData(data);
 
-        const tEl = document.getElementById("w-temp");
-        const hEl = document.getElementById("w-humidity");
-        const wEl = document.getElementById("w-wind");
-        const pEl = document.getElementById("w-precip");
-        if (tEl) tEl.textContent = `${w.temp_c ?? "--"}°C`;
-        if (hEl) hEl.textContent = `${w.humidity ?? "--"}%`;
-        if (wEl) wEl.textContent = `${w.wind_kmh ?? "--"} km/h`;
-        if (pEl) pEl.textContent = `${w.precip_prob ?? 0}%`;
-
-        const riskList = document.getElementById("weather-risk-list");
         const risks = data.disease_risks || [];
-        if (riskList) {
-          riskList.innerHTML = "";
-          risks.forEach(r => {
-            const chip = document.createElement("div");
-            chip.className = `risk-chip ${r.risk}`;
-            chip.innerHTML = `
-              <div class="risk-chip-title">${r.disease} (${r.risk})</div>
-              <div class="risk-chip-meta"><strong>Crops:</strong> ${(r.crops || []).join(", ")}<br/>${r.reason}</div>
-            `;
-            riskList.appendChild(chip);
-          });
-        }
-
         const riskBadge = document.getElementById("weather-risk-badge");
         if (riskBadge) {
           const highCount = risks.filter(r => r.risk === "High" || r.risk === "Critical").length;
           if (highCount > 0) {
-            riskBadge.textContent = `${highCount} High`;
+            riskBadge.textContent = `${highCount}`;
             riskBadge.style.display = "inline-block";
           } else {
             riskBadge.style.display = "none";
@@ -1000,11 +972,73 @@ function detectLocationAndWeather(silent = false) {
     (err) => {
       if (btn) btn.disabled = false;
       if (locEl) locEl.textContent = "Location Permission Needed";
-      if (sumEl) sumEl.textContent = "Allow browser GPS permission and click Refresh Weather & Location.";
+      if (sumEl) sumEl.textContent = "Allow browser GPS permission and click Refresh Weather.";
       if (!silent) showToast("GPS permission denied: " + err.message, true);
     },
     { enableHighAccuracy: true, timeout: 10000 }
   );
+}
+
+async function renderWeatherData(data) {
+  if (!data) return;
+  const locEl = document.getElementById("weather-loc-name");
+  const sumEl = document.getElementById("weather-summary");
+  const w = data.weather || {};
+  const lat = data.lat ?? farmerCoords?.lat ?? 0;
+  const lon = data.lon ?? farmerCoords?.lon ?? 0;
+
+  let locText = data.location_name || `${lat.toFixed(3)}, ${lon.toFixed(3)}`;
+  let condText = w.condition || "Live Weather";
+  const risks = data.disease_risks || [];
+
+  const tEl = document.getElementById("w-temp");
+  const hEl = document.getElementById("w-humidity");
+  const wEl = document.getElementById("w-wind");
+  const pEl = document.getElementById("w-precip");
+  if (tEl) tEl.textContent = `${w.temp_c ?? "--"}°C`;
+  if (hEl) hEl.textContent = `${w.humidity ?? "--"}%`;
+  if (wEl) wEl.textContent = `${w.wind_kmh ?? "--"} km/h`;
+  if (pEl) pEl.textContent = `${w.precip_prob ?? 0}%`;
+
+  let translatedRisks = null;
+  let cropsWord = "Crops";
+  if (currentLang !== "en") {
+    const flat = [locText, condText, "Crops"];
+    risks.forEach(r => {
+      flat.push(r.disease || "", r.risk || "", (r.crops || []).join(", "), r.reason || "");
+    });
+    const tr = await translateTextsBatch(flat, currentLang);
+    if (tr && tr.length === flat.length) {
+      locText = tr[0];
+      condText = tr[1];
+      cropsWord = tr[2];
+      translatedRisks = tr.slice(3);
+    }
+  }
+
+  if (locEl) locEl.textContent = locText;
+  if (sumEl) {
+    sumEl.textContent = `${condText} • Lat ${Number(lat).toFixed(3)}, Lon ${Number(lon).toFixed(3)} (${data.source || "Weather API"})`;
+  }
+
+  const riskList = document.getElementById("weather-risk-list");
+  if (riskList) {
+    riskList.innerHTML = "";
+    risks.forEach((r, idx) => {
+      const base = idx * 4;
+      const disTxt = translatedRisks ? translatedRisks[base] : r.disease;
+      const riskTxt = translatedRisks ? translatedRisks[base + 1] : r.risk;
+      const cropsTxt = translatedRisks ? translatedRisks[base + 2] : (r.crops || []).join(", ");
+      const reasonTxt = translatedRisks ? translatedRisks[base + 3] : r.reason;
+      const chip = document.createElement("div");
+      chip.className = `risk-chip ${r.risk}`;
+      chip.innerHTML = `
+        <div class="risk-chip-title">${disTxt} (${riskTxt})</div>
+        <div class="risk-chip-meta"><strong>${cropsWord}:</strong> ${cropsTxt}<br/>${reasonTxt}</div>
+      `;
+      riskList.appendChild(chip);
+    });
+  }
 }
 
 // Google Maps Integration in Outbreak Tab
@@ -1215,4 +1249,33 @@ function closeLiveAlertModal() {
 function viewOutbreakOnRadar() {
   closeLiveAlertModal();
   switchTab("outbreak");
+}
+
+// Light / Dark Mode Toggle
+function initTheme() {
+  const saved = localStorage.getItem("leafguard_theme") || "dark";
+  applyTheme(saved);
+}
+
+function toggleTheme() {
+  const current = document.documentElement.dataset.theme === "light" ? "light" : "dark";
+  const next = current === "light" ? "dark" : "light";
+  applyTheme(next);
+  localStorage.setItem("leafguard_theme", next);
+}
+
+function applyTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  const label = document.getElementById("theme-label");
+  if (label) {
+    if (theme === "light") {
+      label.dataset.en = "Dark";
+      label.dataset.hi = "डार्क";
+      label.textContent = isHindi ? "डार्क" : "Dark";
+    } else {
+      label.dataset.en = "Light";
+      label.dataset.hi = "लाइट";
+      label.textContent = isHindi ? "लाइट" : "Light";
+    }
+  }
 }
