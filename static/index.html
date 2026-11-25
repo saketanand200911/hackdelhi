@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="/static/style.css?v=5">
 </head>
 <body>
   <!-- Top Navigation Header -->
@@ -31,9 +31,34 @@
           <span class="status-dot"></span>
           <span class="status-text">Ollama AI: Local (Moondream + LLaMA-3)</span>
         </div>
-        <button class="lang-toggle-btn" id="lang-btn" onclick="toggleLanguage()">
-          <span class="lang-icon">🌐</span> <span id="lang-label">हिंदी में देखें</span>
-        </button>
+        <div class="lang-select-wrap">
+          <span class="lang-icon">🌐</span>
+          <select class="lang-select" id="lang-select" onchange="changeLanguage(this.value)" aria-label="Select Language">
+            <option value="en">English</option>
+            <option value="hi">हिन्दी (Hindi)</option>
+            <option value="bn">বাংলা (Bengali)</option>
+            <option value="te">తెలుగు (Telugu)</option>
+            <option value="mr">मराठी (Marathi)</option>
+            <option value="ta">தமிழ் (Tamil)</option>
+            <option value="ur">اردو (Urdu)</option>
+            <option value="gu">ગુજરાતી (Gujarati)</option>
+            <option value="kn">ಕನ್ನಡ (Kannada)</option>
+            <option value="ml">മലയാളം (Malayalam)</option>
+            <option value="or">ଓଡ଼ିଆ (Odia)</option>
+            <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
+            <option value="as">অসমীয়া (Assamese)</option>
+            <option value="mai">मैथिली (Maithili)</option>
+            <option value="sat">संताली / ᱥᱟᱱᱛᱟᱲᱤ (Santali)</option>
+            <option value="ks">कश्मीरी / कॉशुर (Kashmiri)</option>
+            <option value="ne">नेपाली (Nepali)</option>
+            <option value="kok">कोंकणी (Konkani)</option>
+            <option value="sd">सिंधी / سنڌي (Sindhi)</option>
+            <option value="doi">डोगरी (Dogri)</option>
+            <option value="mni">মৈতৈলোন্ (Manipuri)</option>
+            <option value="brx">बड़ो (Bodo)</option>
+            <option value="sa">संस्कृतम् (Sanskrit)</option>
+          </select>
+        </div>
       </div>
     </div>
 
@@ -42,6 +67,11 @@
       <button class="tab-btn active" data-tab="scanner" onclick="switchTab('scanner')">
         <span class="tab-icon">📷</span>
         <span class="tab-label" data-en="Leaf Scanner & Diagnosis" data-hi="पत्ती स्कैनर व जांच">Leaf Scanner & Diagnosis</span>
+      </button>
+      <button class="tab-btn" data-tab="weather" onclick="switchTab('weather')">
+        <span class="tab-icon">🌦️</span>
+        <span class="tab-label" data-en="Weather & Disease Risk" data-hi="मौसम व रोग जोखिम">Weather & Disease Risk</span>
+        <span class="badge-pill" id="weather-risk-badge" style="display:none;">!</span>
       </button>
       <button class="tab-btn" data-tab="outbreak" onclick="switchTab('outbreak')">
         <span class="tab-icon">🗺️</span>
@@ -80,28 +110,28 @@
           <div class="crop-selector-container top-crop-selector">
             <div class="crop-selector-header">
               <span class="crop-selector-label" data-en="Target Crop / Plant:" data-hi="फसल / पौधा चुनें:">Target Crop / Plant:</span>
-              <span class="active-crop-indicator" id="active-crop-badge">🌱 Auto-Detect</span>
+              <span class="active-crop-indicator" id="active-crop-badge" data-en="🌱 Auto-Detect" data-hi="🌱 ऑटो-डिटेक्ट">🌱 Auto-Detect</span>
             </div>
             <div class="crop-pills" id="crop-pills">
-              <button type="button" class="crop-pill active" data-crop="" onclick="selectCropPill(this, '')">🌱 Auto-Detect</button>
-              <button type="button" class="crop-pill" data-crop="Strawberry" onclick="selectCropPill(this, 'Strawberry')">🍓 Strawberry</button>
-              <button type="button" class="crop-pill" data-crop="Soybean" onclick="selectCropPill(this, 'Soybean')">🫘 Soybean</button>
-              <button type="button" class="crop-pill" data-crop="Coffee" onclick="selectCropPill(this, 'Coffee')">☕ Coffee</button>
-              <button type="button" class="crop-pill" data-crop="Tomato" onclick="selectCropPill(this, 'Tomato')">🍅 Tomato</button>
-              <button type="button" class="crop-pill" data-crop="Potato" onclick="selectCropPill(this, 'Potato')">🥔 Potato</button>
-              <button type="button" class="crop-pill" data-crop="Rice" onclick="selectCropPill(this, 'Rice')">🌾 Rice</button>
-              <button type="button" class="crop-pill" data-crop="Wheat" onclick="selectCropPill(this, 'Wheat')">🌾 Wheat</button>
-              <button type="button" class="crop-pill" data-crop="Cotton" onclick="selectCropPill(this, 'Cotton')">🪴 Cotton</button>
-              <button type="button" class="crop-pill" data-crop="Corn" onclick="selectCropPill(this, 'Corn')">🌽 Corn</button>
-              <button type="button" class="crop-pill" data-crop="Apple" onclick="selectCropPill(this, 'Apple')">🍎 Apple</button>
-              <button type="button" class="crop-pill" data-crop="Grape" onclick="selectCropPill(this, 'Grape')">🍇 Grape</button>
-              <button type="button" class="crop-pill" data-crop="Pepper" onclick="selectCropPill(this, 'Pepper')">🌶️ Chilli</button>
-              <button type="button" class="crop-pill" data-crop="Banana" onclick="selectCropPill(this, 'Banana')">🍌 Banana</button>
-              <button type="button" class="crop-pill" data-crop="Mango" onclick="selectCropPill(this, 'Mango')">🥭 Mango</button>
-              <button type="button" class="crop-pill" data-crop="Peach" onclick="selectCropPill(this, 'Peach')">🍑 Peach</button>
-              <button type="button" class="crop-pill" data-crop="Orange" onclick="selectCropPill(this, 'Orange')">🍊 Citrus</button>
-              <button type="button" class="crop-pill" data-crop="Groundnut" onclick="selectCropPill(this, 'Groundnut')">🥜 Groundnut</button>
-              <button type="button" class="crop-pill" data-crop="Onion" onclick="selectCropPill(this, 'Onion')">🧅 Onion</button>
+              <button type="button" class="crop-pill active" data-crop="" data-en="🌱 Auto-Detect" data-hi="🌱 ऑटो-डिटेक्ट" onclick="selectCropPill(this, '')">🌱 Auto-Detect</button>
+              <button type="button" class="crop-pill" data-crop="Strawberry" data-en="🍓 Strawberry" data-hi="🍓 स्ट्रॉबेरी" onclick="selectCropPill(this, 'Strawberry')">🍓 Strawberry</button>
+              <button type="button" class="crop-pill" data-crop="Soybean" data-en="🫘 Soybean" data-hi="🫘 सोयाबीन" onclick="selectCropPill(this, 'Soybean')">🫘 Soybean</button>
+              <button type="button" class="crop-pill" data-crop="Coffee" data-en="☕ Coffee" data-hi="☕ कॉफ़ी" onclick="selectCropPill(this, 'Coffee')">☕ Coffee</button>
+              <button type="button" class="crop-pill" data-crop="Tomato" data-en="🍅 Tomato" data-hi="🍅 टमाटर" onclick="selectCropPill(this, 'Tomato')">🍅 Tomato</button>
+              <button type="button" class="crop-pill" data-crop="Potato" data-en="🥔 Potato" data-hi="🥔 आलू" onclick="selectCropPill(this, 'Potato')">🥔 Potato</button>
+              <button type="button" class="crop-pill" data-crop="Rice" data-en="🌾 Rice" data-hi="🌾 धान (चावल)" onclick="selectCropPill(this, 'Rice')">🌾 Rice</button>
+              <button type="button" class="crop-pill" data-crop="Wheat" data-en="🌾 Wheat" data-hi="🌾 गेहूँ" onclick="selectCropPill(this, 'Wheat')">🌾 Wheat</button>
+              <button type="button" class="crop-pill" data-crop="Cotton" data-en="🪴 Cotton" data-hi="🪴 कपास" onclick="selectCropPill(this, 'Cotton')">🪴 Cotton</button>
+              <button type="button" class="crop-pill" data-crop="Corn" data-en="🌽 Corn" data-hi="🌽 मक्का" onclick="selectCropPill(this, 'Corn')">🌽 Corn</button>
+              <button type="button" class="crop-pill" data-crop="Apple" data-en="🍎 Apple" data-hi="🍎 सेब" onclick="selectCropPill(this, 'Apple')">🍎 Apple</button>
+              <button type="button" class="crop-pill" data-crop="Grape" data-en="🍇 Grape" data-hi="🍇 अंगूर" onclick="selectCropPill(this, 'Grape')">🍇 Grape</button>
+              <button type="button" class="crop-pill" data-crop="Pepper" data-en="🌶️ Chilli" data-hi="🌶️ मिर्च" onclick="selectCropPill(this, 'Pepper')">🌶️ Chilli</button>
+              <button type="button" class="crop-pill" data-crop="Banana" data-en="🍌 Banana" data-hi="🍌 केला" onclick="selectCropPill(this, 'Banana')">🍌 Banana</button>
+              <button type="button" class="crop-pill" data-crop="Mango" data-en="🥭 Mango" data-hi="🥭 आम" onclick="selectCropPill(this, 'Mango')">🥭 Mango</button>
+              <button type="button" class="crop-pill" data-crop="Peach" data-en="🍑 Peach" data-hi="🍑 आड़ू" onclick="selectCropPill(this, 'Peach')">🍑 Peach</button>
+              <button type="button" class="crop-pill" data-crop="Orange" data-en="🍊 Citrus" data-hi="🍊 नींबू / संतरा" onclick="selectCropPill(this, 'Orange')">🍊 Citrus</button>
+              <button type="button" class="crop-pill" data-crop="Groundnut" data-en="🥜 Groundnut" data-hi="🥜 मूंगफली" onclick="selectCropPill(this, 'Groundnut')">🥜 Groundnut</button>
+              <button type="button" class="crop-pill" data-crop="Onion" data-en="🧅 Onion" data-hi="🧅 प्याज़" onclick="selectCropPill(this, 'Onion')">🧅 Onion</button>
             </div>
           </div>
 
@@ -319,7 +349,12 @@
             <button class="btn btn-secondary-sm" onclick="loadOutbreaks()">🔄 Refresh</button>
           </div>
 
-          <div class="radar-container">
+          <div class="map-view-toggle">
+            <button class="view-toggle-btn active" id="btn-view-radar" onclick="switchOutbreakView('radar')" data-en="📡 Live Radar">📡 Live Radar</button>
+            <button class="view-toggle-btn" id="btn-view-gmap" onclick="switchOutbreakView('gmap')" data-en="🗺️ Google Map">🗺️ Google Map</button>
+          </div>
+          <div id="outbreak-gmap" class="outbreak-gmap" style="display:none;"></div>
+          <div class="radar-container" id="radar-container">
             <div class="radar-screen">
               <div class="radar-circle circle-1"><span class="ring-label">500m</span></div>
               <div class="radar-circle circle-2"><span class="ring-label">1.2km</span></div>
@@ -494,11 +529,84 @@
       </div>
     </section>
 
+    <!-- TAB 5: WEATHER & DISEASE RISK DASHBOARD -->
+    <section id="tab-weather" class="tab-pane">
+      <div class="weather-dashboard">
+        <div class="card weather-hero-card">
+          <div class="weather-hero-left">
+            <div class="weather-hero-icon">🌦️</div>
+            <div>
+              <div class="weather-hero-kicker" data-en="LIVE FARM WEATHER & EARLY WARNING" data-hi="लाइव खेत मौसम व पूर्व चेतावनी">LIVE FARM WEATHER & EARLY WARNING</div>
+              <h2 class="weather-hero-loc" id="weather-loc-name" data-en="Detecting your farm location...">Detecting your farm location...</h2>
+              <p class="weather-hero-sub" id="weather-summary" data-en="Automatically fetching GPS coordinates & local weather forecast...">Automatically fetching GPS coordinates & local weather forecast...</p>
+            </div>
+          </div>
+          <button class="btn-detect-weather" id="btn-detect-weather" onclick="detectLocationAndWeather(false)">
+            <span data-en="🔄 Refresh Weather & Location">🔄 Refresh Weather & Location</span>
+          </button>
+        </div>
+
+        <div class="weather-stats-grid" id="weather-metrics">
+          <div class="card weather-stat-card">
+            <div class="w-stat-label" data-en="Temperature" data-hi="तापमान">Temperature</div>
+            <div class="w-stat-value" id="w-temp">--°C</div>
+            <div class="w-stat-icon">🌡️</div>
+          </div>
+          <div class="card weather-stat-card">
+            <div class="w-stat-label" data-en="Relative Humidity" data-hi="नमी (आर्द्रता)">Relative Humidity</div>
+            <div class="w-stat-value" id="w-humidity">--%</div>
+            <div class="w-stat-icon">💧</div>
+          </div>
+          <div class="card weather-stat-card">
+            <div class="w-stat-label" data-en="Wind Speed" data-hi="हवा की गति">Wind Speed</div>
+            <div class="w-stat-value" id="w-wind">-- km/h</div>
+            <div class="w-stat-icon">💨</div>
+          </div>
+          <div class="card weather-stat-card">
+            <div class="w-stat-label" data-en="Rain Probability" data-hi="बारिश की संभावना">Rain Probability</div>
+            <div class="w-stat-value" id="w-precip">--%</div>
+            <div class="w-stat-icon">🌧️</div>
+          </div>
+        </div>
+
+        <div class="card weather-risks-card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title" data-en="Crop Disease Outbreak Risks (Next 24–48h)" data-hi="फसल रोग प्रकोप जोखिम (अगले 24–48 घंटे)">Crop Disease Outbreak Risks (Next 24–48h)</h3>
+              <p class="card-desc" data-en="Calculated automatically from temperature, humidity, wind, and rainfall conditions at your farm." data-hi="आपके खेत के तापमान, नमी, हवा और बारिश के आधार पर स्वचालित गणना।">Calculated automatically from temperature, humidity, wind, and rainfall conditions at your farm.</p>
+            </div>
+          </div>
+          <div class="weather-risk-grid" id="weather-risk-list">
+            <div class="weather-risk-empty" data-en="Waiting for GPS location to compute disease risks...">Waiting for GPS location to compute disease risks...</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </main>
+
+  <!-- Live Outbreak Broadcast Popup Modal -->
+  <div id="live-alert-modal" class="live-alert-modal" style="display:none;" role="alertdialog" aria-modal="true">
+    <div class="live-alert-card">
+      <div class="live-alert-header">
+        <span class="live-alert-badge" data-en="🚨 LIVE FARMER OUTBREAK ALERT">🚨 LIVE FARMER OUTBREAK ALERT</span>
+        <button class="live-alert-close" onclick="closeLiveAlertModal()" aria-label="Close">✕</button>
+      </div>
+      <h3 id="live-alert-title">Crop Disease Alert</h3>
+      <p id="live-alert-meta" class="live-alert-meta"></p>
+      <p id="live-alert-advisory" class="live-alert-advisory"></p>
+      <div class="live-alert-actions">
+        <select id="live-alert-lang" class="lang-select" onchange="translateLiveAlertModal(this.value)" aria-label="Translate Alert Language" style="border:1px solid var(--border-color);border-radius:8px;padding:6px 10px;"></select>
+        <button class="btn-secondary" id="live-alert-translate-btn" onclick="translateLiveAlertModal()" data-en="🌐 Translate" data-hi="🌐 अनुवाद करें">🌐 Translate</button>
+        <button class="btn-primary" onclick="viewOutbreakOnRadar()" data-en="View on Radar & Map" data-hi="रडार व मैप पर देखें">View on Radar & Map</button>
+        <button class="btn-secondary" onclick="closeLiveAlertModal()" data-en="Dismiss" data-hi="बंद करें">Dismiss</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Notification Toast -->
   <div id="toast" class="toast"></div>
 
-  <script src="/static/app.js"></script>
+  <script src="/static/app.js?v=4"></script>
 </body>
 </html>

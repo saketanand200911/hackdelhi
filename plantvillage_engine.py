@@ -969,6 +969,26 @@ PLANTVILLAGE_MASTER_DB: Dict[str, Dict[str, Any]] = {
         "neighbor_alert": "Brown spot active in paddy fields. Check soil fertility and apply potash.",
         "hindi_summary": "धान की पत्ती पर भूरे तिल जैसे धब्बे हैं। पोटाश खाद डालें और मैनकोजेब या प्रोपिकोनाजोल छिड़कें।"
     },
+    "Rice___Leaf_smut": {
+        "crop": "Rice (Paddy)",
+        "disease": "Rice Leaf Smut (Entyloma oryzae)",
+        "pathogen_type": "Fungal",
+        "leaf_morphology": "Long slender monocot blades with parallel veins",
+        "color_signature": "Small slightly raised angular black or dark brown spots on both leaf surfaces",
+        "lesion_pattern": "Short linear to rectangular black smut sori (0.5-5mm) scattered between veins; leaf tips turn yellow and dry",
+        "is_healthy": False,
+        "severity": "Moderate",
+        "organic_treatment": [
+            "Avoid excessive nitrogen top-dressing late in the vegetative stage",
+            "Remove and compost crop stubble deeply after harvest to reduce teliospores"
+        ],
+        "chemical_treatment": [
+            "Usually minor; if severe on upper leaves, spray Propiconazole 25% EC @ 1ml/L or Copper Oxychloride 50% WP @ 2.5g/L"
+        ],
+        "outbreak_risk": "Moderate in humid late-season paddy fields",
+        "neighbor_alert": "Rice Leaf Smut detected. Keep nitrogen balanced and inspect flag leaves.",
+        "hindi_summary": "धान की पत्ती पर छोटे काले उभरे हुए धब्बे (लीफ स्मट) हैं। यूरिया/नाइट्रोजन की अधिक मात्रा न दें और जरूरत हो तो प्रोपिकोनाजोल छिड़कें।"
+    },
     "Rice___healthy": {
         "crop": "Rice (Paddy)",
         "disease": "Healthy Rice Foliage",
@@ -1020,6 +1040,26 @@ PLANTVILLAGE_MASTER_DB: Dict[str, Dict[str, Any]] = {
         "outbreak_risk": "High in warm (20-25°C) humid weather",
         "neighbor_alert": "Brown leaf rust detected on wheat flag leaves.",
         "hindi_summary": "गेहूं पर भूरा रतुआ (बिखरे हुए नारंगी-भूरे फफोले) है। प्रोपिकोनाजोल या मैनकोजेब का छिड़काव करें।"
+    },
+    "Wheat___Septoria_tritici_blotch": {
+        "crop": "Wheat",
+        "disease": "Wheat Septoria Tritici Blotch (Zymoseptoria tritici)",
+        "pathogen_type": "Fungal",
+        "leaf_morphology": "Slender linear monocot blades with parallel veins",
+        "color_signature": "Irregular tan-brown elongated blotches studded with tiny black pycnidia specks",
+        "lesion_pattern": "Oval to elongated yellow-brown lesions limited by leaf veins containing rows of pinpoint black fruiting bodies",
+        "is_healthy": False,
+        "severity": "High",
+        "organic_treatment": [
+            "Rotate wheat with non-cereal crops and plow under infected straw residue",
+            "Avoid excessive early nitrogen fertilization that creates dense humid canopies"
+        ],
+        "chemical_treatment": [
+            "Spray Azoxystrobin + Propiconazole @ 1ml/L or Tebuconazole 25.9% EC @ 1ml/L at flag leaf emergence"
+        ],
+        "outbreak_risk": "High in cool wet windy spring/winter weather",
+        "neighbor_alert": "Septoria blotch active on wheat leaves. Protect flag leaf before ear emergence.",
+        "hindi_summary": "गेहूं की पत्ती पर काले बिंदुओं वाले लंबे भूरे धब्बे (सेप्टोरिया ब्लॉच) हैं। टेबुकोनाजोल या प्रोपिकोनाजोल का छिड़काव करें।"
     },
     "Wheat___healthy": {
         "crop": "Wheat",
@@ -1116,6 +1156,46 @@ PLANTVILLAGE_MASTER_DB: Dict[str, Dict[str, Any]] = {
         "neighbor_alert": "Black Sigatoka spreading in banana groves. Prune dead leaves immediately.",
         "hindi_summary": "केले में सिगाटोका (काली धारियां और पत्तों का सूखना) रोग है। रोगी पत्ते काटें और प्रोपिकोनाजोल का छिड़काव करें।"
     },
+    "Banana___Cordana_leaf_spot": {
+        "crop": "Banana",
+        "disease": "Banana Cordana Leaf Spot (Cordana musae)",
+        "pathogen_type": "Fungal",
+        "leaf_morphology": "Broad elongated paddle-shaped leaves",
+        "color_signature": "Pale brown to grayish-tan oval spots with bright yellow halo",
+        "lesion_pattern": "Large diamond/oval zonate spots with concentric pale brown rings and distinct yellow margins",
+        "is_healthy": False,
+        "severity": "Moderate to High",
+        "organic_treatment": [
+            "Remove older heavily spotted lower leaves to reduce humidity",
+            "Improve plantation drainage and weed control"
+        ],
+        "chemical_treatment": [
+            "Spray Mancozeb 75% WP @ 2.5g/L or Propiconazole 25% EC @ 1ml/L"
+        ],
+        "outbreak_risk": "Moderate to High during humid rainy weather",
+        "neighbor_alert": "Cordana leaf spot active on banana leaves.",
+        "hindi_summary": "केले की पत्ती पर पीले घेरे वाले अंडाकार भूरे धब्बे (कॉर्डाना लीफ स्पॉट) हैं। मैनकोजेब या प्रोपिकोनाजोल का छिड़काव करें।"
+    },
+    "Banana___Pestalotiopsis_leaf_spot": {
+        "crop": "Banana",
+        "disease": "Banana Pestalotiopsis Leaf Spot (Pestalotiopsis palmarum)",
+        "pathogen_type": "Fungal",
+        "leaf_morphology": "Broad elongated paddle-shaped leaves",
+        "color_signature": "Light brown to ash-gray irregular spots with dark brown borders and tiny black dots",
+        "lesion_pattern": "Irregular dry necrotic patches studded with pinpoint black fruiting bodies (acervuli)",
+        "is_healthy": False,
+        "severity": "Moderate",
+        "organic_treatment": [
+            "Prune and burn dried infected leaf blades",
+            "Apply balanced potassium fertilizer to strengthen leaf tissue"
+        ],
+        "chemical_treatment": [
+            "Spray Carbendazim 50% WP @ 1g/L or Copper Oxychloride @ 2.5g/L"
+        ],
+        "outbreak_risk": "Moderate",
+        "neighbor_alert": "Pestalotiopsis leaf spot detected in banana plantation.",
+        "hindi_summary": "केले की पत्ती पर हल्के भूरे-सलेटी धब्बे (पेस्टालोशियोप्सिस) हैं। सूखे पत्ते हटाएं और कार्बेन्डाजिम छिड़कें।"
+    },
     "Banana___healthy": {
         "crop": "Banana",
         "disease": "Healthy Banana Foliage",
@@ -1152,6 +1232,124 @@ PLANTVILLAGE_MASTER_DB: Dict[str, Dict[str, Any]] = {
         "outbreak_risk": "High during rainy humid conditions during new flush and blossom",
         "neighbor_alert": "Anthracnose blighting new mango flush and blossoms.",
         "hindi_summary": "आम में एन्थ्रेक्नोज (काले-भूरे धब्बे और पत्तों का सूखना) है। कॉपर ऑक्सीक्लोराइड या कार्बेन्डाजिम का छिड़काव करें।"
+    },
+    "Mango___Bacterial_canker": {
+        "crop": "Mango",
+        "disease": "Mango Bacterial Canker (Xanthomonas citri pv. mangiferaeindicae)",
+        "pathogen_type": "Bacterial",
+        "leaf_morphology": "Oblong lanceolate leathery leaves",
+        "color_signature": "Angular water-soaked dark brown/black raised spots with yellow halo",
+        "lesion_pattern": "Small angular water-soaked lesions delimited by veins that turn raised, dark black, and corky",
+        "is_healthy": False,
+        "severity": "High",
+        "organic_treatment": [
+            "Prune and destroy infected twigs and leaves before monsoon",
+            "Spray neem oil or copper hydroxide protectively"
+        ],
+        "chemical_treatment": [
+            "Spray Streptocycline @ 100ppm + Copper Oxychloride 50% WP @ 2.5g/L at 10-day intervals"
+        ],
+        "outbreak_risk": "High during wind-driven monsoon rain",
+        "neighbor_alert": "Mango Bacterial Canker active. Protect young flush before rain.",
+        "hindi_summary": "आम की पत्ती पर कोणीय काले उभरे धब्बे (बैक्टीरियल कैंकर) हैं। कॉपर ऑक्सीक्लोराइड + स्ट्रेप्टोसाइक्लिन का छिड़काव करें।"
+    },
+    "Mango___Cutting_weevil": {
+        "crop": "Mango",
+        "disease": "Mango Leaf Cutting Weevil (Deporaus marginatus)",
+        "pathogen_type": "Insect Pest",
+        "leaf_morphology": "Tender young lanceolate mango leaves",
+        "color_signature": "Cleanly severed/cut leaf blades with brown drying edges",
+        "lesion_pattern": "Sharp scissor-like clean cuts across tender leaf blades leaving only basal stubs",
+        "is_healthy": False,
+        "severity": "Moderate to High",
+        "organic_treatment": [
+            "Collect and destroy fallen cut leaf pieces on the orchard floor (contain weevil eggs)",
+            "Spray neem seed kernel extract (NSKE 5%) on new pink flush"
+        ],
+        "chemical_treatment": [
+            "Spray Lambda-cyhalothrin 5% EC @ 0.5ml/L or Quinalphos 25% EC @ 2ml/L on new tender flush"
+        ],
+        "outbreak_risk": "High during new vegetative flush",
+        "neighbor_alert": "Leaf cutting weevil damaging tender mango shoots.",
+        "hindi_summary": "आम की नई पत्तियों को लीफ कटिंग वीविल (कैंची की तरह कटी पत्तियां) काट रहा है। गिरी पत्तियां जलाएं और नीम या लैम्ब्डा-साइहलोथ्रिन छिड़कें।"
+    },
+    "Mango___Die_back": {
+        "crop": "Mango",
+        "disease": "Mango Die Back (Lasiodiplodia theobromae)",
+        "pathogen_type": "Fungal",
+        "leaf_morphology": "Lanceolate mango leaves on terminal shoots",
+        "color_signature": "Browning and scorching of leaves from tip/margins downward",
+        "lesion_pattern": "Leaves turn brown, curl upward, and dry out from twig tips backward; bark turns dark",
+        "is_healthy": False,
+        "severity": "High",
+        "organic_treatment": [
+            "Prune 7-10 cm below the dried dead portion of twigs and apply Bordeaux paste on cut ends"
+        ],
+        "chemical_treatment": [
+            "Spray Copper Oxychloride 50% WP @ 3g/L or Carbendazim 50% WP @ 1g/L after pruning"
+        ],
+        "outbreak_risk": "Moderate to High after monsoon",
+        "neighbor_alert": "Mango Die Back detected; prune dead twigs and seal cuts with copper paste.",
+        "hindi_summary": "आम में डाई-बैक (ऊपर से टहनियों व पत्तों का सूखना) रोग है। सूखी टहनी काटकर कॉपर पेस्ट लगाएं और कॉपर ऑक्सीक्लोराइड छिड़कें।"
+    },
+    "Mango___Gall_midge": {
+        "crop": "Mango",
+        "disease": "Mango Leaf Gall Midge (Procontarinia matteiana)",
+        "pathogen_type": "Insect Pest",
+        "leaf_morphology": "Oblong lanceolate mango leaves",
+        "color_signature": "Raised wart-like green/brown galls or pimples across leaf surface",
+        "lesion_pattern": "Small raised conical or circular galls/pustules dotting the leaf lamina; leaves deform",
+        "is_healthy": False,
+        "severity": "Moderate",
+        "organic_treatment": [
+            "Prune heavily galled leaves and improve orchard airflow",
+            "Spray neem oil (5ml/L) during new leaf emergence"
+        ],
+        "chemical_treatment": [
+            "Spray Imidacloprid 17.8% SL @ 0.5ml/L or Dimethoate 30% EC @ 2ml/L at bud burst"
+        ],
+        "outbreak_risk": "Moderate during new vegetative flush",
+        "neighbor_alert": "Mango Gall Midge infesting new leaves.",
+        "hindi_summary": "आम की पत्ती पर छोटे-छोटे उभरे हुए दाने/गांठें (गॉल मिज कीट) हैं। नई कोपल निकलते समय इमिडाक्लोप्रिड का छिड़काव करें।"
+    },
+    "Mango___Powdery_mildew": {
+        "crop": "Mango",
+        "disease": "Mango Powdery Mildew (Oidium mangiferae)",
+        "pathogen_type": "Fungal",
+        "leaf_morphology": "Oblong lanceolate leaves and panicles",
+        "color_signature": "White grayish powdery talcum coating on upper leaf surface and shoots",
+        "lesion_pattern": "White powdery fungal growth causing leaves and blossoms to curl, turn brown, and drop",
+        "is_healthy": False,
+        "severity": "High",
+        "organic_treatment": [
+            "Spray wettable sulfur (2g/L) or potassium bicarbonate (3g/L)"
+        ],
+        "chemical_treatment": [
+            "Spray Hexaconazole 5% EC @ 1ml/L or Wettable Sulfur 80% WP @ 2g/L at pre-bloom and fruit set"
+        ],
+        "outbreak_risk": "High in cool cloudy mornings (Feb-March)",
+        "neighbor_alert": "Mango Powdery Mildew active; protect flowering panicles immediately.",
+        "hindi_summary": "आम की पत्ती व बौर पर सफेद पाउडर (पाउडरी मिल्ड्यू) है। घुलनशील सल्फर या हेक्साकोनाजोल का छिड़काव करें।"
+    },
+    "Mango___Sooty_mould": {
+        "crop": "Mango",
+        "disease": "Mango Sooty Mould (Capnodium mangiferae)",
+        "pathogen_type": "Fungal (Secondary to Sap-Sucking Hoppers/Scales)",
+        "leaf_morphology": "Oblong lanceolate leathery leaves",
+        "color_signature": "Thick velvety black soot-like coating covering upper leaf surface",
+        "lesion_pattern": "Superficial black charcoal-like crust growing on honeydew secreted by mango hoppers/mealybugs",
+        "is_healthy": False,
+        "severity": "Moderate",
+        "organic_treatment": [
+            "Spray starch solution (2%) or soap-water to peel off black soot layer",
+            "Control mango hoppers/mealybugs with neem oil 1%"
+        ],
+        "chemical_treatment": [
+            "Spray Imidacloprid 17.8% SL @ 0.4ml/L (for hoppers) + Wettable Sulfur @ 2g/L"
+        ],
+        "outbreak_risk": "High when mango hoppers are unchecked",
+        "neighbor_alert": "Sooty mould indicates active mango hopper/scale infestation.",
+        "hindi_summary": "आम की पत्ती पर काली कालिख (सूटी मोल्ड) जमी है जो भुनगा कीट से होती है। इमिडाक्लोप्रिड + स्टार्च/नीम तेल का छिड़काव करें।"
     },
     "Mango___healthy": {
         "crop": "Mango",
@@ -1352,6 +1550,29 @@ PLANTVILLAGE_MASTER_DB: Dict[str, Dict[str, Any]] = {
         "outbreak_risk": "Low",
         "neighbor_alert": "Onion crop is upright and healthy.",
         "hindi_summary": "प्याज की फसल स्वस्थ और मजबूत है।"
+    },
+
+    # ==================== BEECH ====================
+    "Beech___Leaf_disease": {
+        "crop": "Beech",
+        "disease": "Beech Leaf Disease (Litylenchus crenatae)",
+        "pathogen_type": "Nematode (Foliar Nematode)",
+        "leaf_morphology": "Elliptical ovate leaves with prominent parallel lateral veins and toothed margins",
+        "color_signature": "Dark green, yellow, and reddish-brown interveinal banding between lateral veins",
+        "lesion_pattern": "Distinctive dark thickened interveinal stripes/bands that turn yellow, orange-brown, and leathery/crinkled",
+        "is_healthy": False,
+        "severity": "High to Critical",
+        "organic_treatment": [
+            "Prune and bag heavily infected lower branches (do not compost diseased leaves on site)",
+            "Maintain tree vigor with deep organic root-zone mulching and watering during drought"
+        ],
+        "chemical_treatment": [
+            "Apply potassium phosphite (phosphonate) soil drench / trunk injection in spring to boost tree defense",
+            "Targeted nematicide/miticide (e.g. fluopyram or abamectin) during late-summer nematode migration"
+        ],
+        "outbreak_risk": "High (foliar nematodes spread via rain splash, wind, and birds)",
+        "neighbor_alert": "Beech Leaf Disease (Litylenchus crenatae) detected. Inspect nearby beech trees for dark interveinal banding.",
+        "hindi_summary": "बीच (Beech) की पत्ती में बीच लीफ डिज़ीज़ (Litylenchus crenatae नेमाटोड) के लक्षण हैं — नसों के बीच गहरी पीली-भूरी धारियां दिख रही हैं। संक्रमित पत्तियां हटाकर नष्ट करें।"
     }
 }
 

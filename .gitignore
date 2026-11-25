@@ -4,6 +4,9 @@ __pycache__/
 .env
 archive.zip
 dataset.zip
+data/plantvillage_extra/
+data/embeddings_*.npz
+data/field_aug_embeddings.npz
 test_matcher.py
 
 .vercel

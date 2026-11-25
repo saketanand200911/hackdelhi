@@ -5,6 +5,21 @@ let currentFacingMode = "environment"; // default to back camera for plants
 let capturedBase64 = null;
 let currentDiagnosis = null;
 let isHindi = false;
+let currentLang = "en";
+let farmerCoords = null; // { lat, lon, location_name }
+let farmerSenderId = sessionStorage.getItem("leafguard_sender_id");
+if (!farmerSenderId) {
+  farmerSenderId = "farmer_" + Math.random().toString(36).slice(2, 10);
+  sessionStorage.setItem("leafguard_sender_id", farmerSenderId);
+}
+let lastSeenOutbreakTs = 0;
+let latestOutbreaks = [];
+let googleMap = null;
+let googleMapCircle = null;
+let googleMapMarkers = [];
+let mapsScriptLoading = false;
+let mapsApiKey = "";
+let currentOutbreakView = "radar";
 
 // DOM Elements
 const webcam = document.getElementById("webcam");
@@ -33,9 +48,12 @@ function selectCropPill(btn, cropName) {
 // Initial Setup
 window.addEventListener("DOMContentLoaded", () => {
   checkBackendHealth();
+  loadAppConfig();
   loadReferences();
   loadOutbreaks();
   loadHistory();
+  startOutbreakPolling();
+  detectLocationAndWeather(true);
   if ("speechSynthesis" in window) {
     window.speechSynthesis.getVoices();
     window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
@@ -53,6 +71,9 @@ function switchTab(tabId) {
 
   if (tabId === "outbreak") {
     loadOutbreaks();
+    if (currentOutbreakView === "gmap" && !googleMap && mapsApiKey) {
+      initGoogleMap();
+    }
   } else if (tabId === "training") {
     loadReferences();
   } else if (tabId === "history") {
@@ -255,10 +276,12 @@ function renderDiagnosis(data) {
 
   // Condition & Crop
   document.getElementById("diag-condition").textContent = data.condition || "Leaf Condition";
-  const cropStr = `${isHindi ? "फसल" : "Crop"}: ${data.crop || "Identified Plant"}`;
-  const modelStr = data.neural_similarity ? ` • 🧠 Trained PlantVillage Model: ${data.neural_similarity}%` : "";
+  const cropStr = data.crop && data.crop !== "—"
+    ? `${isHindi ? "फसल" : "Crop"}: ${data.crop}`
+    : "";
+  const modelStr = data.neural_similarity ? ` • 🧠 Trained Model: ${data.neural_similarity}%` : "";
   document.getElementById("diag-crop").textContent = cropStr + modelStr;
-  document.getElementById("diag-confidence").textContent = data.confidence || "90%";
+  document.getElementById("diag-confidence").textContent = data.confidence || "—";
 
   // Severity Pill
   const severityPill = document.getElementById("diag-severity");
@@ -287,14 +310,28 @@ function renderDiagnosis(data) {
   document.getElementById("bar-brown").style.width = `${metrics.brown_dried_pct}%`;
   document.getElementById("val-brown").textContent = `${metrics.brown_dried_pct}%`;
 
-  // Symptoms List
+  // Symptoms List — for a detected leaf this is the agronomic breakdown, and it
+  // always ends with the real top-5 probabilities from the model.
   const symptomsList = document.getElementById("diag-symptoms");
   symptomsList.innerHTML = "";
   (data.symptoms || []).forEach(sym => {
+    if (!sym) return;
     const li = document.createElement("li");
     li.textContent = sym;
     symptomsList.appendChild(li);
   });
+  if (data.top_k && data.top_k.length > 1) {
+    const li = document.createElement("li");
+    const label = data.detected
+      ? (isHindi ? "अन्य संभावनाएँ:" : "Other possibilities:")
+      : (isHindi ? "सबसे नज़दीकी मेल (सीमा से नीचे):" : "Closest known matches (all below threshold):");
+    // Probabilities saturate once a leaf is clearly one class, so alternatives
+    // are shown by visual similarity to that disease's reference photos.
+    li.innerHTML = `<strong>${label}</strong> ` + data.top_k.slice(1)
+      .map(k => `${k.crop} ${k.condition} <em>${Math.round(k.cosine * 100)}% match</em>`)
+      .join(" · ");
+    symptomsList.appendChild(li);
+  }
 
   // Organic Treatment
   const organicList = document.getElementById("diag-organic-list");
@@ -318,9 +355,9 @@ function renderDiagnosis(data) {
   document.getElementById("diag-neighbor-alert").textContent = data.neighbor_alert || "Monitor surrounding fields for similar leaf symptoms.";
 }
 
-// Audio Speech Readout (TTS) - macOS/Chrome reliable implementation
+// Audio Speech Readout (TTS) - macOS/Chrome reliable implementation (supports 22 Indian languages)
 window._activeUtterance = null;
-function speakDiagnosis() {
+async function speakDiagnosis() {
   if (!currentDiagnosis) {
     showToast(isHindi ? "पहले पत्ती की जांच करें!" : "Please scan a leaf first!", true);
     return;
@@ -340,16 +377,20 @@ function speakDiagnosis() {
 
   window.speechSynthesis.cancel();
 
-  let textToSpeak = "";
-  let targetLang = "en-IN";
+  const firstOrganic = currentDiagnosis.organic_treatment && currentDiagnosis.organic_treatment[0] ? currentDiagnosis.organic_treatment[0] : "";
+  const enSummary = `Diagnosis: ${currentDiagnosis.condition} on ${currentDiagnosis.crop}. Severity is ${currentDiagnosis.severity}. ${currentDiagnosis.visual_summary}. ${firstOrganic ? "Recommended action: " + firstOrganic : ""}`;
 
-  if (isHindi && currentDiagnosis.hindi_summary) {
+  let textToSpeak = enSummary;
+  let targetLang = currentLang === "en" ? "en-IN" : `${currentLang}-IN`;
+
+  if (currentLang === "hi" && currentDiagnosis.hindi_summary) {
     textToSpeak = currentDiagnosis.hindi_summary;
     targetLang = "hi-IN";
-  } else {
-    const firstOrganic = currentDiagnosis.organic_treatment && currentDiagnosis.organic_treatment[0] ? currentDiagnosis.organic_treatment[0] : "";
-    textToSpeak = `Diagnosis: ${currentDiagnosis.condition} on ${currentDiagnosis.crop}. Severity is ${currentDiagnosis.severity}. ${currentDiagnosis.visual_summary}. ${firstOrganic ? "Recommended action: " + firstOrganic : ""}`;
-    targetLang = "en-US";
+  } else if (currentLang !== "en") {
+    const translated = await translateTextsBatch([enSummary], currentLang);
+    if (translated && translated[0]) {
+      textToSpeak = translated[0];
+    }
   }
 
   // Delay slightly after cancel() so Chrome/macOS does not drop the new utterance
@@ -394,7 +435,7 @@ function speakDiagnosis() {
   }, 70);
 }
 
-// Broadcast Current Diagnosis to Radar
+// Broadcast Current Diagnosis to Radar & Other Farmers
 async function broadcastCurrentScan() {
   if (!currentDiagnosis) return;
 
@@ -405,15 +446,25 @@ async function broadcastCurrentScan() {
       body: JSON.stringify({
         crop: currentDiagnosis.crop || "Unknown Crop",
         disease: currentDiagnosis.condition || "Leaf Outbreak",
-        distance: "Your Field (<2 ha)",
+        distance: farmerCoords && farmerCoords.location_name ? farmerCoords.location_name : "Your Field (<2 ha)",
         plot_size: "1.0 ha",
         risk_level: currentDiagnosis.outbreak_risk || "High",
-        advisory: currentDiagnosis.neighbor_alert || "Infection reported in nearby plot."
+        advisory: currentDiagnosis.neighbor_alert || "Infection reported in nearby plot.",
+        lat: farmerCoords ? farmerCoords.lat : null,
+        lon: farmerCoords ? farmerCoords.lon : null,
+        location_name: farmerCoords ? farmerCoords.location_name : "",
+        sender_id: farmerSenderId
       })
     });
     const data = await res.json();
-    showToast(isHindi ? "पड़ोसी किसानों को चेतावनी प्रसारित कर दी गई!" : "Outbreak broadcasted to neighborhood radar!");
+    if (data && data.alert && data.alert.created_ts) {
+      lastSeenOutbreakTs = Math.max(lastSeenOutbreakTs, data.alert.created_ts);
+    }
+    showToast(isHindi ? "पड़ोसी किसानों को चेतावनी प्रसारित कर दी गई!" : "Outbreak broadcasted to all nearby farmers!");
     switchTab("outbreak");
+    if (data && data.alert) {
+      showLiveAlertModal(data.alert);
+    }
   } catch (e) {
     showToast("Failed to broadcast alert.", true);
   }
@@ -424,8 +475,15 @@ async function loadOutbreaks() {
   try {
     const res = await fetch("/api/outbreaks");
     const alerts = await res.json();
-    renderOutbreakRadar(alerts);
-    renderOutbreakFeed(alerts);
+    latestOutbreaks = alerts || [];
+    latestOutbreaks.forEach(a => {
+      if (a.created_ts && a.created_ts > lastSeenOutbreakTs) {
+        lastSeenOutbreakTs = a.created_ts;
+      }
+    });
+    renderOutbreakRadar(latestOutbreaks);
+    renderOutbreakFeed(latestOutbreaks);
+    updateGoogleMapMarkers(latestOutbreaks);
   } catch (e) {
     console.error("Failed to load outbreaks:", e);
   }
@@ -464,23 +522,67 @@ function renderOutbreakRadar(alerts) {
   });
 }
 
-function renderOutbreakFeed(alerts) {
+async function renderOutbreakFeed(alerts) {
   const feed = document.getElementById("alerts-feed");
   feed.innerHTML = "";
 
-  alerts.forEach(alt => {
+  const targetLang = currentLang;
+  let translatedItems = null;
+  if (targetLang !== "en" && alerts.length > 0) {
+    const flat = [];
+    alerts.forEach(a => {
+      flat.push(a.crop || "", a.disease || "", a.location_name || a.distance || "", a.risk_level || "", a.advisory || "");
+    });
+    const res = await translateTextsBatch(flat, targetLang);
+    if (res && res.length === flat.length) {
+      translatedItems = res;
+    }
+  }
+
+  alerts.forEach((alt, idx) => {
     const item = document.createElement("div");
     item.className = `alert-item ${alt.risk_level}`;
+    const base = idx * 5;
+    const cropTxt = translatedItems ? translatedItems[base] : alt.crop;
+    const disTxt = translatedItems ? translatedItems[base + 1] : alt.disease;
+    const locTxt = translatedItems ? translatedItems[base + 2] : (alt.location_name || alt.distance);
+    const riskTxt = translatedItems ? translatedItems[base + 3] : alt.risk_level;
+    const advTxt = translatedItems ? translatedItems[base + 4] : alt.advisory;
+    const btnLabel = targetLang === "hi" ? "🌐 अनुवाद करें" : "🌐 Translate";
+
     item.innerHTML = `
       <div class="alert-top">
-        <span class="alert-crop-name">${alt.crop} • ${alt.disease}</span>
+        <span class="alert-crop-name" id="alert-title-${idx}">${cropTxt} • ${disTxt}</span>
         <span class="alert-time">${alt.timestamp}</span>
       </div>
-      <div class="alert-meta">📍 ${alt.distance} &nbsp;|&nbsp; Plot: ${alt.plot_size} &nbsp;|&nbsp; Risk: <strong>${alt.risk_level}</strong></div>
-      <p class="alert-desc">${alt.advisory}</p>
+      <div class="alert-meta" id="alert-meta-${idx}">📍 ${locTxt} &nbsp;|&nbsp; Plot: ${alt.plot_size} &nbsp;|&nbsp; Risk: <strong>${riskTxt}</strong></div>
+      <p class="alert-desc" id="alert-desc-${idx}">${advTxt}</p>
+      <div class="alert-translate-row">
+        <button type="button" class="btn-alert-translate" onclick="translateSingleAlert(${idx}, this)">${btnLabel}</button>
+      </div>
     `;
     feed.appendChild(item);
   });
+}
+
+async function translateSingleAlert(idx, btn) {
+  const alt = latestOutbreaks[idx];
+  if (!alt) return;
+  const targetLang = currentLang === "en" ? "hi" : currentLang;
+  if (btn) btn.disabled = true;
+  const translated = await translateTextsBatch(
+    [alt.crop || "", alt.disease || "", alt.location_name || alt.distance || "", alt.risk_level || "", alt.advisory || ""],
+    targetLang
+  );
+  if (translated && translated.length === 5) {
+    const tEl = document.getElementById(`alert-title-${idx}`);
+    const mEl = document.getElementById(`alert-meta-${idx}`);
+    const dEl = document.getElementById(`alert-desc-${idx}`);
+    if (tEl) tEl.textContent = `${translated[0]} • ${translated[1]}`;
+    if (mEl) mEl.innerHTML = `📍 ${translated[2]} &nbsp;|&nbsp; Plot: ${alt.plot_size} &nbsp;|&nbsp; Risk: <strong>${translated[3]}</strong>`;
+    if (dEl) dEl.textContent = translated[4];
+  }
+  if (btn) btn.disabled = false;
 }
 
 async function submitCustomAlert() {
@@ -496,18 +598,34 @@ async function submitCustomAlert() {
   }
 
   try {
-    await fetch("/api/outbreaks", {
+    const res = await fetch("/api/outbreaks", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        crop, disease, distance, plot_size: "1.5 ha", risk_level: risk, advisory
+        crop,
+        disease,
+        distance,
+        plot_size: "1.5 ha",
+        risk_level: risk,
+        advisory,
+        lat: farmerCoords ? farmerCoords.lat : null,
+        lon: farmerCoords ? farmerCoords.lon : null,
+        location_name: farmerCoords ? farmerCoords.location_name : "",
+        sender_id: farmerSenderId
       })
     });
+    const data = await res.json();
+    if (data && data.alert && data.alert.created_ts) {
+      lastSeenOutbreakTs = Math.max(lastSeenOutbreakTs, data.alert.created_ts);
+    }
     document.getElementById("alert-crop").value = "";
     document.getElementById("alert-disease").value = "";
     document.getElementById("alert-advisory").value = "";
-    showToast(isHindi ? "अलर्ट सफलतापूर्वक प्रसारित किया गया!" : "Alert broadcasted to neighborhood!");
+    showToast(isHindi ? "अलर्ट सफलतापूर्वक प्रसारित किया गया!" : "Alert broadcasted to all farmers!");
     loadOutbreaks();
+    if (data && data.alert) {
+      showLiveAlertModal(data.alert);
+    }
   } catch (e) {
     showToast("Error posting alert", true);
   }
@@ -659,14 +777,415 @@ function renderHistory(history) {
   });
 }
 
-// Multilingual Hindi Toggle
-function toggleLanguage() {
-  isHindi = !isHindi;
-  document.getElementById("lang-label").textContent = isHindi ? "View in English" : "हिंदी में देखें";
+// Multilingual Support (English + All 22 Official Languages of India)
+async function translateTextsBatch(texts, targetLang) {
+  if (!texts || texts.length === 0 || targetLang === "en") return texts;
+  try {
+    const res = await fetch("/api/translate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ texts, target_lang: targetLang })
+    });
+    const data = await res.json();
+    return data.translations || texts;
+  } catch (e) {
+    console.warn("Translation error:", e);
+    return texts;
+  }
+}
 
-  document.querySelectorAll("[data-en]").forEach(el => {
-    el.textContent = isHindi ? el.dataset.hi : el.dataset.en;
+async function changeLanguage(lang) {
+  currentLang = lang || "en";
+  isHindi = currentLang === "hi";
+  const selectEl = document.getElementById("lang-select");
+  if (selectEl && selectEl.value !== currentLang) selectEl.value = currentLang;
+
+  const elements = Array.from(document.querySelectorAll("[data-en]"));
+  if (currentLang === "en") {
+    elements.forEach(el => {
+      el.textContent = el.dataset.en;
+    });
+    showToast("Language switched to English");
+    return;
+  }
+
+  if (currentLang === "hi") {
+    const missingIdx = [];
+    const missingTexts = [];
+    elements.forEach((el, idx) => {
+      if (el.dataset.hi) {
+        el.textContent = el.dataset.hi;
+      } else {
+        missingIdx.push(idx);
+        missingTexts.push(el.dataset.en);
+      }
+    });
+    if (missingTexts.length > 0) {
+      const translated = await translateTextsBatch(missingTexts, "hi");
+      missingIdx.forEach((elIdx, i) => {
+        elements[elIdx].textContent = translated[i] || elements[elIdx].dataset.en;
+      });
+    }
+    await translateDynamicContent("hi");
+    showToast("भाषा हिन्दी में बदली गई");
+    return;
+  }
+
+  showToast("Translating interface...");
+  const sourceTexts = elements.map(el => el.dataset.en);
+  // Chunk in batches of 40 so translation stays fast
+  for (let i = 0; i < sourceTexts.length; i += 40) {
+    const chunk = sourceTexts.slice(i, i + 40);
+    const translated = await translateTextsBatch(chunk, currentLang);
+    translated.forEach((t, j) => {
+      if (elements[i + j]) elements[i + j].textContent = t || elements[i + j].dataset.en;
+    });
+  }
+  await translateDynamicContent(currentLang);
+  const selectedLabel = selectEl ? selectEl.options[selectEl.selectedIndex].text : currentLang;
+  showToast(`Language: ${selectedLabel}`);
+}
+
+async function translateDynamicContent(lang) {
+  if (latestOutbreaks && latestOutbreaks.length > 0) {
+    await renderOutbreakFeed(latestOutbreaks);
+  }
+  if (currentDiagnosis && lang !== "en") {
+    const condEl = document.getElementById("diag-condition");
+    const visEl = document.getElementById("diag-visual-summary");
+    const nEl = document.getElementById("diag-neighbor-alert");
+    const batch = [
+      currentDiagnosis.condition || "",
+      currentDiagnosis.visual_summary || "",
+      currentDiagnosis.neighbor_alert || ""
+    ];
+    const tr = await translateTextsBatch(batch, lang);
+    if (tr && tr.length === 3) {
+      if (condEl) condEl.textContent = tr[0];
+      if (visEl) visEl.textContent = tr[1];
+      if (nEl) nEl.textContent = tr[2];
+    }
+  }
+  const riskChips = Array.from(document.querySelectorAll("#weather-risk-list .risk-chip"));
+  if (riskChips.length > 0 && lang !== "en") {
+    const texts = riskChips.map(c => c.innerText);
+    const tr = await translateTextsBatch(texts, lang);
+    riskChips.forEach((c, i) => {
+      if (tr[i]) c.querySelector(".risk-chip-meta").textContent = tr[i];
+    });
+  }
+}
+
+// App Config (Google Maps API key)
+async function loadAppConfig() {
+  try {
+    const res = await fetch("/api/config");
+    const cfg = await res.json();
+    mapsApiKey = cfg.maps_api_key || "";
+  } catch (e) {
+    console.warn("Failed to load config:", e);
+  }
+}
+
+// GPS Location + Live Weather & Disease Risk Dashboard (auto-runs on load)
+function detectLocationAndWeather(silent = false) {
+  const btn = document.getElementById("btn-detect-weather");
+  const locEl = document.getElementById("weather-loc-name");
+  const sumEl = document.getElementById("weather-summary");
+
+  if (!("geolocation" in navigator)) {
+    if (!silent) showToast("Geolocation is not supported by your browser.", true);
+    return;
+  }
+
+  if (btn) btn.disabled = true;
+  if (sumEl) sumEl.textContent = "Fetching GPS coordinates & live weather...";
+
+  navigator.geolocation.getCurrentPosition(
+    async (pos) => {
+      const lat = pos.coords.latitude;
+      const lon = pos.coords.longitude;
+      try {
+        const res = await fetch(`/api/weather-risk?lat=${lat}&lon=${lon}`);
+        const data = await res.json();
+        farmerCoords = {
+          lat,
+          lon,
+          location_name: data.location_name || `${lat.toFixed(3)}, ${lon.toFixed(3)}`
+        };
+
+        if (locEl) locEl.textContent = farmerCoords.location_name;
+        const w = data.weather || {};
+        if (sumEl) {
+          sumEl.textContent = `${w.condition || "Live Weather"} • Lat ${lat.toFixed(3)}, Lon ${lon.toFixed(3)} (${data.source || "Weather API"})`;
+        }
+
+        const tEl = document.getElementById("w-temp");
+        const hEl = document.getElementById("w-humidity");
+        const wEl = document.getElementById("w-wind");
+        const pEl = document.getElementById("w-precip");
+        if (tEl) tEl.textContent = `${w.temp_c ?? "--"}°C`;
+        if (hEl) hEl.textContent = `${w.humidity ?? "--"}%`;
+        if (wEl) wEl.textContent = `${w.wind_kmh ?? "--"} km/h`;
+        if (pEl) pEl.textContent = `${w.precip_prob ?? 0}%`;
+
+        const riskList = document.getElementById("weather-risk-list");
+        const risks = data.disease_risks || [];
+        if (riskList) {
+          riskList.innerHTML = "";
+          risks.forEach(r => {
+            const chip = document.createElement("div");
+            chip.className = `risk-chip ${r.risk}`;
+            chip.innerHTML = `
+              <div class="risk-chip-title">${r.risk === "Critical" || r.risk === "High" ? "⚠️" : "🌱"} ${r.disease} (${r.risk})</div>
+              <div class="risk-chip-meta"><strong>Crops:</strong> ${(r.crops || []).join(", ")}<br/>${r.reason}</div>
+            `;
+            riskList.appendChild(chip);
+          });
+        }
+
+        const riskBadge = document.getElementById("weather-risk-badge");
+        if (riskBadge) {
+          const highCount = risks.filter(r => r.risk === "High" || r.risk === "Critical").length;
+          if (highCount > 0) {
+            riskBadge.textContent = `${highCount} High`;
+            riskBadge.style.display = "inline-block";
+          } else {
+            riskBadge.style.display = "none";
+          }
+        }
+
+        if (googleMap) {
+          googleMap.setCenter({ lat, lng: lon });
+          if (googleMapCircle) googleMapCircle.setCenter({ lat, lng: lon });
+          updateGoogleMapMarkers(latestOutbreaks);
+        }
+        if (!silent) {
+          showToast(`Weather & disease risk updated for ${farmerCoords.location_name}`);
+        }
+      } catch (err) {
+        console.error("Weather risk error:", err);
+        if (!silent) showToast("Failed to fetch weather risk data.", true);
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    },
+    (err) => {
+      if (btn) btn.disabled = false;
+      if (locEl) locEl.textContent = "Location Permission Needed";
+      if (sumEl) sumEl.textContent = "Allow browser GPS permission and click Refresh Weather & Location.";
+      if (!silent) showToast("GPS permission denied: " + err.message, true);
+    },
+    { enableHighAccuracy: true, timeout: 10000 }
+  );
+}
+
+// Google Maps Integration in Outbreak Tab
+function switchOutbreakView(mode) {
+  currentOutbreakView = mode;
+  const radarEl = document.getElementById("radar-container");
+  const gmapEl = document.getElementById("outbreak-gmap");
+  const btnRadar = document.getElementById("btn-view-radar");
+  const btnGmap = document.getElementById("btn-view-gmap");
+
+  if (btnRadar) btnRadar.classList.toggle("active", mode === "radar");
+  if (btnGmap) btnGmap.classList.toggle("active", mode === "gmap");
+
+  if (mode === "gmap") {
+    if (radarEl) radarEl.style.display = "none";
+    if (gmapEl) gmapEl.style.display = "block";
+    if (!googleMap) {
+      initGoogleMap();
+    } else if (window.google && window.google.maps) {
+      setTimeout(() => {
+        window.google.maps.event.trigger(googleMap, "resize");
+        const c = farmerCoords ? { lat: farmerCoords.lat, lng: farmerCoords.lon } : { lat: 28.6139, lng: 77.2090 };
+        googleMap.setCenter(c);
+        updateGoogleMapMarkers(latestOutbreaks);
+      }, 120);
+    }
+  } else {
+    if (radarEl) radarEl.style.display = "flex";
+    if (gmapEl) gmapEl.style.display = "none";
+  }
+}
+
+function initGoogleMap() {
+  if (!mapsApiKey) {
+    showToast("Google Maps API key not configured.", true);
+    return;
+  }
+  if (window.google && window.google.maps) {
+    renderGoogleMapInstance();
+    return;
+  }
+  if (mapsScriptLoading) return;
+  mapsScriptLoading = true;
+  window.__onLeafGuardMapsReady = () => {
+    mapsScriptLoading = false;
+    renderGoogleMapInstance();
+  };
+  const script = document.createElement("script");
+  script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(mapsApiKey)}&callback=__onLeafGuardMapsReady`;
+  script.async = true;
+  script.defer = true;
+  script.onerror = () => {
+    mapsScriptLoading = false;
+    showToast("Failed to load Google Maps script.", true);
+  };
+  document.head.appendChild(script);
+}
+
+function renderGoogleMapInstance() {
+  const mapEl = document.getElementById("outbreak-gmap");
+  if (!mapEl || !window.google || !window.google.maps) return;
+  const center = farmerCoords ? { lat: farmerCoords.lat, lng: farmerCoords.lon } : { lat: 28.6139, lng: 77.2090 };
+  googleMap = new google.maps.Map(mapEl, {
+    center,
+    zoom: 13,
+    mapTypeId: "hybrid"
   });
 
-  showToast(isHindi ? "भाषा हिंदी में बदली गई" : "Language switched to English");
+  googleMapCircle = new google.maps.Circle({
+    strokeColor: "#10b981",
+    strokeOpacity: 0.85,
+    strokeWeight: 2,
+    fillColor: "#10b981",
+    fillOpacity: 0.14,
+    map: googleMap,
+    center,
+    radius: 2500
+  });
+
+  updateGoogleMapMarkers(latestOutbreaks);
+}
+
+function updateGoogleMapMarkers(alerts) {
+  if (!googleMap || !window.google || !window.google.maps) return;
+  googleMapMarkers.forEach(m => m.setMap(null));
+  googleMapMarkers = [];
+
+  const baseLat = farmerCoords ? farmerCoords.lat : 28.6139;
+  const baseLon = farmerCoords ? farmerCoords.lon : 77.2090;
+  const infoWindow = new google.maps.InfoWindow();
+
+  (alerts || []).forEach(alt => {
+    const lat = typeof alt.lat === "number" ? alt.lat : baseLat + (alt.lat_offset || 0);
+    const lng = typeof alt.lon === "number" ? alt.lon : baseLon + (alt.lon_offset || 0);
+    const marker = new google.maps.Marker({
+      position: { lat, lng },
+      map: googleMap,
+      title: `${alt.crop}: ${alt.disease}`
+    });
+    marker.addListener("click", () => {
+      infoWindow.setContent(
+        `<div style="color:#111;max-width:240px;">
+          <strong>${alt.crop} • ${alt.disease}</strong><br/>
+          <span>Risk: ${alt.risk_level} | ${alt.location_name || alt.distance}</span><br/>
+          <small>${alt.advisory}</small>
+        </div>`
+      );
+      infoWindow.open(googleMap, marker);
+    });
+    googleMapMarkers.push(marker);
+  });
+}
+
+// Live Outbreak Broadcast Polling & Popup Modal for Other Farmers
+function startOutbreakPolling() {
+  setInterval(async () => {
+    try {
+      const res = await fetch(`/api/outbreaks?since=${lastSeenOutbreakTs}`);
+      const newAlerts = await res.json();
+      if (!Array.isArray(newAlerts) || newAlerts.length === 0) return;
+
+      let newestExternal = null;
+      newAlerts.forEach(a => {
+        if (a.created_ts && a.created_ts > lastSeenOutbreakTs) {
+          lastSeenOutbreakTs = a.created_ts;
+        }
+        if (a.sender_id !== farmerSenderId) {
+          newestExternal = a;
+        }
+      });
+
+      await loadOutbreaks();
+      if (newestExternal) {
+        showLiveAlertModal(newestExternal);
+      }
+    } catch (e) {
+      // silent poll error
+    }
+  }, 5000);
+}
+
+async function showLiveAlertModal(alt) {
+  window._activeLiveAlert = alt;
+  const modal = document.getElementById("live-alert-modal");
+  if (!modal) return;
+  const mainLangSel = document.getElementById("lang-select");
+  const modalLangSel = document.getElementById("live-alert-lang");
+  if (mainLangSel && modalLangSel) {
+    if (modalLangSel.options.length === 0) {
+      modalLangSel.innerHTML = mainLangSel.innerHTML;
+    }
+    modalLangSel.value = currentLang;
+  }
+  document.getElementById("live-alert-title").textContent = `${alt.crop} — ${alt.disease}`;
+  document.getElementById("live-alert-meta").textContent = `📍 ${alt.location_name || alt.distance} • Risk: ${alt.risk_level} • ${alt.timestamp}`;
+  document.getElementById("live-alert-advisory").textContent = alt.advisory;
+  modal.style.display = "flex";
+  showToast(`🚨 New Outbreak Broadcast: ${alt.crop} - ${alt.disease}`, true);
+
+  if (currentLang !== "en") {
+    translateLiveAlertModal(currentLang);
+  }
+
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(880, ctx.currentTime);
+    gain.gain.setValueAtTime(0.08, ctx.currentTime);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.18);
+  } catch (e) {}
+}
+
+async function translateLiveAlertModal(forcedLang = null) {
+  const alt = window._activeLiveAlert;
+  if (!alt) return;
+  const modalLangSel = document.getElementById("live-alert-lang");
+  const targetLang = forcedLang || (modalLangSel ? modalLangSel.value : null) || (currentLang === "en" ? "hi" : currentLang);
+  if (modalLangSel && modalLangSel.value !== targetLang) {
+    modalLangSel.value = targetLang;
+  }
+  if (targetLang === "en") {
+    document.getElementById("live-alert-title").textContent = `${alt.crop} — ${alt.disease}`;
+    document.getElementById("live-alert-meta").textContent = `📍 ${alt.location_name || alt.distance} • Risk: ${alt.risk_level} • ${alt.timestamp}`;
+    document.getElementById("live-alert-advisory").textContent = alt.advisory;
+    return;
+  }
+  const tr = await translateTextsBatch(
+    [alt.crop || "", alt.disease || "", alt.location_name || alt.distance || "", alt.risk_level || "", alt.advisory || ""],
+    targetLang
+  );
+  if (tr && tr.length === 5) {
+    document.getElementById("live-alert-title").textContent = `${tr[0]} — ${tr[1]}`;
+    document.getElementById("live-alert-meta").textContent = `📍 ${tr[2]} • Risk: ${tr[3]} • ${alt.timestamp}`;
+    document.getElementById("live-alert-advisory").textContent = tr[4];
+  }
+}
+
+function closeLiveAlertModal() {
+  const modal = document.getElementById("live-alert-modal");
+  if (modal) modal.style.display = "none";
+}
+
+function viewOutbreakOnRadar() {
+  closeLiveAlertModal();
+  switchTab("outbreak");
 }

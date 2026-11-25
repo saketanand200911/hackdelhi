@@ -1,8 +1,14 @@
 archive.zip
 dataset.zip
+Dataset.zip
+data/plantvillage_extra/
+data/embeddings_*.npz
+data/field_aug_embeddings.npz
+notebooks/
+samples/
+tests/
 *.ipynb
 *.pt
 __pycache__
 .git
-train_from_archive.py
-train_visual_classifier.py
+.env

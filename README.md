@@ -1,72 +1,141 @@
-# 🌿 LeafGuard AI • Hyper-Local Pest & Disease Early Warning System
+# 🌿 LeafGuard AI — Leaf Disease Detection
 
-[![Vercel Deployment](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://voicekeep-six.vercel.app)
-[![Live App](https://img.shields.io/badge/Live%20Demo-voicekeep--six.vercel.app-10b981?style=for-the-badge&logo=google-chrome&logoColor=white)](https://voicekeep-six.vercel.app)
-[![GitHub Repo](https://img.shields.io/badge/GitHub-hackdelhi-181717?style=for-the-badge&logo=github)](https://github.com/saketanand200911/hackdelhi)
+[![Live App](https://img.shields.io/badge/Live%20Demo-voicekeep--six.vercel.app-10b981?style=for-the-badge)](https://voicekeep-six.vercel.app)
 
-> **Live Production URL:** [https://voicekeep-six.vercel.app](https://voicekeep-six.vercel.app)  
-> **An image-recognition, botanical pathology, and predictive outbreak radar web app empowering smallholder farmers (plots < 2 hectares) with instant localized treatment plans and neighborhood outbreak alerts.**
-
----
-
-## 🚀 Key Features
-
-1. **📷 Live Camera & Leaf Scanner (Point & Shoot)**
-   - Browser-based camera streaming with mobile back-camera (`Flip`) support and photo upload.
-   - Targeting reticle and laser sweep feedback.
-   - Instant visual pixel analysis:
-     - **Healthy Green %**
-     - **Pale Yellow / Chlorosis %**
-     - **Brown / Necrotic Margins %**
-     - **Powdery White Mildew %**
-
-2. **🔬 Plant Pathology & Treatment Engine (Trained on PlantVillage 38-Class Dataset)**
-   - Covers 14 crops and 38 diseases (Apple, Strawberry, Tomato, Potato, Corn, Grape, Peach, Pepper, Orange, Soybean, Squash, etc.).
-   - Distinguishes lesions, concentric bullseye rings, water-soaked dark gray blotches, rust pustules, and leaf scorch.
-   - Dual-action treatment protocol:
-     - **Organic & Low-Cost Solutions** (Neem oil, pruning, wood ash, milk spray, bio-control).
-     - **Targeted Chemical Sprays** with exact dosages (Copper Oxychloride, Mancozeb, Ridomil MZ).
-
-3. **🗺️ Hyper-Local Outbreak Radar (< 2 km Radius)**
-   - Live visual radar screen tracking disease clusters in neighboring plots (< 2 hectares).
-   - Early warning notifications before wind-borne spores (e.g. Late Blight, Rust) damage adjacent fields.
-   - 1-Click "Broadcast Alert" to notify surrounding farmers.
-
-4. **🔊 Multilingual & Audio Voice Assistant**
-   - 1-Click English ↔ Hindi (हिंदी) toggle.
-   - Audio text-to-speech reads diagnosis and treatment aloud for farmers.
-
-5. **🧠 Teach AI / Reference Training System**
-   - Upload new leaf disease references and symptoms.
-   - Immediate few-shot conditioning into the local AI model.
+An image-recognition and agronomic-advisory web app: photograph a crop leaf, get
+a diagnosis, a treatment protocol and a calibrated confidence score — or an
+explicit **"Not detected"** when the photo isn't something the model knows.
 
 ---
 
-## 🛠️ Tech Stack & Architecture
+## What this model actually does (measured, not claimed)
 
-- **Backend**: FastAPI (Python 3.9+), Uvicorn, Pillow, PyTorch.
-- **Local AI Runtimes**: Ollama with **Moondream** (Vision Analysis) + **LLaMA-3** (Agronomy Pathology & Diagnostic Formatting).
-- **Frontend**: Clean Modern Single-Page Application (HTML5, Vanilla JavaScript, CSS3 with dark agricultural aesthetic).
+| Metric | Value |
+|---|---|
+| Test top-1 accuracy (held-out, never trained on) | **97.68%** |
+| Validation top-1 accuracy | 97.88% |
+| Real leaves accepted by the novelty gate | 99.5% |
+| Correct answer given a detected leaf | 97.7% |
+| Non-plant images correctly rejected | 20 / 20 |
+| Mean confidence on correct answers | 98.1% |
+| Mean confidence on wrong answers | 71.7% |
+
+Classes: **15** (Tomato 9, Potato 3, Pepper 3), trained on **20,639 unique images**.
+
+Full per-class precision/recall: [`data/model_report.json`](data/model_report.json).
 
 ---
 
-## ⚡ Quick Start
+## Honest limits
 
-### 1. Prerequisites
-- Python 3.9+
-- Ollama running locally (`ollama run moondream` and `ollama run llama3`)
+Read this before trusting an answer.
 
-### 2. Run Application
-```bash
-# Clone the repository
-git clone https://github.com/saketanand200911/hackdelhi.git
-cd hackdelhi
+- **Only 3 crops are supported**: Tomato, Potato and Pepper (bell/chilli). Any
+  other crop is not "misdiagnosed" — it is reported as `Not detected`, which is
+  the correct behaviour.
+- **Leaves only, not fruit.** No fruit or whole-plant images were supplied, so
+  fruit-level detection is not implemented.
+- **`archive.zip` and `Dataset.zip` are the same dataset.** The loader
+  de-duplicates by filename and skips 39,650 duplicate copies, so the two
+  archives do not double-count.
+- **Photos in the field are harder than the benchmark.** PlantVillage images are
+  shot on a plain background. A cluttered phone photo of the same disease scores
+  lower on the novelty gate and may be returned as `Not detected` rather than
+  guessed at. That trade-off is deliberate.
+- Confidence is **capped at the measured test accuracy (97.68%)**, so the app
+  never prints "100%".
 
-# Install dependencies
-pip install fastapi uvicorn pillow torch torchvision
+---
 
-# Start the server
-python3 app.py
+## How detection works
+
+Three stages, in order. Stage 1 and 2 can each produce `Not detected`.
+
+```
+photo
+  │
+  ├─ 1. plant-pixel gate ── no green/foliage tissue? ──► Not detected
+  │       "no plant leaf in frame"
+  │
+  ├─ 2. cosine gate ── far from every known class? ──► Not detected
+  │       "unknown plant or disease"
+  │
+  └─ 3. classifier ──► crop + condition + calibrated confidence
 ```
 
-Open your browser at **`http://localhost:8080`**.
+1. **Plant-pixel gate** (`plantness >= 0.069`) — a cheap colour test that
+   catches blank walls, night frames and fruit close-ups.
+2. **Cosine gate** (max similarity to any class prototype `>= 0.699`) — this is
+   the real guard. A softmax over 15 classes will always name *some* class, so
+   novelty is measured in embedding space, not by the percentage itself.
+3. **Classifier** — frozen MobileNetV3-Small features → `Linear(576,512)` →
+   GELU → Dropout → `Linear(512,15)`, with temperature scaling fitted on the
+   validation split.
+
+Both thresholds are *fitted*, not typed in by hand: the trainer computes the
+real-leaf and non-plant similarity distributions and picks the most permissive
+cut that still rejects the negatives.
+
+---
+
+## Setup
+
+```bash
+pip install -r requirements.txt
+```
+
+### Training (only needed once, or after adding data)
+
+```bash
+python3 build_embeddings.py     # ~11 min on CPU: 20,643 images x 3 views
+python3 train_classifier.py     # ~1 min: trains head, calibrates, saves gates
+python3 verify_model.py         # end-to-end check of the shipped code path
+```
+
+`build_embeddings.py` auto-discovers any `*.zip` in the project root and any
+`<Crop>___<Condition>` folder inside it, so adding a new dataset means dropping
+the zip next to `archive.zip` and re-running all three commands.
+
+Classes with fewer than `MIN_IMAGES` (25) photos are **excluded** automatically
+rather than faked into looking trained — 1-2 photos cannot make a class
+detectable, they only steal predictions from real classes.
+
+### Running the app
+
+```bash
+python3 app.py          # http://localhost:8080
+```
+
+Optional local LLM description (cosmetic only, never affects the diagnosis):
+
+```bash
+ollama run moondream
+ENABLE_VISION_DESCRIPTION=1 python3 app.py
+```
+
+---
+
+## Project layout
+
+| File | Role |
+|---|---|
+| `build_embeddings.py` | Stage 1 — de-duplicate zips, split, cache CNN features |
+| `train_classifier.py` | Stage 2 — train head, temperature scaling, fit rejection gates |
+| `verify_model.py` | Stage 3 — end-to-end check through the real inference path |
+| `smoke_test_api.py` | Posts real photos at a running server |
+| `leaf_classifier.py` | Inference wrapper: calibrated % and `Not detected` |
+| `app.py` | FastAPI server |
+| `plantvillage_engine.py` | Knowledge base: symptoms, organic/chemical treatment, Hindi text |
+| `static/` | Single-page frontend |
+| `train_from_archive.py` | **Deprecated** — old nearest-centroid approach |
+| `train_visual_classifier.py` | **Deprecated** — old colour-histogram approach |
+
+---
+
+## Deployment note
+
+`api/index.py` is the Vercel entrypoint and imports `app`, which needs `torch`
+plus `data/leaf_model.npz`. Vercel's Python runtime does not ship `torch` by
+default and the bundle exceeds the size limit, so the serverless build needs
+either a torch-free ONNX export of the model or an always-on host. Local and
+any normal VM/container host work as-is.

@@ -1358,3 +1358,446 @@ body {
   transform: translateY(0);
   opacity: 1;
 }
+
+/* Language Selector */
+.lang-select-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  padding: 5px 12px;
+}
+
+.lang-select {
+  background: transparent;
+  color: var(--text-main);
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+  max-width: 190px;
+}
+
+.lang-select option {
+  background: #131c18;
+  color: #f0fdf4;
+}
+
+/* Dedicated Spacious Weather & Disease Risk Dashboard */
+.weather-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.weather-hero-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 28px 32px;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.14), rgba(59, 130, 246, 0.08));
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.weather-hero-left {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.weather-hero-icon {
+  font-size: 44px;
+  line-height: 1;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 16px;
+  padding: 14px;
+}
+
+.weather-hero-kicker {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.9px;
+  color: var(--primary-light, #34d399);
+  margin-bottom: 4px;
+}
+
+.weather-hero-loc {
+  margin: 0 0 6px 0;
+  font-size: 24px;
+  font-weight: 800;
+  color: #fff;
+}
+
+.weather-hero-sub {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.btn-detect-weather {
+  background: var(--primary);
+  color: #052e16;
+  border: none;
+  border-radius: 999px;
+  padding: 11px 20px;
+  font-weight: 700;
+  font-size: 13.5px;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.btn-detect-weather:hover {
+  transform: translateY(-1px);
+  opacity: 0.95;
+}
+
+.btn-detect-weather:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.weather-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.weather-stat-card {
+  position: relative;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.w-stat-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.w-stat-value {
+  font-size: 32px;
+  font-weight: 800;
+  color: #fff;
+  font-family: var(--font-mono, monospace);
+}
+
+.w-stat-icon {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 26px;
+  opacity: 0.85;
+}
+
+.weather-risks-card {
+  padding: 28px 32px;
+}
+
+.weather-risk-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.weather-risk-empty {
+  color: var(--text-muted);
+  font-size: 14px;
+  padding: 20px 0;
+}
+
+.risk-chip {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 18px 20px;
+  border-radius: 14px;
+  font-size: 13.5px;
+  background: rgba(15, 23, 42, 0.55);
+  border: 1px solid var(--border-color);
+}
+
+.risk-chip.Critical,
+.risk-chip.High {
+  border-color: rgba(239, 68, 68, 0.55);
+  background: rgba(127, 29, 29, 0.25);
+}
+
+.risk-chip.Moderate {
+  border-color: rgba(245, 158, 11, 0.55);
+  background: rgba(120, 53, 15, 0.22);
+}
+
+.risk-chip.Low {
+  border-color: rgba(16, 185, 129, 0.45);
+}
+
+.risk-chip-title {
+  font-weight: 700;
+  font-size: 15px;
+  color: #fff;
+}
+
+.risk-chip-meta {
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* Google Map & View Toggle */
+.map-view-toggle {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.view-toggle-btn {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-surface-elevated);
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.view-toggle-btn.active {
+  background: var(--primary);
+  color: #052e16;
+  border-color: var(--primary);
+}
+
+.outbreak-gmap {
+  width: 100%;
+  height: 420px;
+  min-height: 420px;
+  border-radius: 14px;
+  border: 1px solid var(--border-color);
+  background: #0f172a;
+  overflow: hidden;
+  position: relative;
+}
+
+.outbreak-gmap img {
+  max-width: none !important;
+}
+
+.alert-translate-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.btn-alert-translate {
+  background: rgba(16, 185, 129, 0.14);
+  color: var(--primary-light, #34d399);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  border-radius: 999px;
+  padding: 4px 11px;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-alert-translate:hover {
+  background: rgba(16, 185, 129, 0.25);
+}
+
+/* Live Outbreak Broadcast Popup Modal */
+.live-alert-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 6, 23, 0.72);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 16px;
+}
+
+.live-alert-card {
+  width: 100%;
+  max-width: 460px;
+  background: #131c18;
+  border: 2px solid #ef4444;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 20px 50px rgba(239, 68, 68, 0.28);
+  animation: alertPop 0.22s ease-out;
+}
+
+@keyframes alertPop {
+  from { transform: scale(0.92); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.live-alert-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.live-alert-badge {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+}
+
+.live-alert-close {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.live-alert-card h3 {
+  margin: 0 0 6px 0;
+  font-size: 19px;
+  color: #fff;
+}
+
+.live-alert-meta {
+  font-size: 13px;
+  color: #fbbf24;
+  margin-bottom: 10px;
+}
+
+.live-alert-advisory {
+  font-size: 13.5px;
+  color: var(--text-main);
+  line-height: 1.5;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 10px 12px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+
+.live-alert-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+/* Mobile Phone Responsiveness */
+html, body {
+  overflow-x: hidden;
+}
+
+@media (max-width: 768px) {
+  .header-container {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 12px 16px;
+    gap: 10px;
+  }
+
+  .header-actions {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .lang-select-wrap {
+    flex: 1 1 auto;
+    min-width: 160px;
+  }
+
+  .lang-select {
+    width: 100%;
+    max-width: none;
+  }
+
+  .tabs-nav {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 0 12px 10px;
+    gap: 8px;
+  }
+
+  .tabs-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tab-btn {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    padding: 9px 12px;
+    font-size: 13px;
+  }
+
+  .main-content {
+    padding: 14px 12px 32px;
+  }
+
+  .weather-hero-card {
+    padding: 18px;
+  }
+
+  .weather-hero-loc {
+    font-size: 19px;
+  }
+
+  .weather-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .weather-stat-card {
+    padding: 16px;
+  }
+
+  .w-stat-value {
+    font-size: 24px;
+  }
+
+  .weather-risks-card {
+    padding: 18px;
+  }
+
+  .weather-risk-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .outbreak-gmap {
+    height: 320px;
+    min-height: 320px;
+  }
+
+  .live-alert-card {
+    padding: 16px;
+  }
+
+  .live-alert-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .live-alert-actions button,
+  .live-alert-actions select {
+    width: 100%;
+  }
+}

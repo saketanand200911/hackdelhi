@@ -6,6 +6,7 @@ import time
 import io
 import urllib.request
 import urllib.error
+import urllib.parse
 from typing import Optional, List, Dict, Any
 from datetime import datetime
 
@@ -26,8 +27,10 @@ except ImportError:
     torch = None
 
 import numpy as np
-from visual_features import extract_visual_signature, _center_crop_for_camera
-from plantvillage_engine import diagnose_with_master_engine, PLANTVILLAGE_MASTER_DB
+from plantvillage_engine import PLANTVILLAGE_MASTER_DB
+from leaf_classifier import get_classifier
+from leaf_crop import crop_to_leaf
+from vector_rag import get_vector_db, get_rag
 
 app = FastAPI(title="VoiceKeep Ag - Leaf Disease Detection & Hyper-Local Outbreak Warning")
 
@@ -41,60 +44,63 @@ app.add_middleware(
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BASE_DIR, "data")
-REF_FILE = os.path.join(DATA_DIR, "references.json")
-HISTORY_FILE = os.path.join(DATA_DIR, "history.json")
-REF_IMG_DIR = os.path.join(DATA_DIR, "reference_images")
-UPLOADS_DIR = os.path.join(DATA_DIR, "uploads")
+IS_VERCEL = bool(os.environ.get("VERCEL") or os.environ.get("VERCEL_ENV"))
+WRITABLE_DIR = "/tmp/leafguard_data" if IS_VERCEL else DATA_DIR
+REF_FILE = os.path.join(WRITABLE_DIR, "references.json")
+HISTORY_FILE = os.path.join(WRITABLE_DIR, "history.json")
+REF_IMG_DIR = os.path.join(WRITABLE_DIR, "reference_images")
+UPLOADS_DIR = os.path.join(WRITABLE_DIR, "uploads")
 
-for d in [DATA_DIR, REF_IMG_DIR, UPLOADS_DIR]:
+for d in [WRITABLE_DIR, REF_IMG_DIR, UPLOADS_DIR]:
     try:
         os.makedirs(d, exist_ok=True)
     except OSError:
         pass
 
+if IS_VERCEL:
+    import shutil
+    for fname in ["references.json", "history.json", "outbreaks.json"]:
+        src = os.path.join(DATA_DIR, fname)
+        dst = os.path.join(WRITABLE_DIR, fname)
+        if os.path.exists(src) and not os.path.exists(dst):
+            try:
+                shutil.copy2(src, dst)
+            except Exception:
+                pass
+
 OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "http://127.0.0.1:11434")
 VISION_MODEL = os.environ.get("VISION_MODEL", "moondream")
 LLM_MODEL = os.environ.get("LLM_MODEL", "leafguard-ai")
 
-# Load Trained PlantVillage MobileNet Feature Classifier
-TRAINED_MODEL_PATH = os.path.join(DATA_DIR, "trained_plantvillage_model.pt")
-VISUAL_CLF_PATH = os.path.join(DATA_DIR, "visual_classifier.json")
-torch_device = torch.device("cpu") if HAS_TORCH else None
-leaf_model_data = None
-leaf_feature_extractor = None
-visual_clf_data = None
+def _load_dotenv():
+    env_path = os.path.join(BASE_DIR, ".env")
+    if os.path.exists(env_path):
+        try:
+            with open(env_path, "r", encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip()
+                    if line and not line.startswith("#") and "=" in line:
+                        k, v = line.split("=", 1)
+                        os.environ.setdefault(k.strip(), v.strip())
+        except Exception:
+            pass
 
-try:
-    if os.path.exists(VISUAL_CLF_PATH):
-        with open(VISUAL_CLF_PATH, "r", encoding="utf-8") as f:
-            raw_vc = json.load(f)
-            visual_clf_data = {
-                "classes": raw_vc["classes"],
-                "weights": np.array(raw_vc["weights"], dtype=np.float32),
-                "bias": np.array(raw_vc["bias"], dtype=np.float32),
-            }
-        print(f"Loaded pure-NumPy visual classifier with {len(visual_clf_data['classes'])} classes.")
-except Exception as e:
-    print("Notice loading visual classifier:", e)
+_load_dotenv()
+GOOGLE_WEATHER_API_KEY = os.environ.get("GOOGLE_WEATHER_API_KEY", "")
+GOOGLE_MAPS_API_KEY = os.environ.get("GOOGLE_MAPS_API_KEY", "")
+OUTBREAKS_FILE = os.path.join(WRITABLE_DIR, "outbreaks.json")
+_TRANSLATE_CACHE: Dict[str, str] = {}
 
-if HAS_TORCH:
-    mobilenet_preprocess = transforms.Compose([
-        transforms.Resize((224, 224)),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-    ])
-    try:
-        if os.path.exists(TRAINED_MODEL_PATH):
-            leaf_model_data = torch.load(TRAINED_MODEL_PATH, map_location=torch_device)
-            _mobilenet = models.mobilenet_v3_small(weights='DEFAULT').eval()
-            leaf_feature_extractor = torch.nn.Sequential(
-                _mobilenet.features,
-                _mobilenet.avgpool,
-                torch.nn.Flatten()
-            ).to(torch_device)
-            print(f"Loaded trained PlantVillage neural model with {len(leaf_model_data.get('classes', []))} classes.")
-    except Exception as e:
-        print("Notice loading trained leaf model (pt):", e)
+# Trained leaf classifier: MobileNetV3 embeddings + trained linear head + calibration.
+# Loaded lazily on first request so the server starts even without torch installed.
+leaf_clf = None
+
+
+def ensure_classifier():
+    global leaf_clf
+    if leaf_clf is None:
+        leaf_clf = get_classifier()
+    return leaf_clf
 
 # Ensure files exist safely
 try:
@@ -274,6 +280,18 @@ class OutbreakAlertItem(BaseModel):
     distance: str
     risk_level: str
     advisory: str
+    lat: Optional[float] = None
+    lon: Optional[float] = None
+    location_name: Optional[str] = ""
+    sender_id: Optional[str] = ""
+
+class RagAskRequest(BaseModel):
+    question: str
+    crop: Optional[str] = ""
+
+class TranslateRequest(BaseModel):
+    texts: List[str]
+    target_lang: str
 
 @app.get("/")
 @app.head("/")
@@ -298,6 +316,7 @@ def health_check():
         "ollama_available": ollama_ok,
         "vision_model": VISION_MODEL,
         "llm_model": LLM_MODEL,
+        "vector_db": get_vector_db().stats(),
         "timestamp": datetime.now().isoformat()
     }
 
@@ -319,6 +338,23 @@ def add_reference(ref: ReferenceItem):
                 raw_b64 = raw_b64.split(",", 1)[1]
             img_bytes = base64.b64decode(raw_b64)
             img = Image.open(io.BytesIO(img_bytes)).convert("RGB")
+            # Instant zero-retraining Vector DB indexing
+            clf = ensure_classifier()
+            if clf is not None:
+                try:
+                    c_img = crop_to_leaf(img)
+                    vecs = clf._features([img, c_img])
+                    cid = f"{ref.crop.strip().replace(' ', '_')}___{ref.disease.strip().replace(' ', '_')}"
+                    get_vector_db().add_vectors(
+                        vecs,
+                        [cid, cid],
+                        [ref.crop, ref.crop],
+                        [ref.disease, ref.disease],
+                        [f"teach_ai:{ref_id}", f"teach_ai:{ref_id}_crop"],
+                        persist=True,
+                    )
+                except Exception as ve:
+                    print("VectorDB teach_ai indexing warning:", ve)
             img.thumbnail((500, 500))
             img_filename = f"{ref_id}.jpg"
             img.save(os.path.join(REF_IMG_DIR, img_filename), "JPEG", quality=85)
@@ -337,7 +373,44 @@ def add_reference(ref: ReferenceItem):
     }
     refs.append(new_item)
     save_references(refs)
-    return {"success": True, "reference": new_item}
+    get_rag().rebuild_index(extra_refs=refs)
+    return {"success": True, "reference": new_item, "vector_db": get_vector_db().stats()}
+
+
+@app.post("/api/rag/ask")
+def rag_ask(req: RagAskRequest):
+    """Retrieve grounded agronomy context via RAG and optionally generate answer with Ollama."""
+    rag = get_rag()
+    hits = rag.retrieve(req.question, crop=req.crop or "", top_k=3)
+    context_text = "\n\n".join(h["text"] for h in hits)
+    answer = ""
+    used_llm = False
+    try:
+        prompt = (
+            "You are LeafGuard Agronomy Assistant for smallholder farmers. "
+            "Answer concisely in simple Hindi + English using ONLY the retrieved context below.\n\n"
+            f"Context:\n{context_text}\n\nQuestion: {req.question}\nAnswer:"
+        )
+        answer = query_ollama(model=LLM_MODEL, prompt=prompt, format_json=False, timeout=15)
+        used_llm = bool(answer)
+    except Exception:
+        used_llm = False
+
+    if not answer and hits:
+        top = hits[0]
+        org = "; ".join(top.get("organic_treatment", [])[:2])
+        chem = "; ".join(top.get("chemical_treatment", [])[:2])
+        answer = (
+            f"{top['crop']} — {top['disease']}: "
+            f"Organic: {org}. Chemical: {chem}. {top.get('hindi_summary', '')}"
+        ).strip()
+
+    return {
+        "question": req.question,
+        "answer": answer,
+        "used_llm": used_llm,
+        "sources": [{"id": h["id"], "crop": h["crop"], "disease": h["disease"], "score": h["score"]} for h in hits],
+    }
 
 @app.delete("/api/references/{ref_id}")
 def delete_reference(ref_id: str):
@@ -346,12 +419,204 @@ def delete_reference(ref_id: str):
     save_references(new_refs)
     return {"success": True, "remaining": len(new_refs)}
 
-@app.get("/api/outbreaks")
-def get_outbreaks():
+def _compute_weather_disease_risks(temp_c: float, humidity: float, precip_prob: float, wind_kmh: float) -> List[Dict[str, Any]]:
+    """Compute crop disease outbreak risks from real-time weather conditions."""
+    risks = []
+    if humidity >= 75 and 10 <= temp_c <= 24:
+        risks.append({
+            "disease": "Tomato & Potato Late Blight (Phytophthora)",
+            "crops": ["Tomato", "Potato"],
+            "risk": "CRITICAL",
+            "reason": f"Cool & humid ({temp_c:.1f}°C, {humidity:.0f}% RH) triggers rapid sporangia spread."
+        })
+        risks.append({
+            "disease": "Wheat Yellow Rust / Mustard White Rust",
+            "crops": ["Wheat", "Mustard"],
+            "risk": "HIGH",
+            "reason": f"Cool moist air ({temp_c:.1f}°C, {humidity:.0f}% RH) favors rust pustule germination."
+        })
+    if humidity >= 70 and (22 <= temp_c <= 34 or precip_prob >= 30):
+        risks.append({
+            "disease": "Rice Blast & Bacterial Leaf Blight",
+            "crops": ["Rice", "Paddy"],
+            "risk": "HIGH",
+            "reason": f"Warm humid weather ({temp_c:.1f}°C, {humidity:.0f}% RH, {precip_prob:.0f}% rain) spreads spores."
+        })
+        risks.append({
+            "disease": "Coffee Leaf Rust & Banana Black Sigatoka",
+            "crops": ["Coffee", "Banana", "Mango"],
+            "risk": "HIGH",
+            "reason": "High moisture and wind accelerate fungal spore splash across orchards."
+        })
+    if humidity <= 55 and temp_c >= 27:
+        risks.append({
+            "disease": "Two-Spotted Spider Mites & Powdery Mildew",
+            "crops": ["Tomato", "Mango", "Squash", "Cherry"],
+            "risk": "HIGH",
+            "reason": f"Hot dry conditions ({temp_c:.1f}°C, {humidity:.0f}% RH) cause rapid mite & mildew buildup."
+        })
+    if wind_kmh >= 18:
+        risks.append({
+            "disease": "Wind-Borne Spore Drift Alert",
+            "crops": ["Corn", "Apple", "Grape", "Soybean"],
+            "risk": "MODERATE",
+            "reason": f"Gusty wind ({wind_kmh:.0f} km/h) can carry fungal spores up to 2.5 km."
+        })
+    if not risks:
+        risks.append({
+            "disease": "Low-to-Moderate Baseline Fungal Watch",
+            "crops": ["All Crops"],
+            "risk": "LOW",
+            "reason": f"Balanced conditions ({temp_c:.1f}°C, {humidity:.0f}% RH). Routine morning leaf inspection advised."
+        })
+    return risks
+
+
+def _reverse_geocode_name(lat: float, lon: float) -> str:
+    try:
+        url = f"https://nominatim.openstreetmap.org/reverse?format=json&lat={lat}&lon={lon}&zoom=12"
+        req = urllib.request.Request(url, headers={"User-Agent": "LeafGuardAI/1.0"})
+        with urllib.request.urlopen(req, timeout=5) as r:
+            d = json.loads(r.read().decode("utf-8"))
+            addr = d.get("address", {})
+            parts = [addr.get("village") or addr.get("town") or addr.get("suburb") or addr.get("city") or addr.get("county"), addr.get("state")]
+            name = ", ".join([p for p in parts if p])
+            return name or f"{lat:.3f}, {lon:.3f}"
+    except Exception:
+        return f"{lat:.3f}, {lon:.3f}"
+
+
+@app.get("/api/config")
+def get_public_config():
+    return {
+        "maps_api_key": GOOGLE_MAPS_API_KEY,
+        "weather_enabled": bool(GOOGLE_WEATHER_API_KEY),
+    }
+
+
+@app.get("/api/weather-risk")
+def get_weather_risk(lat: float, lon: float):
+    weather_data = {}
+    source = "google_weather"
+    if GOOGLE_WEATHER_API_KEY:
+        try:
+            url = (
+                f"https://weather.googleapis.com/v1/currentConditions:lookup"
+                f"?key={GOOGLE_WEATHER_API_KEY}&location.latitude={lat}&location.longitude={lon}"
+            )
+            with urllib.request.urlopen(url, timeout=8) as r:
+                weather_data = json.loads(r.read().decode("utf-8"))
+        except Exception as e:
+            print("Google Weather API error:", e)
+            weather_data = {}
+
+    if weather_data:
+        temp_c = float(weather_data.get("temperature", {}).get("degrees", 25.0))
+        humidity = float(weather_data.get("relativeHumidity", 60.0))
+        wind_kmh = float(weather_data.get("wind", {}).get("speed", {}).get("value", 8.0))
+        precip_prob = float(weather_data.get("precipitation", {}).get("probability", {}).get("percent", 10.0))
+        cond_text = weather_data.get("weatherCondition", {}).get("description", {}).get("text", "Clear")
+        icon_uri = weather_data.get("weatherCondition", {}).get("iconBaseUri", "")
+    else:
+        source = "open_meteo_fallback"
+        try:
+            om_url = (
+                f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}"
+                "&current=temperature_2m,relative_humidity_2m,wind_speed_10m,precipitation_probability"
+            )
+            with urllib.request.urlopen(om_url, timeout=8) as r:
+                om = json.loads(r.read().decode("utf-8")).get("current", {})
+            temp_c = float(om.get("temperature_2m", 25.0))
+            humidity = float(om.get("relative_humidity_2m", 60.0))
+            wind_kmh = float(om.get("wind_speed_10m", 8.0))
+            precip_prob = float(om.get("precipitation_probability", 10.0))
+            cond_text = "Live Field Weather"
+            icon_uri = ""
+        except Exception:
+            temp_c, humidity, wind_kmh, precip_prob, cond_text, icon_uri = 26.0, 62.0, 10.0, 10.0, "Partly Cloudy", ""
+
+    location_name = _reverse_geocode_name(lat, lon)
+    risks = _compute_weather_disease_risks(temp_c, humidity, precip_prob, wind_kmh)
+
+    return {
+        "location_name": location_name,
+        "lat": lat,
+        "lon": lon,
+        "source": source,
+        "weather": {
+            "temp_c": round(temp_c, 1),
+            "humidity": round(humidity),
+            "wind_kmh": round(wind_kmh, 1),
+            "precip_prob": round(precip_prob),
+            "condition": cond_text,
+            "icon_url": f"{icon_uri}.png" if icon_uri else "",
+        },
+        "disease_risks": risks,
+    }
+
+
+@app.post("/api/translate")
+def translate_texts(req: TranslateRequest):
+    lang = (req.target_lang or "en").strip().lower()
+    if lang == "en":
+        return {"lang": "en", "translations": req.texts}
+    # Map Santali/Dogri/Bodo/Kashmiri/etc. cleanly; Google gtx supports ISO codes
+    out = []
+    for txt in req.texts:
+        if not txt or not txt.strip():
+            out.append(txt)
+            continue
+        cache_key = f"{lang}::{txt}"
+        if cache_key in _TRANSLATE_CACHE:
+            out.append(_TRANSLATE_CACHE[cache_key])
+            continue
+        try:
+            q = urllib.parse.quote(txt)
+            url = f"https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl={urllib.parse.quote(lang)}&dt=t&q={q}"
+            req_u = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+            with urllib.request.urlopen(req_u, timeout=6) as r:
+                res = json.loads(r.read().decode("utf-8"))
+                translated = "".join(seg[0] for seg in res[0] if seg and seg[0])
+                _TRANSLATE_CACHE[cache_key] = translated
+                out.append(translated)
+        except Exception:
+            out.append(txt)
+    return {"lang": lang, "translations": out}
+
+
+def _load_persisted_outbreaks() -> List[Dict[str, Any]]:
+    for path in [OUTBREAKS_FILE, "/tmp/outbreaks.json"]:
+        if os.path.exists(path):
+            try:
+                with open(path, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except Exception:
+                pass
     return LOCAL_ALERTS
+
+
+def _save_persisted_outbreaks(alerts: List[Dict[str, Any]]):
+    for path in [OUTBREAKS_FILE, "/tmp/outbreaks.json"]:
+        try:
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump(alerts[:50], f, indent=2, ensure_ascii=False)
+            return
+        except OSError:
+            continue
+
+
+@app.get("/api/outbreaks")
+def get_outbreaks(since: Optional[float] = None):
+    alerts = _load_persisted_outbreaks()
+    if since is not None:
+        return [a for a in alerts if float(a.get("created_ts", 0)) > since]
+    return alerts
+
 
 @app.post("/api/outbreaks")
 def create_outbreak(alert: OutbreakAlertItem):
+    alerts = _load_persisted_outbreaks()
+    now_ms = time.time() * 1000.0
     new_alert = {
         "id": f"alt_{uuid.uuid4().hex[:6]}",
         "crop": alert.crop,
@@ -360,11 +625,17 @@ def create_outbreak(alert: OutbreakAlertItem):
         "plot_size": alert.plot_size,
         "risk_level": alert.risk_level,
         "timestamp": "Just now",
+        "created_ts": now_ms,
         "advisory": alert.advisory,
+        "lat": alert.lat,
+        "lon": alert.lon,
+        "location_name": alert.location_name or "",
+        "sender_id": alert.sender_id or "",
         "lat_offset": 0.002,
         "lon_offset": -0.003
     }
-    LOCAL_ALERTS.insert(0, new_alert)
+    alerts.insert(0, new_alert)
+    _save_persisted_outbreaks(alerts)
     return {"success": True, "alert": new_alert}
 
 @app.get("/api/history")
@@ -393,112 +664,110 @@ def diagnose_leaf(req: DiagnoseRequest):
     # 1. Computer Vision Pixel Health Analysis
     pixel_stats = analyze_image_pixels(img)
 
-    # 2. Deep Feature Neural Classifier (MobileNetV3 locally, Pure-NumPy Visual Classifier on Vercel)
-    neural_pred_class = None
-    neural_confidence = 0.0
-    if leaf_feature_extractor is not None and leaf_model_data is not None:
-        try:
-            img_cam = _center_crop_for_camera(img)
-            tensor = mobilenet_preprocess(img_cam).unsqueeze(0).to(torch_device)
-            with torch.no_grad():
-                feat = leaf_feature_extractor(tensor)
-                feat = feat / feat.norm(p=2, dim=1, keepdim=True)
-                sims = torch.mm(feat, leaf_model_data["centroids"].t())[0]
-                top_idx = torch.argmax(sims).item()
-                neural_pred_class = leaf_model_data["classes"][top_idx]
-                probs = torch.softmax(sims * 25.0, dim=0)
-                sim_pct = float(sims[top_idx].item()) * 100.0
-                prob_pct = float(probs[top_idx].item()) * 100.0
-                neural_confidence = round(min(99.0, max(55.0, 0.55 * sim_pct + 0.45 * prob_pct)), 1)
-        except Exception as e:
-            print("Neural feature inference error:", e)
-    elif visual_clf_data is not None:
-        try:
-            v_feat = extract_visual_signature(img)
-            logits = np.dot(v_feat, visual_clf_data["weights"]) + visual_clf_data["bias"]
-            top_idx = int(np.argmax(logits))
-            neural_pred_class = visual_clf_data["classes"][top_idx]
-            sorted_logits = np.sort(logits)
-            margin = float(sorted_logits[-1] - sorted_logits[-2]) if len(sorted_logits) > 1 else 0.0
-            exp_l = np.exp((logits - np.max(logits)) * 10.0)
-            probs = exp_l / np.sum(exp_l)
-            prob_pct = float(probs[top_idx]) * 100.0
-            raw_strength = float(np.clip(logits[top_idx], 0.0, 1.0)) * 100.0
-            margin_bonus = min(18.0, margin * 35.0)
-            neural_confidence = round(min(98.5, max(52.0, 0.65 * prob_pct + 0.25 * raw_strength + margin_bonus)), 1)
-        except Exception as e:
-            print("Visual classifier inference error:", e)
+    # 2. Trained classifier + Image Vector DB k-NN retrieval
+    clf = ensure_classifier()
+    if clf is None:
+        raise HTTPException(
+            status_code=503,
+            detail="Model not loaded. Run build_embeddings.py then train_classifier.py.")
 
-    # 3. Vision inspection via Moondream (optional local enhancement)
-    vision_description = ""
+    pred = clf.predict(img, crop_hint=req.crop_hint)
+
+    vector_matches = []
     try:
-        vision_prompt = (
-            "Examine this agricultural plant leaf closely. "
-            "Describe the leaf shape (serrated, lobed, or smooth), its colors, and all spots, dots, or disease symptoms visible on it."
+        q_img = crop_to_leaf(img)
+        q_feat = clf._features([q_img])[0]
+        vector_matches = get_vector_db().search(q_feat, top_k=5, crop_hint=req.crop_hint or "")
+        taught_hits = [m for m in vector_matches if m["source"].startswith("teach_ai:") and m["similarity"] >= 0.78]
+        if taught_hits and (not pred["detected"] or taught_hits[0]["similarity"] > pred.get("cosine", 0.0)):
+            top_v = taught_hits[0]
+            pred = {
+                "detected": True,
+                "is_plant": True,
+                "class_id": top_v["class_id"],
+                "crop": top_v["crop"],
+                "condition": top_v["disease"],
+                "confidence": round(min(97.0, top_v["similarity"] * 100.0), 1),
+                "crop_confidence": round(min(97.0, top_v["similarity"] * 100.0), 1),
+                "cosine": top_v["similarity"],
+                "plantness": pred.get("plantness", 0.3),
+                "top_k": pred.get("top_k", []),
+            }
+    except Exception as ve:
+        print("VectorDB search warning:", ve)
+
+    # 3. Optional vision-model description. Purely cosmetic: it never decides
+    #    the diagnosis, because keyword matching on free text was the source of
+    #    most of this app's bogus answers.
+    vision_description = ""
+    if os.environ.get("ENABLE_VISION_DESCRIPTION", "0") == "1":
+        try:
+            vision_description = query_ollama(
+                model=VISION_MODEL,
+                prompt=(
+                    "Describe this crop leaf in one sentence: its shape, its colour, "
+                    "and any spots, lesions or discoloration you can see."),
+                images=[processed_b64],
+                format_json=False,
+                timeout=20,
+            ).replace("!!!IMAGE!!!", "").strip()
+        except Exception as e:
+            print("Vision description unavailable:", e)
+
+    # 4. "Not detected" is a real answer, not a fallback.
+    if not pred["detected"]:
+        return _not_detected_response(
+            pred=pred,
+            pixel_stats=pixel_stats,
+            vision_description=vision_description,
+            start_time=start_time,
         )
-        vision_description = query_ollama(
-            model=VISION_MODEL,
-            prompt=vision_prompt,
-            images=[processed_b64],
-            format_json=False,
-            timeout=5
-        )
-        vision_description = vision_description.replace("!!!IMAGE!!!", "").strip()
 
-        if len(vision_description) < 25 or vision_description.startswith(("1. Yes", "Yes", "1. No", "No")):
-            vision_prompt2 = "Describe the spots, colors, holes, and leaf disease symptoms visible in this image."
-            v2 = query_ollama(model=VISION_MODEL, prompt=vision_prompt2, images=[processed_b64], format_json=False, timeout=5)
-            if len(v2) > 20:
-                vision_description = v2.replace("!!!IMAGE!!!", "").strip()
-    except Exception as e:
-        print("Moondream vision inspection skipped/failed:", e)
-        vision_description = req.farmer_notes or ""
+    # 5. Annotate the detected class with agronomic guidance from the knowledge base.
+    best = PLANTVILLAGE_MASTER_DB.get(pred["class_id"])
+    if best is None:
+        best = {
+            "crop": pred["crop"],
+            "disease": pred["condition"],
+            "is_healthy": "healthy" in pred["condition"].lower(),
+            "severity": "Moderate",
+            "color_signature": "See reference image",
+            "lesion_pattern": pred["condition"],
+            "leaf_morphology": f"{pred['crop']} leaf",
+            "organic_treatment": ["Consult your local agriculture extension officer."],
+            "chemical_treatment": ["No dosage on file for this class."],
+            "outbreak_risk": "Moderate",
+            "neighbor_alert": "Confirm with a second photo from a different leaf.",
+            "hindi_summary": "इस पत्ती के लिए उपचार जानकारी उपलब्ध नहीं है। स्थानीय कृषि अधिकारी से सलाह लें।",
+        }
 
-    # 4. Master PlantVillage Agronomic Diagnostic Engine
-    match_result = diagnose_with_master_engine(
-        vision_description=vision_description,
-        pixel_stats=pixel_stats,
-        crop_hint=req.crop_hint,
-        farmer_notes=req.farmer_notes,
-        neural_class=neural_pred_class,
-        neural_sim=neural_confidence
-    )
-    best = match_result["best_match"]
-    top_candidates = match_result["top_candidates"]
-
-    # 5. Construct Structured Diagnosis from Ground Truth Dataset
-    if neural_confidence > 0:
-        final_conf = neural_confidence + (3.0 if req.crop_hint else 0.0)
-        final_conf = min(99, max(52, int(round(final_conf))))
-    else:
-        scores = match_result.get("scores", [])
-        margin = (scores[0][0] - scores[1][0]) if len(scores) > 1 else 20
-        final_conf = min(94, max(62, 65 + int(margin * 0.5)))
-    confidence_val = f"{final_conf}%"
-    summary_text = (
-        f"Identified {best['crop']} foliage with {best['lesion_pattern'].lower()} "
-        f"and {best['color_signature'].lower()}."
-    )
+    confidence_val = f"{pred['confidence']:.1f}%"
     if best["is_healthy"]:
-        summary_text = f"Vibrant {best['crop']} foliage with healthy green chlorophyll tissue and no active fungal or bacterial lesions."
+        summary_text = (f"Vibrant {best['crop']} foliage with healthy green chlorophyll "
+                        f"tissue and no active fungal or bacterial lesions.")
+    else:
+        summary_text = (f"{best['crop']} foliage showing {best['lesion_pattern'].lower()} "
+                        f"with {best['color_signature'].lower()}.")
 
     diagnosis_json = {
+        "detected": True,
         "crop": best["crop"],
         "condition": best["disease"],
         "is_healthy": best["is_healthy"],
         "confidence": confidence_val,
+        "crop_confidence": f"{pred.get('crop_confidence', pred['confidence']):.1f}%",
         "severity": best["severity"],
         "visual_summary": summary_text,
         "symptoms": [
             f"Color Spectrum: {best['color_signature']}",
             f"Lesion Pattern: {best['lesion_pattern']}",
-            f"Leaf Morphology: {best['leaf_morphology']}"
+            f"Leaf Morphology: {best['leaf_morphology']}",
         ],
         "organic_treatment": best["organic_treatment"],
         "chemical_treatment": best["chemical_treatment"],
         "outbreak_risk": best["outbreak_risk"],
         "neighbor_alert": best["neighbor_alert"],
-        "hindi_summary": best["hindi_summary"]
+        "hindi_summary": best["hindi_summary"],
     }
 
     # Save to history
@@ -520,10 +789,67 @@ def diagnose_leaf(req: DiagnoseRequest):
     diagnosis_json["processing_seconds"] = round(time.time() - start_time, 2)
     diagnosis_json["vision_raw"] = vision_description
     diagnosis_json["pixel_metrics"] = pixel_stats
-    diagnosis_json["neural_class"] = neural_pred_class
-    diagnosis_json["neural_similarity"] = neural_confidence
+    diagnosis_json["neural_class"] = pred["class_id"]
+    diagnosis_json["neural_similarity"] = pred["confidence"]
+    diagnosis_json["top_k"] = pred["top_k"]
+    diagnosis_json["vector_matches"] = vector_matches[:3]
+    if req.farmer_notes:
+        diagnosis_json["rag_sources"] = get_rag().retrieve(req.farmer_notes, crop=best["crop"], top_k=2)
 
     return diagnosis_json
+
+
+def _not_detected_response(pred, pixel_stats, vision_description, start_time):
+    """Honest answer when the plant/disease guards reject the image."""
+    is_plant = pred.get("is_plant", False)
+    if not is_plant:
+        condition = "Not detected — no plant leaf in frame"
+        crop = "—"
+        summary = (
+            "Is photo mein paudhe ki patti nahi mili. Model sirf patti (leaf) ki "
+            "tasveerein padhta hai — fruit, tana, ya phool abhi support nahi hai. "
+            "Ek saaf patti ki photo lein, achhi roshni mein, background hata kar."
+        )
+        hindi = ("तस्वीर में पत्ती नहीं मिली। अभी केवल पत्तियों की पहचान उपलब्ध है, "
+                 "फल या तना नहीं। कृपया एक साफ़ पत्ती की तस्वीर लें।")
+    else:
+        condition = "Not detected — unknown plant or disease"
+        crop = "—"
+        summary = (
+            "Leaf to dikh rahi hai, par ye model ke known diseases se match nahi hui. "
+            "Model sirf unhi fasalon ko pehchanta hai jinpe usse train kiya gaya hai."
+        )
+        hindi = "पत्ती दिख रही है, लेकिन यह किसी ज्ञात रोग से मेल नहीं खाई।"
+
+    diag_id = f"diag_{uuid.uuid4().hex[:8]}"
+    return {
+        "detected": False,
+        "crop": crop,
+        "condition": condition,
+        "is_healthy": False,
+        "confidence": "—",
+        "severity": "Unknown",
+        "visual_summary": summary,
+        "symptoms": [pred.get("reason", "")],
+        "organic_treatment": [
+            "Ek saaf photo dobara lein: ek patta, poori frame mein, natural light.",
+            "Agar patta kisi aur fasal ka hai, to 'Crop' lock set karke dobara try karein.",
+        ],
+        "chemical_treatment": ["Koi spray suggest nahi kiya jaata jab tak disease confirm na ho."],
+        "outbreak_risk": "Unknown",
+        "neighbor_alert": "Diagnosis confirm hone tak koi alert broadcast na karein.",
+        "hindi_summary": hindi,
+        "diag_id": diag_id,
+        "processing_seconds": round(time.time() - start_time, 2),
+        "vision_raw": vision_description,
+        "pixel_metrics": pixel_stats,
+        "neural_class": None,
+        "neural_similarity": 0.0,
+        "top_k": pred.get("top_k", []),
+        "rejection_reason": pred.get("reason", ""),
+        "cosine": pred.get("cosine"),
+        "plantness": pred.get("plantness"),
+    }
 
 # Mount static files and reference images if present
 if os.path.exists(REF_IMG_DIR):
