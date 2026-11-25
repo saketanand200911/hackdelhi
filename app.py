@@ -26,7 +26,7 @@ except ImportError:
     torch = None
 
 import numpy as np
-from visual_features import extract_visual_signature
+from visual_features import extract_visual_signature, _center_crop_for_camera
 from plantvillage_engine import diagnose_with_master_engine, PLANTVILLAGE_MASTER_DB
 
 app = FastAPI(title="VoiceKeep Ag - Leaf Disease Detection & Hyper-Local Outbreak Warning")
@@ -398,7 +398,8 @@ def diagnose_leaf(req: DiagnoseRequest):
     neural_confidence = 0.0
     if leaf_feature_extractor is not None and leaf_model_data is not None:
         try:
-            tensor = mobilenet_preprocess(img).unsqueeze(0).to(torch_device)
+            img_cam = _center_crop_for_camera(img)
+            tensor = mobilenet_preprocess(img_cam).unsqueeze(0).to(torch_device)
             with torch.no_grad():
                 feat = leaf_feature_extractor(tensor)
                 feat = feat / feat.norm(p=2, dim=1, keepdim=True)

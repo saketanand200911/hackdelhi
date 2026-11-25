@@ -36,6 +36,10 @@ window.addEventListener("DOMContentLoaded", () => {
   loadReferences();
   loadOutbreaks();
   loadHistory();
+  if ("speechSynthesis" in window) {
+    window.speechSynthesis.getVoices();
+    window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+  }
 });
 
 // Tab Switching
@@ -155,16 +159,22 @@ function handleFileUpload(event) {
   reader.readAsDataURL(file);
 }
 
-// Capture from Live Video
+// Capture from Live Video (center-cropped to reticle for clean leaf focus)
 function captureAndDiagnose() {
   if (!currentStream) return;
 
-  canvas.width = webcam.videoWidth || 640;
-  canvas.height = webcam.videoHeight || 480;
-  const ctx = canvas.getContext("2d");
-  ctx.drawImage(webcam, 0, 0, canvas.width, canvas.height);
+  const vw = webcam.videoWidth || 640;
+  const vh = webcam.videoHeight || 480;
+  const cropSize = Math.round(Math.min(vw, vh) * 0.78);
+  const sx = Math.round((vw - cropSize) / 2);
+  const sy = Math.round((vh - cropSize) / 2);
 
-  capturedBase64 = canvas.toDataURL("image/jpeg", 0.9);
+  canvas.width = 512;
+  canvas.height = 512;
+  const ctx = canvas.getContext("2d");
+  ctx.drawImage(webcam, sx, sy, cropSize, cropSize, 0, 0, 512, 512);
+
+  capturedBase64 = canvas.toDataURL("image/jpeg", 0.92);
   previewImg.src = capturedBase64;
   previewContainer.style.display = "block";
   webcam.style.display = "none";
@@ -308,31 +318,80 @@ function renderDiagnosis(data) {
   document.getElementById("diag-neighbor-alert").textContent = data.neighbor_alert || "Monitor surrounding fields for similar leaf symptoms.";
 }
 
-// Audio Speech Readout (TTS)
+// Audio Speech Readout (TTS) - macOS/Chrome reliable implementation
+window._activeUtterance = null;
 function speakDiagnosis() {
-  if (!currentDiagnosis) return;
+  if (!currentDiagnosis) {
+    showToast(isHindi ? "पहले पत्ती की जांच करें!" : "Please scan a leaf first!", true);
+    return;
+  }
   if (!("speechSynthesis" in window)) {
     showToast("Speech synthesis not supported in this browser.", true);
     return;
   }
 
-  window.speechSynthesis.cancel(); // stop any current speech
+  const speakBtn = document.getElementById("speak-btn");
+  if (window.speechSynthesis.speaking) {
+    window.speechSynthesis.cancel();
+    window._activeUtterance = null;
+    if (speakBtn) speakBtn.innerHTML = `<span class="btn-icon">🔊</span> <span>${isHindi ? "सुनें" : "Listen"}</span>`;
+    return;
+  }
+
+  window.speechSynthesis.cancel();
 
   let textToSpeak = "";
-  let lang = "en-IN";
+  let targetLang = "en-IN";
 
   if (isHindi && currentDiagnosis.hindi_summary) {
     textToSpeak = currentDiagnosis.hindi_summary;
-    lang = "hi-IN";
+    targetLang = "hi-IN";
   } else {
-    textToSpeak = `Diagnosis: ${currentDiagnosis.condition} on ${currentDiagnosis.crop}. Severity is ${currentDiagnosis.severity}. ${currentDiagnosis.visual_summary}. Immediate action: ${currentDiagnosis.organic_treatment ? currentDiagnosis.organic_treatment[0] : ''}.`;
-    lang = "en-US";
+    const firstOrganic = currentDiagnosis.organic_treatment && currentDiagnosis.organic_treatment[0] ? currentDiagnosis.organic_treatment[0] : "";
+    textToSpeak = `Diagnosis: ${currentDiagnosis.condition} on ${currentDiagnosis.crop}. Severity is ${currentDiagnosis.severity}. ${currentDiagnosis.visual_summary}. ${firstOrganic ? "Recommended action: " + firstOrganic : ""}`;
+    targetLang = "en-US";
   }
 
-  const utterance = new SpeechSynthesisUtterance(textToSpeak);
-  utterance.lang = lang;
-  utterance.rate = 0.95;
-  window.speechSynthesis.speak(utterance);
+  // Delay slightly after cancel() so Chrome/macOS does not drop the new utterance
+  setTimeout(() => {
+    try {
+      const utterance = new SpeechSynthesisUtterance(textToSpeak);
+      utterance.lang = targetLang;
+      utterance.rate = 0.95;
+      utterance.pitch = 1.0;
+      utterance.volume = 1.0;
+
+      const voices = window.speechSynthesis.getVoices() || [];
+      const langPrefix = targetLang.split("-")[0].toLowerCase();
+      const matchedVoice =
+        voices.find(v => v.lang && v.lang.toLowerCase() === targetLang.toLowerCase()) ||
+        voices.find(v => v.lang && v.lang.toLowerCase().startsWith(langPrefix)) ||
+        voices.find(v => v.default);
+      if (matchedVoice) {
+        utterance.voice = matchedVoice;
+      }
+
+      if (speakBtn) speakBtn.innerHTML = `<span class="btn-icon">⏹️</span> <span>${isHindi ? "रुकें" : "Stop"}</span>`;
+      utterance.onend = () => {
+        window._activeUtterance = null;
+        if (speakBtn) speakBtn.innerHTML = `<span class="btn-icon">🔊</span> <span>${isHindi ? "सुनें" : "Listen"}</span>`;
+      };
+      utterance.onerror = () => {
+        window._activeUtterance = null;
+        if (speakBtn) speakBtn.innerHTML = `<span class="btn-icon">🔊</span> <span>${isHindi ? "सुनें" : "Listen"}</span>`;
+      };
+
+      window._activeUtterance = utterance;
+      if (window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+      }
+      window.speechSynthesis.speak(utterance);
+      showToast(isHindi ? "रिपोर्ट पढ़ी जा रही है..." : "Reading diagnosis aloud...");
+    } catch (err) {
+      console.error("TTS error:", err);
+      showToast("Audio playback failed on this browser.", true);
+    }
+  }, 70);
 }
 
 // Broadcast Current Diagnosis to Radar

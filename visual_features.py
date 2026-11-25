@@ -1,10 +1,25 @@
 """
 Pure Pillow + NumPy visual feature extractor for leaf disease classification.
+Includes center-weighted & illumination-normalized processing for camera photos.
 Zero heavy dependencies (works identically on local FastAPI and Vercel Serverless).
 """
 
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageOps
+
+
+def _center_crop_for_camera(img: Image.Image) -> Image.Image:
+    """
+    Crop slightly inward (82% center) when aspect ratio is non-square (typical 4:3 or 16:9 camera frame)
+    to reduce desk/hand/room background clutter around the leaf.
+    """
+    w, h = img.size
+    if abs(w - h) > min(w, h) * 0.12:
+        side = int(min(w, h) * 0.82)
+        left = (w - side) // 2
+        top = (h - side) // 2
+        return img.crop((left, top, left + side, top + side))
+    return img
 
 
 def extract_visual_signature(img: Image.Image) -> np.ndarray:
@@ -15,7 +30,10 @@ def extract_visual_signature(img: Image.Image) -> np.ndarray:
       - Botanical lesion color ratios & spatial patch variance (16 dims)
       - Edge / texture gradient statistics (16 dims)
     """
-    img_rgb = img.convert("RGB").resize((128, 128), Image.Resampling.BILINEAR)
+    img_focused = _center_crop_for_camera(img.convert("RGB"))
+    # Gentle autocontrast (1% cutoff) helps normalize indoor webcam lighting/glare
+    img_norm = ImageOps.autocontrast(img_focused, cutoff=1)
+    img_rgb = img_norm.resize((128, 128), Image.Resampling.BILINEAR)
     img_hsv = img_rgb.convert("HSV")
 
     rgb = np.asarray(img_rgb, dtype=np.float32) / 255.0

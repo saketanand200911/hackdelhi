@@ -3,6 +3,7 @@ __pycache__/
 .DS_Store
 .env
 archive.zip
+dataset.zip
 test_matcher.py
 
 .vercel

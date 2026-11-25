@@ -1,6 +1,8 @@
 archive.zip
+dataset.zip
 *.ipynb
 *.pt
 __pycache__
 .git
 train_from_archive.py
+train_visual_classifier.py

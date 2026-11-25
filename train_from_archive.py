@@ -15,7 +15,7 @@ import torchvision.models as models
 from PIL import Image
 import numpy as np
 
-ARCHIVE_PATH = "archive.zip"
+ZIP_DATASETS = ["archive.zip", "dataset.zip"]
 OUTPUT_MODEL_PATH = "data/trained_plantvillage_model.pt"
 OUTPUT_METRICS_PATH = "data/training_metrics.json"
 REF_DIR = "static/reference_images"
@@ -79,71 +79,76 @@ def train():
     class_counts = {}
     saved_thumbnails = {}
 
-    # 1. Train on real archive.zip images
-    if os.path.exists(ARCHIVE_PATH):
-        print(f"Opening archive: {ARCHIVE_PATH}")
-        with zipfile.ZipFile(ARCHIVE_PATH, 'r') as z:
+    # 1. Train on real archive.zip + dataset.zip images
+    by_canonical = {c: [] for c in FOLDER_TO_CANONICAL.values()}
+    for zp in ZIP_DATASETS:
+        if not os.path.exists(zp):
+            continue
+        print(f"Opening archive: {zp}")
+        with zipfile.ZipFile(zp, 'r') as z:
             namelist = [n for n in z.namelist() if n.lower().endswith(('.jpg', '.jpeg', '.png'))]
-            print(f"Total raw image files found: {len(namelist)}")
-
-            # Group files by canonical class
-            by_canonical = {c: [] for c in FOLDER_TO_CANONICAL.values()}
+            print(f"Total raw image files found in {zp}: {len(namelist)}")
             for name in namelist:
                 parts = [p for p in name.split('/') if p]
-                # Look for folder name in parts
                 for part in parts[:-1]:
                     if part in FOLDER_TO_CANONICAL:
                         can_name = FOLDER_TO_CANONICAL[part]
-                        by_canonical[can_name].append(name)
+                        by_canonical[can_name].append((zp, name))
                         break
 
-            for can_class, files in sorted(by_canonical.items()):
-                if not files:
+    zip_handles = {zp: zipfile.ZipFile(zp, 'r') for zp in ZIP_DATASETS if os.path.exists(zp)}
+    try:
+        for can_class, entries in sorted(by_canonical.items()):
+            if not entries:
+                continue
+
+            # Mix entries from archive.zip and dataset.zip (up to 180 total)
+            sample_entries = entries[:180]
+            vecs = []
+
+            # Save clean thumbnail for web UI
+            try:
+                zp0, f0 = sample_entries[0]
+                thumb_data = zip_handles[zp0].read(f0)
+                thumb_img = Image.open(io.BytesIO(thumb_data)).convert("RGB")
+                thumb_img.thumbnail((300, 300))
+                thumb_path = os.path.join(REF_DIR, f"{can_class}.jpg")
+                thumb_img.save(thumb_path, "JPEG", quality=85)
+                saved_thumbnails[can_class] = f"/static/reference_images/{can_class}.jpg"
+            except Exception as e:
+                print(f"Thumbnail error for {can_class}: {e}")
+
+            for zp, fpath in sample_entries:
+                try:
+                    raw = zip_handles[zp].read(fpath)
+                    img = Image.open(io.BytesIO(raw)).convert("RGB")
+
+                    # Standard pass
+                    t1 = eval_transform(img).unsqueeze(0).to(device)
+                    with torch.no_grad():
+                        f1 = model(t1)
+                        f1 = f1 / f1.norm(p=2, dim=1, keepdim=True)
+                        vecs.append(f1.cpu().numpy()[0])
+
+                    # Augmented pass (camera-like rotation/flip/color)
+                    t2 = aug_transform(img).unsqueeze(0).to(device)
+                    with torch.no_grad():
+                        f2 = model(t2)
+                        f2 = f2 / f2.norm(p=2, dim=1, keepdim=True)
+                        vecs.append(f2.cpu().numpy()[0])
+                except Exception:
                     continue
 
-                # Sample up to 150 real images from archive.zip
-                sample_files = files[:150]
-                vecs = []
-
-                # Save clean thumbnail for web UI
-                try:
-                    thumb_data = z.read(sample_files[0])
-                    thumb_img = Image.open(io.BytesIO(thumb_data)).convert("RGB")
-                    thumb_img.thumbnail((300, 300))
-                    thumb_path = os.path.join(REF_DIR, f"{can_class}.jpg")
-                    thumb_img.save(thumb_path, "JPEG", quality=85)
-                    saved_thumbnails[can_class] = f"/static/reference_images/{can_class}.jpg"
-                except Exception as e:
-                    print(f"Thumbnail error for {can_class}: {e}")
-
-                for fpath in sample_files:
-                    try:
-                        raw = z.read(fpath)
-                        img = Image.open(io.BytesIO(raw)).convert("RGB")
-
-                        # Standard pass
-                        t1 = eval_transform(img).unsqueeze(0).to(device)
-                        with torch.no_grad():
-                            f1 = model(t1)
-                            f1 = f1 / f1.norm(p=2, dim=1, keepdim=True)
-                            vecs.append(f1.cpu().numpy()[0])
-
-                        # Augmented pass
-                        t2 = aug_transform(img).unsqueeze(0).to(device)
-                        with torch.no_grad():
-                            f2 = model(t2)
-                            f2 = f2 / f2.norm(p=2, dim=1, keepdim=True)
-                            vecs.append(f2.cpu().numpy()[0])
-                    except Exception:
-                        continue
-
-                if vecs:
-                    vecs_np = np.array(vecs)
-                    centroid = np.mean(vecs_np, axis=0)
-                    centroid = centroid / np.linalg.norm(centroid)
-                    class_features[can_class] = centroid
-                    class_counts[can_class] = len(vecs)
-                    print(f" Trained canonical class: {can_class:<45} (n={len(vecs)} augmented samples)")
+            if vecs:
+                vecs_np = np.array(vecs)
+                centroid = np.mean(vecs_np, axis=0)
+                centroid = centroid / np.linalg.norm(centroid)
+                class_features[can_class] = centroid
+                class_counts[can_class] = len(vecs)
+                print(f" Trained canonical class: {can_class:<45} (n={len(vecs)} augmented samples)")
+    finally:
+        for zh in zip_handles.values():
+            zh.close()
 
     # 2. Train on local test & extended crops
     local_crops = {
