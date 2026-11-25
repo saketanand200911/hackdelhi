@@ -483,6 +483,9 @@ button:disabled {
 }
 
 .crop-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   padding: 4px 10px;
   border: 1px solid #2a2a2c;
   background-color: #0b0b0c;
@@ -490,6 +493,28 @@ button:disabled {
   font-size: 12px;
   font-weight: 400;
   transition: background 0.2s ease, color 0.2s ease;
+}
+
+.crop-pill-img {
+  width: 16px;
+  height: 16px;
+  object-fit: cover;
+  border: 1px solid #2a2a2c;
+  flex-shrink: 0;
+}
+
+.ref-thumb-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.ref-thumb-img {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border: 1px solid #2a2a2c;
+  flex-shrink: 0;
 }
 
 .crop-pill:hover {
@@ -1585,4 +1610,32 @@ html[data-theme="light"] .panel-header,
 html[data-theme="light"] .diagnosis-banner,
 html[data-theme="light"] .toast {
   box-shadow: #0b0b0c 0px -3px 0px 0px inset;
+}
+
+html[data-theme="light"] .system-status,
+html[data-theme="light"] .camera-mode-badge,
+html[data-theme="light"] .active-crop-indicator,
+html[data-theme="light"] .crop-selector-label,
+html[data-theme="light"] .viewport-placeholder {
+  color: #0b0b0c;
+  border-color: #2a2a2c;
+  background-color: #ffffff;
+}
+
+html[data-theme="light"] .active-crop-indicator.locked {
+  background-color: #c8ff3d;
+  color: #0b0b0c;
+  border-color: #0b0b0c;
+}
+
+html[data-theme="light"] .btn-primary:disabled {
+  background-color: #d8d4ca;
+  color: #2a2a2c;
+  border-color: #8a8a85;
+  opacity: 1;
+}
+
+.active-crop-indicator.locked {
+  border-color: #c8ff3d;
+  color: #c8ff3d;
 }
