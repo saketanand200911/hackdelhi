@@ -26,6 +26,8 @@ from leaf_crop import crop_to_leaf
 
 MODEL_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                           "data", "leaf_model.npz")
+ONNX_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                         "data", "mobilenet_v3_small.onnx")
 
 _TORCH_BACKBONES = {
     "mobilenet_v3_small": ("mobilenet_v3_small", "MobileNet_V3_Small_Weights"),
@@ -36,6 +38,22 @@ _TORCH_BACKBONES = {
 _torch = None
 _backbone = None
 _transform = None
+_ort_session = None
+
+
+def _lazy_onnx():
+    """Load ONNX Runtime session lazily for lightweight serverless inference."""
+    global _ort_session
+    if _ort_session is not None:
+        return _ort_session
+    if not os.path.exists(ONNX_PATH):
+        return None
+    try:
+        import onnxruntime as ort
+        _ort_session = ort.InferenceSession(ONNX_PATH, providers=["CPUExecutionProvider"])
+        return _ort_session
+    except ImportError:
+        return None
 
 
 def _lazy_torch(backbone_name: str):
@@ -115,6 +133,22 @@ class LeafClassifier:
         return crop, condition
 
     def _features(self, imgs: List[Image.Image]) -> np.ndarray:
+        sess = _lazy_onnx() if self.backbone == "mobilenet_v3_small" else None
+        if sess is not None:
+            mean = np.array([0.485, 0.456, 0.406], dtype=np.float32)
+            std = np.array([0.229, 0.224, 0.225], dtype=np.float32)
+            arrs = []
+            for i in imgs:
+                im = i.convert("RGB").resize((224, 224), Image.BILINEAR)
+                a = np.asarray(im, dtype=np.float32) / 255.0
+                a = (a - mean) / std
+                arrs.append(np.transpose(a, (2, 0, 1)))
+            batch = np.stack(arrs, axis=0).astype(np.float32)
+            out = sess.run(None, {"input": batch})[0].astype(np.float32)
+            norms = np.linalg.norm(out, axis=1, keepdims=True)
+            norms = np.maximum(norms, 1e-12)
+            return (out / norms).astype(np.float32)
+
         torch = _lazy_torch(self.backbone)
         batch = torch.stack([_transform(i.convert("RGB")) for i in imgs])
         with torch.no_grad():
